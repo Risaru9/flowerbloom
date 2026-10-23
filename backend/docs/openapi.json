@@ -1,0 +1,7131 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FlowerBloom API",
+    "description": "Backend toko bunga dengan aksesibilitas warna bagi pengguna buta warna. Alur kerja lengkap: docs/alur-kerja.md.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/auth/daftar": {
+      "post": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Daftar akun pelanggan",
+        "operationId": "daftar_api_v1_auth_daftar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DaftarIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PenggunaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/masuk": {
+      "post": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Masuk (pelanggan maupun admin); dikunci sementara setelah beberapa kali gagal",
+        "operationId": "masuk_api_v1_auth_masuk_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MasukIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/kata-sandi": {
+      "patch": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Ganti kata sandi; sesi di perangkat lain ikut berakhir",
+        "operationId": "ganti_kata_sandi_api_v1_auth_kata_sandi_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KataSandiUbahIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/keluar-semua": {
+      "post": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Keluar dari semua perangkat",
+        "operationId": "keluar_semua_api_v1_auth_keluar_semua_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/saya": {
+      "get": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Profil akun yang sedang masuk",
+        "operationId": "profil_api_v1_auth_saya_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PenggunaOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Ubah nama, email, atau nomor telepon (F-PL-19)",
+        "operationId": "ubah_profil_api_v1_auth_saya_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfilUbahIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PenggunaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/aksesibilitas/saya": {
+      "get": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Pengaturan aksesibilitas saya (F-PL-18)",
+        "operationId": "lihat_aksesibilitas_api_v1_aksesibilitas_saya_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AksesibilitasOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Autentikasi & Akun"
+        ],
+        "summary": "Ubah pengaturan aksesibilitas saya",
+        "operationId": "ubah_aksesibilitas_api_v1_aksesibilitas_saya_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AksesibilitasUbahIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AksesibilitasOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/favorit": {
+      "get": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Produk favorit saya",
+        "operationId": "daftar_favorit_api_v1_favorit_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProdukOut"
+                  },
+                  "type": "array",
+                  "title": "Response Daftar Favorit Api V1 Favorit Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/favorit/{id_produk}": {
+      "put": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Simpan produk ke favorit",
+        "operationId": "simpan_favorit_api_v1_favorit__id_produk__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_produk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Produk"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Hapus produk dari favorit",
+        "operationId": "hapus_favorit_api_v1_favorit__id_produk__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_produk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Produk"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/alamat": {
+      "get": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Alamat tersimpan saya (utama lebih dulu)",
+        "operationId": "daftar_alamat_api_v1_alamat_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AlamatOut"
+                  },
+                  "type": "array",
+                  "title": "Response Daftar Alamat Api V1 Alamat Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Tambah alamat",
+        "operationId": "buat_alamat_api_v1_alamat_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlamatIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlamatOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/alamat/{id_alamat}": {
+      "patch": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Ubah alamat atau jadikan alamat utama",
+        "operationId": "ubah_alamat_api_v1_alamat__id_alamat__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_alamat",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Alamat"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlamatUbahIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlamatOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pelanggan - Favorit & Alamat"
+        ],
+        "summary": "Hapus alamat",
+        "operationId": "hapus_alamat_api_v1_alamat__id_alamat__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_alamat",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Alamat"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/warna": {
+      "get": {
+        "tags": [
+          "Data Acuan"
+        ],
+        "summary": "Daftar nama warna beserta kode dan maknanya",
+        "operationId": "daftar_warna_api_v1_warna_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WarnaOut"
+                  },
+                  "type": "array",
+                  "title": "Response Daftar Warna Api V1 Warna Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jenis-bunga": {
+      "get": {
+        "tags": [
+          "Data Acuan"
+        ],
+        "summary": "Daftar jenis bunga yang dikenali sistem",
+        "operationId": "daftar_jenis_bunga_api_v1_jenis_bunga_get",
+        "parameters": [
+          {
+            "name": "cari",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cari"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JenisBungaOut"
+                  },
+                  "title": "Response Daftar Jenis Bunga Api V1 Jenis Bunga Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/warna": {
+      "post": {
+        "tags": [
+          "Data Acuan"
+        ],
+        "summary": "Tambah warna",
+        "operationId": "tambah_warna_api_v1_admin_warna_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarnaIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarnaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/warna/{id_warna}": {
+      "patch": {
+        "tags": [
+          "Data Acuan"
+        ],
+        "summary": "Ubah nama, kode, atau makna warna",
+        "operationId": "ubah_warna_api_v1_admin_warna__id_warna__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_warna",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Warna"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarnaUbahIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarnaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/jenis-bunga/{id_jenis_bunga}": {
+      "patch": {
+        "tags": [
+          "Data Acuan"
+        ],
+        "summary": "Ubah keterangan jenis bunga",
+        "operationId": "ubah_jenis_bunga_api_v1_admin_jenis_bunga__id_jenis_bunga__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_jenis_bunga",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Jenis Bunga"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JenisBungaUbahIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JenisBungaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/produk": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Katalog paket siap pakai (filter acara: F-PL-02)",
+        "operationId": "daftar_produk_api_v1_produk_get",
+        "parameters": [
+          {
+            "name": "acara",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Acara"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProdukOut"
+                  },
+                  "title": "Response Daftar Produk Api V1 Produk Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/produk/acara": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Daftar acara untuk penyaring katalog",
+        "operationId": "daftar_acara_api_v1_produk_acara_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "title": "Response Daftar Acara Api V1 Produk Acara Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/produk/{id_produk}": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Detail paket: komposisi, nama+kode warna, makna (F-PL-03)",
+        "operationId": "detail_produk_api_v1_produk__id_produk__get",
+        "parameters": [
+          {
+            "name": "id_produk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Produk"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdukOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rangkai/opsi": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Bunga yang tersedia hari ini untuk Rangkai Sendiri",
+        "operationId": "opsi_rangkai_api_v1_rangkai_opsi_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OpsiRangkaiOut"
+                  },
+                  "type": "array",
+                  "title": "Response Opsi Rangkai Api V1 Rangkai Opsi Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/toko/info": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Ongkos, slot jam, rekening tujuan, dan aturan checkout",
+        "operationId": "info_toko_api_v1_toko_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoTokoOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/produk": {
+      "get": {
+        "tags": [
+          "Admin - Katalog & Toko"
+        ],
+        "summary": "Seluruh paket termasuk yang disembunyikan",
+        "operationId": "admin_daftar_produk_api_v1_admin_produk_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProdukOut"
+                  },
+                  "type": "array",
+                  "title": "Response Admin Daftar Produk Api V1 Admin Produk Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Admin - Katalog & Toko"
+        ],
+        "summary": "Tambah paket",
+        "operationId": "admin_buat_produk_api_v1_admin_produk_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdukIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdukOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/produk/{id_produk}": {
+      "patch": {
+        "tags": [
+          "Admin - Katalog & Toko"
+        ],
+        "summary": "Ubah harga, komposisi, atau tampilkan/sembunyikan paket",
+        "operationId": "admin_ubah_produk_api_v1_admin_produk__id_produk__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_produk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Produk"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdukUbahIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdukOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/produk/{id_produk}/foto": {
+      "put": {
+        "tags": [
+          "Admin - Katalog & Toko"
+        ],
+        "summary": "Unggah foto paket",
+        "operationId": "admin_foto_produk_api_v1_admin_produk__id_produk__foto_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_produk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Produk"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_admin_foto_produk_api_v1_admin_produk__id_produk__foto_put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProdukOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pengaturan-toko": {
+      "get": {
+        "tags": [
+          "Admin - Katalog & Toko"
+        ],
+        "summary": "Semua pengaturan toko (F-AD-16)",
+        "operationId": "admin_pengaturan_api_v1_admin_pengaturan_toko_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PengaturanItemOut"
+                  },
+                  "type": "array",
+                  "title": "Response Admin Pengaturan Api V1 Admin Pengaturan Toko Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Admin - Katalog & Toko"
+        ],
+        "summary": "Ubah sebagian pengaturan toko",
+        "operationId": "admin_ubah_pengaturan_api_v1_admin_pengaturan_toko_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PengaturanUbahIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PengaturanItemOut"
+                  },
+                  "type": "array",
+                  "title": "Response Admin Ubah Pengaturan Api V1 Admin Pengaturan Toko Patch"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/stok": {
+      "get": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Daftar stok: masuk, ditahan, tersedia, penanda menipis",
+        "operationId": "daftar_stok_api_v1_admin_stok_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "menipis",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Hanya stok yang menipis",
+              "default": false,
+              "title": "Menipis"
+            },
+            "description": "Hanya stok yang menipis"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StokOut"
+                  },
+                  "title": "Response Daftar Stok Api V1 Admin Stok Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/stok/manual": {
+      "post": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Input stok manual (F-AD-12)",
+        "operationId": "stok_manual_api_v1_admin_stok_manual_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StokManualIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StokOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/stok/pindai": {
+      "post": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Pindai satu bunga: jenis, warna, keyakinan (F-AD-11)",
+        "operationId": "pindai_stok_api_v1_admin_stok_pindai_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_pindai_stok_api_v1_admin_stok_pindai_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasilPindaiOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/stok/simpan-pindai": {
+      "post": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Simpan hasil pindai yang sudah diperiksa/dikoreksi admin sebagai stok",
+        "operationId": "simpan_pindai_api_v1_admin_stok_simpan_pindai_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpanPindaiIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StokOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/stok/{id_stok}": {
+      "patch": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Koreksi jumlah tersedia atau harga (dicatat di buku mutasi)",
+        "operationId": "koreksi_stok_api_v1_admin_stok__id_stok__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_stok",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Stok"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KoreksiStokIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StokOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/riwayat-pindai": {
+      "get": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Riwayat pindai dan koreksi (F-AD-18)",
+        "operationId": "riwayat_pindai_api_v1_admin_riwayat_pindai_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "halaman",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Halaman"
+            }
+          },
+          {
+            "name": "per_halaman",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Per Halaman"
+            }
+          },
+          {
+            "name": "hanya_dikoreksi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Hanya Dikoreksi"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Halaman_RiwayatPindaiOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/riwayat-pindai/ringkasan": {
+      "get": {
+        "tags": [
+          "Admin - Stok & Pindai"
+        ],
+        "summary": "Akurasi model di pemakaian nyata",
+        "operationId": "ringkasan_akurasi_api_v1_admin_riwayat_pindai_ringkasan_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RingkasanAkurasiOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/pesanan/pratinjau": {
+      "post": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Hitung total dan cek stok tanpa membuat pesanan",
+        "operationId": "pratinjau_api_v1_pesanan_pratinjau_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PratinjauIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PratinjauOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pesanan": {
+      "post": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Checkout: buat pesanan dan tahan stok (AB-01, AB-02, AB-04)",
+        "operationId": "checkout_api_v1_pesanan_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Riwayat pesanan saya (F-PL-17)",
+        "operationId": "riwayat_api_v1_pesanan_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusPesanan"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "halaman",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Halaman"
+            }
+          },
+          {
+            "name": "per_halaman",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 10,
+              "title": "Per Halaman"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Halaman_PesananRingkasOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pesanan/{id_pesanan}": {
+      "get": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Detail dan status pesanan (F-PL-12)",
+        "operationId": "detail_api_v1_pesanan__id_pesanan__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pesanan/{id_pesanan}/pembayaran": {
+      "post": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Unggah bukti transfer (F-PL-11)",
+        "operationId": "unggah_bukti_api_v1_pesanan__id_pesanan__pembayaran_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_unggah_bukti_api_v1_pesanan__id_pesanan__pembayaran_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pesanan/{id_pesanan}/batal": {
+      "post": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Batalkan pesanan sebelum dirangkai (F-PL-15, AB-08)",
+        "operationId": "batalkan_api_v1_pesanan__id_pesanan__batal_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatalIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pesanan/{id_pesanan}/persetujuan-foto": {
+      "post": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Setujui atau minta revisi foto hasil (F-PL-13, AB-05..07)",
+        "operationId": "tanggapi_foto_api_v1_pesanan__id_pesanan__persetujuan_foto_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TanggapanFotoIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pesanan/{id_pesanan}/komplain": {
+      "post": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Ajukan komplain maksimal 1x24 jam setelah pesanan diterima (F-PL-16, AB-09)",
+        "operationId": "ajukan_komplain_api_v1_pesanan__id_pesanan__komplain_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_ajukan_komplain_api_v1_pesanan__id_pesanan__komplain_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KomplainOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/komplain/saya": {
+      "get": {
+        "tags": [
+          "Pesanan Pelanggan"
+        ],
+        "summary": "Komplain yang pernah saya ajukan",
+        "operationId": "komplain_saya_api_v1_komplain_saya_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/KomplainOut"
+                  },
+                  "type": "array",
+                  "title": "Response Komplain Saya Api V1 Komplain Saya Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/pesanan": {
+      "get": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Daftar pesanan: saring status, cari kode/pemesan/rangkaian (F-AD-04)",
+        "operationId": "daftar_pesanan_api_v1_admin_pesanan_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusPesanan"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "cari",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cari"
+            }
+          },
+          {
+            "name": "perlu_tindakan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Perlu Tindakan"
+            }
+          },
+          {
+            "name": "halaman",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Halaman"
+            }
+          },
+          {
+            "name": "per_halaman",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Per Halaman"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Halaman_PesananAdminRingkasOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}": {
+      "get": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Detail pesanan lengkap (F-AD-05)",
+        "operationId": "detail_pesanan_api_v1_admin_pesanan__id_pesanan__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/pembayaran/{id_pembayaran}/sahkan": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Sahkan pembayaran: pesanan masuk antrean rangkai (F-AD-06)",
+        "operationId": "sahkan_api_v1_admin_pesanan__id_pesanan__pembayaran__id_pembayaran__sahkan_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          },
+          {
+            "name": "id_pembayaran",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pembayaran"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/pembayaran/{id_pembayaran}/tolak": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Tolak bukti transfer: pelanggan diminta mengunggah ulang",
+        "operationId": "tolak_api_v1_admin_pesanan__id_pesanan__pembayaran__id_pembayaran__tolak_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          },
+          {
+            "name": "id_pembayaran",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pembayaran"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TolakBuktiIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/selesai": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Tandai pesanan selesai (sudah diterima)",
+        "operationId": "selesai_api_v1_admin_pesanan__id_pesanan__selesai_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/pengembalian-dana-selesai": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Tandai pengembalian dana pesanan batal sudah dilakukan",
+        "operationId": "pengembalian_selesai_api_v1_admin_pesanan__id_pesanan__pengembalian_dana_selesai_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/merangkai": {
+      "get": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Komposisi dan progres pencocokan (F-AD-07)",
+        "operationId": "lihat_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgresMerangkaiOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/merangkai/pindai": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Pindai bunga yang diambil lalu cocokkan dengan pesanan",
+        "operationId": "pindai_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_pindai_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_pindai_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_pindai_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HasilMerangkaiOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/merangkai/tandai-cocok": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Tandai cocok secara manual (bila pemindaian meleset)",
+        "operationId": "tandai_cocok_api_v1_admin_pesanan__id_pesanan__merangkai_tandai_cocok_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TandaiCocokIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgresMerangkaiOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/merangkai/pengganti": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Catat bunga pengganti beserta alasannya (F-AD-08)",
+        "operationId": "catat_pengganti_api_v1_admin_pesanan__id_pesanan__merangkai_pengganti_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PenggantiIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgresMerangkaiOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pesanan/{id_pesanan}/foto-hasil": {
+      "post": {
+        "tags": [
+          "Admin - Pesanan"
+        ],
+        "summary": "Unggah foto hasil rangkaian; warna dibaca otomatis (F-AD-09, AB-05)",
+        "operationId": "foto_hasil_api_v1_admin_pesanan__id_pesanan__foto_hasil_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pesanan",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pesanan"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_foto_hasil_api_v1_admin_pesanan__id_pesanan__foto_hasil_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PesananAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/dasbor": {
+      "get": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Dasbor: pekerjaan yang perlu tindakan, stok menipis, penjualan (F-AD-02/03)",
+        "operationId": "dasbor_api_v1_admin_dasbor_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DasborOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/laporan": {
+      "get": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Laporan penjualan, terlaris, revisi, komplain (F-AD-15)",
+        "operationId": "lihat_laporan_api_v1_admin_laporan_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dari",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bawaan: 28 hari sebelum 'sampai'",
+              "title": "Dari"
+            },
+            "description": "Bawaan: 28 hari sebelum 'sampai'"
+          },
+          {
+            "name": "sampai",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bawaan: hari ini (WIB)",
+              "title": "Sampai"
+            },
+            "description": "Bawaan: hari ini (WIB)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LaporanOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/komplain": {
+      "get": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Daftar komplain pelanggan",
+        "operationId": "daftar_komplain_api_v1_admin_komplain_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/StatusKomplain"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KomplainAdminOut"
+                  },
+                  "title": "Response Daftar Komplain Api V1 Admin Komplain Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/komplain/{id_komplain}": {
+      "patch": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Tanggapi komplain",
+        "operationId": "tanggapi_komplain_api_v1_admin_komplain__id_komplain__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_komplain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Komplain"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TanggapiKomplainIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KomplainAdminOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pengguna": {
+      "get": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Daftar akun (F-AD-17)",
+        "operationId": "daftar_pengguna_api_v1_admin_pengguna_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "peran",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Peran"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Peran"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PenggunaOut"
+                  },
+                  "title": "Response Daftar Pengguna Api V1 Admin Pengguna Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Tambah akun admin (F-AD-17)",
+        "operationId": "tambah_admin_api_v1_admin_pengguna_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminBaruIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PenggunaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pengguna/{id_pengguna}/aktif": {
+      "patch": {
+        "tags": [
+          "Admin - Dasbor, Komplain & Akun"
+        ],
+        "summary": "Aktifkan atau nonaktifkan akun",
+        "operationId": "atur_aktif_api_v1_admin_pengguna__id_pengguna__aktif_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id_pengguna",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Pengguna"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AktifIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PenggunaOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kesehatan": {
+      "get": {
+        "tags": [
+          "Sistem"
+        ],
+        "summary": "Pemeriksaan hidup",
+        "operationId": "kesehatan_kesehatan_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdminBaruIn": {
+        "properties": {
+          "nama": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "no_hp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Hp"
+          },
+          "kata_sandi": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Kata Sandi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama",
+          "email",
+          "kata_sandi"
+        ],
+        "title": "AdminBaruIn",
+        "description": "Pembuatan akun admin oleh admin lain (F-AD-17)."
+      },
+      "AksesibilitasOut": {
+        "properties": {
+          "jenis_buta_warna": {
+            "$ref": "#/components/schemas/JenisButaWarna"
+          },
+          "penajaman_warna": {
+            "type": "boolean",
+            "title": "Penajaman Warna"
+          },
+          "ukuran_teks": {
+            "type": "integer",
+            "title": "Ukuran Teks"
+          },
+          "kecepatan_suara": {
+            "type": "number",
+            "title": "Kecepatan Suara"
+          },
+          "tema": {
+            "$ref": "#/components/schemas/Tema"
+          }
+        },
+        "type": "object",
+        "required": [
+          "jenis_buta_warna",
+          "penajaman_warna",
+          "ukuran_teks",
+          "kecepatan_suara",
+          "tema"
+        ],
+        "title": "AksesibilitasOut"
+      },
+      "AksesibilitasUbahIn": {
+        "properties": {
+          "jenis_buta_warna": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JenisButaWarna"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "penajaman_warna": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Penajaman Warna"
+          },
+          "ukuran_teks": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 200.0,
+                "minimum": 80.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ukuran Teks",
+            "description": "Persen dari ukuran dasar"
+          },
+          "kecepatan_suara": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 2.0,
+                "minimum": 0.5
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kecepatan Suara"
+          },
+          "tema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Tema"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "AksesibilitasUbahIn",
+        "description": "Semua bidang opsional: hanya yang dikirim yang diubah."
+      },
+      "AktifIn": {
+        "properties": {
+          "aktif": {
+            "type": "boolean",
+            "title": "Aktif"
+          }
+        },
+        "type": "object",
+        "required": [
+          "aktif"
+        ],
+        "title": "AktifIn"
+      },
+      "AlamatIn": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Label",
+            "description": "Mis. 'Rumah' atau 'Kantor'"
+          },
+          "nama_penerima": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama Penerima"
+          },
+          "no_hp": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 8,
+            "pattern": "^\\+?[0-9 ()-]{8,20}$",
+            "title": "No Hp"
+          },
+          "alamat": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 10,
+            "title": "Alamat"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan",
+            "description": "Patokan untuk kurir"
+          },
+          "utama": {
+            "type": "boolean",
+            "title": "Utama",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "nama_penerima",
+          "no_hp",
+          "alamat"
+        ],
+        "title": "AlamatIn"
+      },
+      "AlamatOut": {
+        "properties": {
+          "id_alamat": {
+            "type": "integer",
+            "title": "Id Alamat"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "nama_penerima": {
+            "type": "string",
+            "title": "Nama Penerima"
+          },
+          "no_hp": {
+            "type": "string",
+            "title": "No Hp"
+          },
+          "alamat": {
+            "type": "string",
+            "title": "Alamat"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan"
+          },
+          "utama": {
+            "type": "boolean",
+            "title": "Utama"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_alamat",
+          "label",
+          "nama_penerima",
+          "no_hp",
+          "alamat",
+          "catatan",
+          "utama",
+          "dibuat_pada"
+        ],
+        "title": "AlamatOut"
+      },
+      "AlamatUbahIn": {
+        "properties": {
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "nama_penerima": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama Penerima"
+          },
+          "no_hp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "minLength": 8,
+                "pattern": "^\\+?[0-9 ()-]{8,20}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Hp"
+          },
+          "alamat": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500,
+                "minLength": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alamat"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan"
+          },
+          "utama": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Utama"
+          }
+        },
+        "type": "object",
+        "title": "AlamatUbahIn",
+        "description": "Semua bidang opsional: hanya yang dikirim yang diubah."
+      },
+      "BatalIn": {
+        "properties": {
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          }
+        },
+        "type": "object",
+        "title": "BatalIn"
+      },
+      "Body_admin_foto_produk_api_v1_admin_produk__id_produk__foto_put": {
+        "properties": {
+          "foto": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Foto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "foto"
+        ],
+        "title": "Body_admin_foto_produk_api_v1_admin_produk__id_produk__foto_put"
+      },
+      "Body_ajukan_komplain_api_v1_pesanan__id_pesanan__komplain_post": {
+        "properties": {
+          "isi": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 5,
+            "title": "Isi"
+          },
+          "foto": {
+            "anyOf": [
+              {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foto",
+            "description": "Foto keluhan (disarankan)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "isi"
+        ],
+        "title": "Body_ajukan_komplain_api_v1_pesanan__id_pesanan__komplain_post"
+      },
+      "Body_foto_hasil_api_v1_admin_pesanan__id_pesanan__foto_hasil_post": {
+        "properties": {
+          "foto": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Foto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "foto"
+        ],
+        "title": "Body_foto_hasil_api_v1_admin_pesanan__id_pesanan__foto_hasil_post"
+      },
+      "Body_pindai_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_pindai_post": {
+        "properties": {
+          "foto": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Foto"
+          },
+          "jumlah": {
+            "type": "integer",
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Jumlah",
+            "description": "Jumlah tangkai sejenis dalam foto",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "foto"
+        ],
+        "title": "Body_pindai_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_pindai_post"
+      },
+      "Body_pindai_stok_api_v1_admin_stok_pindai_post": {
+        "properties": {
+          "foto": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Foto",
+            "description": "Satu foto untuk satu jenis bunga"
+          }
+        },
+        "type": "object",
+        "required": [
+          "foto"
+        ],
+        "title": "Body_pindai_stok_api_v1_admin_stok_pindai_post"
+      },
+      "Body_unggah_bukti_api_v1_pesanan__id_pesanan__pembayaran_post": {
+        "properties": {
+          "bukti": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Bukti",
+            "description": "Foto/tangkapan layar bukti transfer"
+          },
+          "nama_pengirim": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama Pengirim"
+          },
+          "nominal": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)"
+              }
+            ],
+            "title": "Nominal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bukti",
+          "nama_pengirim",
+          "nominal"
+        ],
+        "title": "Body_unggah_bukti_api_v1_pesanan__id_pesanan__pembayaran_post"
+      },
+      "BungaRangkaiIn": {
+        "properties": {
+          "id_stok": {
+            "type": "integer",
+            "title": "Id Stok"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Jumlah Tangkai"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_stok",
+          "jumlah_tangkai"
+        ],
+        "title": "BungaRangkaiIn"
+      },
+      "CaraSerahTerima": {
+        "type": "string",
+        "enum": [
+          "ambil_di_toko",
+          "antar"
+        ],
+        "title": "CaraSerahTerima"
+      },
+      "CheckoutIn": {
+        "properties": {
+          "items": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ItemPaketIn"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemRangkaiSendiriIn"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "jenis_item",
+                "mapping": {
+                  "paket": "#/components/schemas/ItemPaketIn",
+                  "rangkai_sendiri": "#/components/schemas/ItemRangkaiSendiriIn"
+                }
+              }
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Items"
+          },
+          "cara_serah_terima": {
+            "$ref": "#/components/schemas/CaraSerahTerima",
+            "default": "ambil_di_toko"
+          },
+          "nama_penerima": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama Penerima"
+          },
+          "alamat": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alamat"
+          },
+          "tanggal_kirim": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Kirim"
+          },
+          "slot_jam": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Slot Jam"
+          },
+          "kartu_ucapan": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kartu Ucapan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "nama_penerima",
+          "tanggal_kirim",
+          "slot_jam"
+        ],
+        "title": "CheckoutIn"
+      },
+      "DaftarIn": {
+        "properties": {
+          "nama": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "no_hp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Hp"
+          },
+          "kata_sandi": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Kata Sandi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama",
+          "email",
+          "kata_sandi"
+        ],
+        "title": "DaftarIn",
+        "description": "Peran tidak ada di sini dengan sengaja: pendaftaran publik selalu menghasilkan pelanggan."
+      },
+      "DasborOut": {
+        "properties": {
+          "pesanan_aktif": {
+            "type": "integer",
+            "title": "Pesanan Aktif"
+          },
+          "perlu_verifikasi": {
+            "type": "integer",
+            "title": "Perlu Verifikasi"
+          },
+          "perlu_dirangkai": {
+            "type": "integer",
+            "title": "Perlu Dirangkai"
+          },
+          "menunggu_persetujuan_foto": {
+            "type": "integer",
+            "title": "Menunggu Persetujuan Foto"
+          },
+          "perlu_pengembalian_dana": {
+            "type": "integer",
+            "title": "Perlu Pengembalian Dana"
+          },
+          "komplain_baru": {
+            "type": "integer",
+            "title": "Komplain Baru"
+          },
+          "stok_menipis": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Stok Menipis"
+          },
+          "penjualan_hari_ini": {
+            "type": "number",
+            "title": "Penjualan Hari Ini"
+          },
+          "penjualan_minggu_ini": {
+            "type": "number",
+            "title": "Penjualan Minggu Ini"
+          },
+          "grafik_pesanan_mingguan": {
+            "items": {
+              "$ref": "#/components/schemas/TitikGrafikOut"
+            },
+            "type": "array",
+            "title": "Grafik Pesanan Mingguan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pesanan_aktif",
+          "perlu_verifikasi",
+          "perlu_dirangkai",
+          "menunggu_persetujuan_foto",
+          "perlu_pengembalian_dana",
+          "komplain_baru",
+          "stok_menipis",
+          "penjualan_hari_ini",
+          "penjualan_minggu_ini",
+          "grafik_pesanan_mingguan"
+        ],
+        "title": "DasborOut"
+      },
+      "DetailPesananOut": {
+        "properties": {
+          "id_detail": {
+            "type": "integer",
+            "title": "Id Detail"
+          },
+          "jenis_item": {
+            "$ref": "#/components/schemas/JenisItem"
+          },
+          "id_produk": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Produk"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jumlah": {
+            "type": "integer",
+            "title": "Jumlah"
+          },
+          "subtotal": {
+            "type": "number",
+            "title": "Subtotal"
+          },
+          "komposisi": {
+            "items": {
+              "$ref": "#/components/schemas/KomposisiPesananOut"
+            },
+            "type": "array",
+            "title": "Komposisi"
+          },
+          "narasi": {
+            "type": "string",
+            "title": "Narasi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_detail",
+          "jenis_item",
+          "id_produk",
+          "nama",
+          "jumlah",
+          "subtotal",
+          "komposisi",
+          "narasi"
+        ],
+        "title": "DetailPesananOut"
+      },
+      "FotoKonfirmasiOut": {
+        "properties": {
+          "id_foto": {
+            "type": "integer",
+            "title": "Id Foto"
+          },
+          "foto_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foto Url"
+          },
+          "label_warna": {
+            "items": {
+              "$ref": "#/components/schemas/LabelWarnaOut"
+            },
+            "type": "array",
+            "title": "Label Warna"
+          },
+          "label_teks": {
+            "type": "string",
+            "title": "Label Teks",
+            "description": "Label warna sebagai kalimat, mis. 'Merah tua 55%, Merah muda 30%'"
+          },
+          "pengganti": {
+            "items": {
+              "$ref": "#/components/schemas/PenggantiOut"
+            },
+            "type": "array",
+            "title": "Pengganti"
+          },
+          "status_persetujuan": {
+            "$ref": "#/components/schemas/StatusPersetujuan"
+          },
+          "catatan_revisi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Revisi"
+          },
+          "diunggah_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Diunggah Pada"
+          },
+          "ditanggapi_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ditanggapi Pada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_foto",
+          "foto_url",
+          "label_warna",
+          "label_teks",
+          "pengganti",
+          "status_persetujuan",
+          "catatan_revisi",
+          "diunggah_pada",
+          "ditanggapi_pada"
+        ],
+        "title": "FotoKonfirmasiOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Halaman_PesananAdminRingkasOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/PesananAdminRingkasOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "halaman": {
+            "type": "integer",
+            "title": "Halaman"
+          },
+          "per_halaman": {
+            "type": "integer",
+            "title": "Per Halaman"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "total",
+          "halaman",
+          "per_halaman"
+        ],
+        "title": "Halaman[PesananAdminRingkasOut]"
+      },
+      "Halaman_PesananRingkasOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/PesananRingkasOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "halaman": {
+            "type": "integer",
+            "title": "Halaman"
+          },
+          "per_halaman": {
+            "type": "integer",
+            "title": "Per Halaman"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "total",
+          "halaman",
+          "per_halaman"
+        ],
+        "title": "Halaman[PesananRingkasOut]"
+      },
+      "Halaman_RiwayatPindaiOut_": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/RiwayatPindaiOut"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "halaman": {
+            "type": "integer",
+            "title": "Halaman"
+          },
+          "per_halaman": {
+            "type": "integer",
+            "title": "Per Halaman"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "total",
+          "halaman",
+          "per_halaman"
+        ],
+        "title": "Halaman[RiwayatPindaiOut]"
+      },
+      "HasilMerangkaiOut": {
+        "properties": {
+          "dikenali": {
+            "type": "boolean",
+            "title": "Dikenali"
+          },
+          "cocok": {
+            "type": "boolean",
+            "title": "Cocok"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "jenis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JenisRingkas"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warna": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WarnaRingkas"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "id_komposisi_cocok": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Komposisi Cocok"
+          },
+          "progres": {
+            "$ref": "#/components/schemas/ProgresMerangkaiOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dikenali",
+          "cocok",
+          "alasan",
+          "jenis",
+          "warna",
+          "id_komposisi_cocok",
+          "progres"
+        ],
+        "title": "HasilMerangkaiOut"
+      },
+      "HasilPindaiOut": {
+        "properties": {
+          "id_pindai": {
+            "type": "integer",
+            "title": "Id Pindai"
+          },
+          "dikenali": {
+            "type": "boolean",
+            "title": "Dikenali"
+          },
+          "jenis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JenisRingkas"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warna": {
+            "$ref": "#/components/schemas/WarnaRingkas"
+          },
+          "tingkat_keyakinan": {
+            "type": "number",
+            "title": "Tingkat Keyakinan"
+          },
+          "jarak_warna": {
+            "type": "number",
+            "title": "Jarak Warna"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "peringatan": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Peringatan"
+          },
+          "tiruan": {
+            "type": "boolean",
+            "title": "Tiruan",
+            "description": "True bila jenis bunga berasal dari AI tiruan (model asli belum terpasang)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pindai",
+          "dikenali",
+          "jenis",
+          "warna",
+          "tingkat_keyakinan",
+          "jarak_warna",
+          "deskripsi",
+          "peringatan",
+          "tiruan"
+        ],
+        "title": "HasilPindaiOut"
+      },
+      "InfoTokoOut": {
+        "properties": {
+          "nama_toko": {
+            "type": "string",
+            "title": "Nama Toko"
+          },
+          "rekening_tujuan": {
+            "type": "string",
+            "title": "Rekening Tujuan"
+          },
+          "batas_bayar_menit": {
+            "type": "integer",
+            "title": "Batas Bayar Menit"
+          },
+          "ongkos_antar": {
+            "type": "integer",
+            "title": "Ongkos Antar"
+          },
+          "jasa_merangkai": {
+            "type": "integer",
+            "title": "Jasa Merangkai"
+          },
+          "minimal_tangkai_rangkai_sendiri": {
+            "type": "integer",
+            "title": "Minimal Tangkai Rangkai Sendiri"
+          },
+          "slot_pengiriman": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Slot Pengiriman"
+          },
+          "minimal_hari_pemesanan": {
+            "type": "integer",
+            "title": "Minimal Hari Pemesanan"
+          },
+          "jumlah_revisi_gratis": {
+            "type": "integer",
+            "title": "Jumlah Revisi Gratis"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama_toko",
+          "rekening_tujuan",
+          "batas_bayar_menit",
+          "ongkos_antar",
+          "jasa_merangkai",
+          "minimal_tangkai_rangkai_sendiri",
+          "slot_pengiriman",
+          "minimal_hari_pemesanan",
+          "jumlah_revisi_gratis"
+        ],
+        "title": "InfoTokoOut",
+        "description": "Bagian pengaturan yang perlu diketahui pelanggan saat checkout."
+      },
+      "ItemHitungOut": {
+        "properties": {
+          "jenis_item": {
+            "$ref": "#/components/schemas/JenisItem"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "jumlah": {
+            "type": "integer",
+            "title": "Jumlah"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "title": "Jumlah Tangkai"
+          },
+          "subtotal": {
+            "type": "number",
+            "title": "Subtotal"
+          }
+        },
+        "type": "object",
+        "required": [
+          "jenis_item",
+          "nama",
+          "jumlah",
+          "jumlah_tangkai",
+          "subtotal"
+        ],
+        "title": "ItemHitungOut"
+      },
+      "ItemPaketIn": {
+        "properties": {
+          "jenis_item": {
+            "type": "string",
+            "const": "paket",
+            "title": "Jenis Item"
+          },
+          "id_produk": {
+            "type": "integer",
+            "title": "Id Produk"
+          },
+          "jumlah": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Jumlah",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "jenis_item",
+          "id_produk"
+        ],
+        "title": "ItemPaketIn"
+      },
+      "ItemRangkaiSendiriIn": {
+        "properties": {
+          "jenis_item": {
+            "type": "string",
+            "const": "rangkai_sendiri",
+            "title": "Jenis Item"
+          },
+          "bunga": {
+            "items": {
+              "$ref": "#/components/schemas/BungaRangkaiIn"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Bunga"
+          }
+        },
+        "type": "object",
+        "required": [
+          "jenis_item",
+          "bunga"
+        ],
+        "title": "ItemRangkaiSendiriIn"
+      },
+      "JenisBungaOut": {
+        "properties": {
+          "id_jenis_bunga": {
+            "type": "integer",
+            "title": "Id Jenis Bunga"
+          },
+          "nama_bunga": {
+            "type": "string",
+            "title": "Nama Bunga"
+          },
+          "bentuk_bunga": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bentuk Bunga"
+          },
+          "nama_ilmiah": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama Ilmiah"
+          },
+          "kelas_dataset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kelas Dataset"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_jenis_bunga",
+          "nama_bunga",
+          "bentuk_bunga",
+          "nama_ilmiah",
+          "kelas_dataset",
+          "deskripsi"
+        ],
+        "title": "JenisBungaOut"
+      },
+      "JenisBungaUbahIn": {
+        "properties": {
+          "nama_bunga": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama Bunga"
+          },
+          "nama_ilmiah": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama Ilmiah"
+          },
+          "bentuk_bunga": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bentuk Bunga"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          }
+        },
+        "type": "object",
+        "title": "JenisBungaUbahIn"
+      },
+      "JenisButaWarna": {
+        "type": "string",
+        "enum": [
+          "normal",
+          "protan",
+          "deutan",
+          "tritan"
+        ],
+        "title": "JenisButaWarna"
+      },
+      "JenisItem": {
+        "type": "string",
+        "enum": [
+          "paket",
+          "rangkai_sendiri"
+        ],
+        "title": "JenisItem"
+      },
+      "JenisRingkas": {
+        "properties": {
+          "id_jenis_bunga": {
+            "type": "integer",
+            "title": "Id Jenis Bunga"
+          },
+          "nama_bunga": {
+            "type": "string",
+            "title": "Nama Bunga"
+          },
+          "bentuk_bunga": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bentuk Bunga"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_jenis_bunga",
+          "nama_bunga",
+          "bentuk_bunga"
+        ],
+        "title": "JenisRingkas"
+      },
+      "KataSandiUbahIn": {
+        "properties": {
+          "kata_sandi_lama": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Kata Sandi Lama"
+          },
+          "kata_sandi_baru": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Kata Sandi Baru"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kata_sandi_lama",
+          "kata_sandi_baru"
+        ],
+        "title": "KataSandiUbahIn"
+      },
+      "KomplainAdminOut": {
+        "properties": {
+          "id_komplain": {
+            "type": "integer",
+            "title": "Id Komplain"
+          },
+          "id_pesanan": {
+            "type": "integer",
+            "title": "Id Pesanan"
+          },
+          "kode_pesanan": {
+            "type": "string",
+            "title": "Kode Pesanan"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "foto_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foto Url"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusKomplain"
+          },
+          "tanggapan_admin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggapan Admin"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          },
+          "ditanggapi_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ditanggapi Pada"
+          },
+          "pemesan": {
+            "$ref": "#/components/schemas/PemesanOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_komplain",
+          "id_pesanan",
+          "kode_pesanan",
+          "isi",
+          "foto_url",
+          "status",
+          "tanggapan_admin",
+          "dibuat_pada",
+          "ditanggapi_pada",
+          "pemesan"
+        ],
+        "title": "KomplainAdminOut"
+      },
+      "KomplainOut": {
+        "properties": {
+          "id_komplain": {
+            "type": "integer",
+            "title": "Id Komplain"
+          },
+          "id_pesanan": {
+            "type": "integer",
+            "title": "Id Pesanan"
+          },
+          "kode_pesanan": {
+            "type": "string",
+            "title": "Kode Pesanan"
+          },
+          "isi": {
+            "type": "string",
+            "title": "Isi"
+          },
+          "foto_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foto Url"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusKomplain"
+          },
+          "tanggapan_admin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tanggapan Admin"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          },
+          "ditanggapi_pada": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ditanggapi Pada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_komplain",
+          "id_pesanan",
+          "kode_pesanan",
+          "isi",
+          "foto_url",
+          "status",
+          "tanggapan_admin",
+          "dibuat_pada",
+          "ditanggapi_pada"
+        ],
+        "title": "KomplainOut"
+      },
+      "KomposisiIn": {
+        "properties": {
+          "id_jenis_bunga": {
+            "type": "integer",
+            "title": "Id Jenis Bunga"
+          },
+          "id_warna": {
+            "type": "integer",
+            "title": "Id Warna"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "maximum": 1000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Jumlah Tangkai"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_jenis_bunga",
+          "id_warna",
+          "jumlah_tangkai"
+        ],
+        "title": "KomposisiIn"
+      },
+      "KomposisiPesananOut": {
+        "properties": {
+          "id_komposisi_pesanan": {
+            "type": "integer",
+            "title": "Id Komposisi Pesanan"
+          },
+          "id_stok": {
+            "type": "integer",
+            "title": "Id Stok"
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisRingkas"
+          },
+          "warna": {
+            "$ref": "#/components/schemas/WarnaRingkas"
+          },
+          "deskripsi": {
+            "type": "string",
+            "title": "Deskripsi"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "title": "Jumlah Tangkai"
+          },
+          "jumlah_terpindai": {
+            "type": "integer",
+            "title": "Jumlah Terpindai"
+          },
+          "is_pengganti": {
+            "type": "boolean",
+            "title": "Is Pengganti"
+          },
+          "alasan_pengganti": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan Pengganti"
+          },
+          "ditandai_manual": {
+            "type": "boolean",
+            "title": "Ditandai Manual"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_komposisi_pesanan",
+          "id_stok",
+          "jenis",
+          "warna",
+          "deskripsi",
+          "jumlah_tangkai",
+          "jumlah_terpindai",
+          "is_pengganti",
+          "alasan_pengganti",
+          "ditandai_manual"
+        ],
+        "title": "KomposisiPesananOut"
+      },
+      "KomposisiProdukOut": {
+        "properties": {
+          "id_jenis_bunga": {
+            "type": "integer",
+            "title": "Id Jenis Bunga"
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisRingkas"
+          },
+          "warna": {
+            "$ref": "#/components/schemas/WarnaRingkas"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "title": "Jumlah Tangkai"
+          },
+          "deskripsi": {
+            "type": "string",
+            "title": "Deskripsi"
+          },
+          "stok_cukup": {
+            "type": "boolean",
+            "title": "Stok Cukup",
+            "description": "Stok hari ini cukup untuk satu paket"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_jenis_bunga",
+          "jenis",
+          "warna",
+          "jumlah_tangkai",
+          "deskripsi",
+          "stok_cukup"
+        ],
+        "title": "KomposisiProdukOut"
+      },
+      "KoreksiStokIn": {
+        "properties": {
+          "jumlah_tersedia": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jumlah Tersedia",
+            "description": "Jumlah tersedia yang benar (hasil hitung fisik)"
+          },
+          "harga_per_tangkai": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Harga Per Tangkai"
+          },
+          "catatan": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Catatan",
+            "description": "Alasan koreksi, mis. 'layu 3 tangkai'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "catatan"
+        ],
+        "title": "KoreksiStokIn"
+      },
+      "LabelWarnaOut": {
+        "properties": {
+          "id_warna": {
+            "type": "integer",
+            "title": "Id Warna"
+          },
+          "nama_warna": {
+            "type": "string",
+            "title": "Nama Warna"
+          },
+          "kode_hex": {
+            "type": "string",
+            "title": "Kode Hex"
+          },
+          "persen": {
+            "type": "integer",
+            "title": "Persen"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_warna",
+          "nama_warna",
+          "kode_hex",
+          "persen"
+        ],
+        "title": "LabelWarnaOut"
+      },
+      "LaporanOut": {
+        "properties": {
+          "dari": {
+            "type": "string",
+            "format": "date",
+            "title": "Dari"
+          },
+          "sampai": {
+            "type": "string",
+            "format": "date",
+            "title": "Sampai"
+          },
+          "total_penjualan": {
+            "type": "number",
+            "title": "Total Penjualan"
+          },
+          "jumlah_pesanan_berbayar": {
+            "type": "integer",
+            "title": "Jumlah Pesanan Berbayar"
+          },
+          "penjualan_per_minggu": {
+            "items": {
+              "$ref": "#/components/schemas/PenjualanMingguOut"
+            },
+            "type": "array",
+            "title": "Penjualan Per Minggu"
+          },
+          "terlaris": {
+            "items": {
+              "$ref": "#/components/schemas/TerlarisOut"
+            },
+            "type": "array",
+            "title": "Terlaris"
+          },
+          "jumlah_revisi": {
+            "type": "integer",
+            "title": "Jumlah Revisi"
+          },
+          "jumlah_komplain": {
+            "type": "integer",
+            "title": "Jumlah Komplain"
+          },
+          "jumlah_dibatalkan": {
+            "type": "integer",
+            "title": "Jumlah Dibatalkan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dari",
+          "sampai",
+          "total_penjualan",
+          "jumlah_pesanan_berbayar",
+          "penjualan_per_minggu",
+          "terlaris",
+          "jumlah_revisi",
+          "jumlah_komplain",
+          "jumlah_dibatalkan"
+        ],
+        "title": "LaporanOut"
+      },
+      "MaknaWarnaOut": {
+        "properties": {
+          "nama_warna": {
+            "type": "string",
+            "title": "Nama Warna"
+          },
+          "kode_hex": {
+            "type": "string",
+            "title": "Kode Hex"
+          },
+          "makna": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Makna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama_warna",
+          "kode_hex",
+          "makna"
+        ],
+        "title": "MaknaWarnaOut"
+      },
+      "MasalahStokOut": {
+        "properties": {
+          "id_stok": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Stok"
+          },
+          "bunga": {
+            "type": "string",
+            "title": "Bunga"
+          },
+          "diminta": {
+            "type": "integer",
+            "title": "Diminta"
+          },
+          "tersedia": {
+            "type": "integer",
+            "title": "Tersedia"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bunga",
+          "diminta",
+          "tersedia"
+        ],
+        "title": "MasalahStokOut"
+      },
+      "MasukIn": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "kata_sandi": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Kata Sandi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "kata_sandi"
+        ],
+        "title": "MasukIn"
+      },
+      "OpsiRangkaiOut": {
+        "properties": {
+          "id_stok": {
+            "type": "integer",
+            "title": "Id Stok"
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisRingkas"
+          },
+          "warna": {
+            "$ref": "#/components/schemas/WarnaRingkas"
+          },
+          "deskripsi": {
+            "type": "string",
+            "title": "Deskripsi"
+          },
+          "harga_per_tangkai": {
+            "type": "number",
+            "title": "Harga Per Tangkai"
+          },
+          "sisa": {
+            "type": "integer",
+            "title": "Sisa"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_stok",
+          "jenis",
+          "warna",
+          "deskripsi",
+          "harga_per_tangkai",
+          "sisa"
+        ],
+        "title": "OpsiRangkaiOut",
+        "description": "Bunga yang bisa dipilih pelanggan pada menu Rangkai Sendiri (F-PL-04)."
+      },
+      "PembayaranOut": {
+        "properties": {
+          "id_pembayaran": {
+            "type": "integer",
+            "title": "Id Pembayaran"
+          },
+          "nama_pengirim": {
+            "type": "string",
+            "title": "Nama Pengirim"
+          },
+          "nominal": {
+            "type": "number",
+            "title": "Nominal"
+          },
+          "nominal_sesuai": {
+            "type": "boolean",
+            "title": "Nominal Sesuai"
+          },
+          "status_verifikasi": {
+            "$ref": "#/components/schemas/StatusVerifikasi"
+          },
+          "catatan_penolakan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Penolakan"
+          },
+          "diunggah_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Diunggah Pada"
+          },
+          "waktu_verifikasi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Waktu Verifikasi"
+          },
+          "bukti_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bukti Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pembayaran",
+          "nama_pengirim",
+          "nominal",
+          "nominal_sesuai",
+          "status_verifikasi",
+          "catatan_penolakan",
+          "diunggah_pada",
+          "waktu_verifikasi",
+          "bukti_url"
+        ],
+        "title": "PembayaranOut"
+      },
+      "PemesanOut": {
+        "properties": {
+          "id_pengguna": {
+            "type": "integer",
+            "title": "Id Pengguna"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "no_hp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Hp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pengguna",
+          "nama",
+          "email",
+          "no_hp"
+        ],
+        "title": "PemesanOut"
+      },
+      "PengaturanItemOut": {
+        "properties": {
+          "kunci": {
+            "type": "string",
+            "title": "Kunci"
+          },
+          "nilai": {
+            "title": "Nilai"
+          },
+          "keterangan": {
+            "type": "string",
+            "title": "Keterangan"
+          },
+          "tipe": {
+            "type": "string",
+            "title": "Tipe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kunci",
+          "nilai",
+          "keterangan",
+          "tipe"
+        ],
+        "title": "PengaturanItemOut"
+      },
+      "PengaturanUbahIn": {
+        "properties": {
+          "pengaturan": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Pengaturan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pengaturan"
+        ],
+        "title": "PengaturanUbahIn",
+        "description": "Kirim hanya kunci yang ingin diubah, mis. ``{\"ongkos_antar\": 20000}``."
+      },
+      "PenggantiIn": {
+        "properties": {
+          "id_komposisi_asal": {
+            "type": "integer",
+            "title": "Id Komposisi Asal"
+          },
+          "id_stok_pengganti": {
+            "type": "integer",
+            "title": "Id Stok Pengganti"
+          },
+          "jumlah": {
+            "type": "integer",
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Jumlah"
+          },
+          "alasan": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Alasan",
+            "description": "Mis. 'mawar merah habis' atau 'tangkai rusak'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_komposisi_asal",
+          "id_stok_pengganti",
+          "jumlah",
+          "alasan"
+        ],
+        "title": "PenggantiIn"
+      },
+      "PenggantiOut": {
+        "properties": {
+          "dari": {
+            "type": "string",
+            "title": "Dari"
+          },
+          "menjadi": {
+            "type": "string",
+            "title": "Menjadi"
+          },
+          "jumlah": {
+            "type": "integer",
+            "title": "Jumlah"
+          },
+          "alasan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan"
+          },
+          "warna_berbeda": {
+            "type": "boolean",
+            "title": "Warna Berbeda"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dari",
+          "menjadi",
+          "jumlah",
+          "alasan",
+          "warna_berbeda"
+        ],
+        "title": "PenggantiOut"
+      },
+      "PenggunaOut": {
+        "properties": {
+          "id_pengguna": {
+            "type": "integer",
+            "title": "Id Pengguna"
+          },
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "no_hp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Hp"
+          },
+          "peran": {
+            "$ref": "#/components/schemas/Peran"
+          },
+          "aktif": {
+            "type": "boolean",
+            "title": "Aktif"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pengguna",
+          "nama",
+          "email",
+          "no_hp",
+          "peran",
+          "aktif",
+          "dibuat_pada"
+        ],
+        "title": "PenggunaOut"
+      },
+      "PenjualanMingguOut": {
+        "properties": {
+          "awal_minggu": {
+            "type": "string",
+            "format": "date",
+            "title": "Awal Minggu",
+            "description": "Hari Senin minggu tersebut"
+          },
+          "total": {
+            "type": "number",
+            "title": "Total"
+          },
+          "jumlah_pesanan": {
+            "type": "integer",
+            "title": "Jumlah Pesanan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "awal_minggu",
+          "total",
+          "jumlah_pesanan"
+        ],
+        "title": "PenjualanMingguOut"
+      },
+      "Peran": {
+        "type": "string",
+        "enum": [
+          "pelanggan",
+          "admin"
+        ],
+        "title": "Peran"
+      },
+      "PesananAdminOut": {
+        "properties": {
+          "id_pesanan": {
+            "type": "integer",
+            "title": "Id Pesanan"
+          },
+          "kode_pesanan": {
+            "type": "string",
+            "title": "Kode Pesanan"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusInfoOut"
+          },
+          "ringkasan_item": {
+            "type": "string",
+            "title": "Ringkasan Item"
+          },
+          "tanggal_kirim": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Kirim"
+          },
+          "slot_jam": {
+            "type": "string",
+            "title": "Slot Jam"
+          },
+          "cara_serah_terima": {
+            "$ref": "#/components/schemas/CaraSerahTerima"
+          },
+          "total_harga": {
+            "type": "number",
+            "title": "Total Harga"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          },
+          "batas_bayar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batas Bayar"
+          },
+          "perlu_tindakan_pelanggan": {
+            "type": "boolean",
+            "title": "Perlu Tindakan Pelanggan"
+          },
+          "nama_penerima": {
+            "type": "string",
+            "title": "Nama Penerima"
+          },
+          "alamat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alamat"
+          },
+          "kartu_ucapan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kartu Ucapan"
+          },
+          "ongkos_antar": {
+            "type": "number",
+            "title": "Ongkos Antar"
+          },
+          "jumlah_revisi": {
+            "type": "integer",
+            "title": "Jumlah Revisi"
+          },
+          "revisi_gratis_tersisa": {
+            "type": "integer",
+            "title": "Revisi Gratis Tersisa"
+          },
+          "alasan_batal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan Batal"
+          },
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/DetailPesananOut"
+            },
+            "type": "array",
+            "title": "Detail"
+          },
+          "pembayaran": {
+            "items": {
+              "$ref": "#/components/schemas/PembayaranOut"
+            },
+            "type": "array",
+            "title": "Pembayaran"
+          },
+          "foto": {
+            "items": {
+              "$ref": "#/components/schemas/FotoKonfirmasiOut"
+            },
+            "type": "array",
+            "title": "Foto"
+          },
+          "riwayat": {
+            "items": {
+              "$ref": "#/components/schemas/RiwayatStatusOut"
+            },
+            "type": "array",
+            "title": "Riwayat"
+          },
+          "tahap": {
+            "items": {
+              "$ref": "#/components/schemas/TahapOut"
+            },
+            "type": "array",
+            "title": "Tahap"
+          },
+          "rekening_tujuan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rekening Tujuan",
+            "description": "Terisi hanya saat pesanan menunggu pembayaran"
+          },
+          "bisa_dibatalkan": {
+            "type": "boolean",
+            "title": "Bisa Dibatalkan"
+          },
+          "ada_pengganti": {
+            "type": "boolean",
+            "title": "Ada Pengganti"
+          },
+          "pemesan": {
+            "$ref": "#/components/schemas/PemesanOut"
+          },
+          "perlu_tindakan_admin": {
+            "type": "boolean",
+            "title": "Perlu Tindakan Admin"
+          },
+          "perlu_pengembalian_dana": {
+            "type": "boolean",
+            "title": "Perlu Pengembalian Dana"
+          },
+          "revisi_berbayar": {
+            "type": "boolean",
+            "title": "Revisi Berbayar",
+            "description": "Jumlah revisi melebihi jatah gratis; keputusan tagihan ada di admin"
+          },
+          "terlambat_ditanggapi": {
+            "type": "boolean",
+            "title": "Terlambat Ditanggapi",
+            "description": "Foto belum ditanggapi melewati batas wajar (AB-10)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pesanan",
+          "kode_pesanan",
+          "status",
+          "ringkasan_item",
+          "tanggal_kirim",
+          "slot_jam",
+          "cara_serah_terima",
+          "total_harga",
+          "dibuat_pada",
+          "batas_bayar",
+          "perlu_tindakan_pelanggan",
+          "nama_penerima",
+          "alamat",
+          "kartu_ucapan",
+          "ongkos_antar",
+          "jumlah_revisi",
+          "revisi_gratis_tersisa",
+          "alasan_batal",
+          "detail",
+          "pembayaran",
+          "foto",
+          "riwayat",
+          "tahap",
+          "rekening_tujuan",
+          "bisa_dibatalkan",
+          "ada_pengganti",
+          "pemesan",
+          "perlu_tindakan_admin",
+          "perlu_pengembalian_dana",
+          "revisi_berbayar",
+          "terlambat_ditanggapi"
+        ],
+        "title": "PesananAdminOut"
+      },
+      "PesananAdminRingkasOut": {
+        "properties": {
+          "id_pesanan": {
+            "type": "integer",
+            "title": "Id Pesanan"
+          },
+          "kode_pesanan": {
+            "type": "string",
+            "title": "Kode Pesanan"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusInfoOut"
+          },
+          "ringkasan_item": {
+            "type": "string",
+            "title": "Ringkasan Item"
+          },
+          "tanggal_kirim": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Kirim"
+          },
+          "slot_jam": {
+            "type": "string",
+            "title": "Slot Jam"
+          },
+          "cara_serah_terima": {
+            "$ref": "#/components/schemas/CaraSerahTerima"
+          },
+          "total_harga": {
+            "type": "number",
+            "title": "Total Harga"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          },
+          "batas_bayar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batas Bayar"
+          },
+          "perlu_tindakan_pelanggan": {
+            "type": "boolean",
+            "title": "Perlu Tindakan Pelanggan"
+          },
+          "pemesan": {
+            "$ref": "#/components/schemas/PemesanOut"
+          },
+          "nama_penerima": {
+            "type": "string",
+            "title": "Nama Penerima"
+          },
+          "perlu_tindakan_admin": {
+            "type": "boolean",
+            "title": "Perlu Tindakan Admin"
+          },
+          "perlu_pengembalian_dana": {
+            "type": "boolean",
+            "title": "Perlu Pengembalian Dana"
+          },
+          "terlambat_ditanggapi": {
+            "type": "boolean",
+            "title": "Terlambat Ditanggapi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pesanan",
+          "kode_pesanan",
+          "status",
+          "ringkasan_item",
+          "tanggal_kirim",
+          "slot_jam",
+          "cara_serah_terima",
+          "total_harga",
+          "dibuat_pada",
+          "batas_bayar",
+          "perlu_tindakan_pelanggan",
+          "pemesan",
+          "nama_penerima",
+          "perlu_tindakan_admin",
+          "perlu_pengembalian_dana",
+          "terlambat_ditanggapi"
+        ],
+        "title": "PesananAdminRingkasOut"
+      },
+      "PesananOut": {
+        "properties": {
+          "id_pesanan": {
+            "type": "integer",
+            "title": "Id Pesanan"
+          },
+          "kode_pesanan": {
+            "type": "string",
+            "title": "Kode Pesanan"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusInfoOut"
+          },
+          "ringkasan_item": {
+            "type": "string",
+            "title": "Ringkasan Item"
+          },
+          "tanggal_kirim": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Kirim"
+          },
+          "slot_jam": {
+            "type": "string",
+            "title": "Slot Jam"
+          },
+          "cara_serah_terima": {
+            "$ref": "#/components/schemas/CaraSerahTerima"
+          },
+          "total_harga": {
+            "type": "number",
+            "title": "Total Harga"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          },
+          "batas_bayar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batas Bayar"
+          },
+          "perlu_tindakan_pelanggan": {
+            "type": "boolean",
+            "title": "Perlu Tindakan Pelanggan"
+          },
+          "nama_penerima": {
+            "type": "string",
+            "title": "Nama Penerima"
+          },
+          "alamat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alamat"
+          },
+          "kartu_ucapan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kartu Ucapan"
+          },
+          "ongkos_antar": {
+            "type": "number",
+            "title": "Ongkos Antar"
+          },
+          "jumlah_revisi": {
+            "type": "integer",
+            "title": "Jumlah Revisi"
+          },
+          "revisi_gratis_tersisa": {
+            "type": "integer",
+            "title": "Revisi Gratis Tersisa"
+          },
+          "alasan_batal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alasan Batal"
+          },
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/DetailPesananOut"
+            },
+            "type": "array",
+            "title": "Detail"
+          },
+          "pembayaran": {
+            "items": {
+              "$ref": "#/components/schemas/PembayaranOut"
+            },
+            "type": "array",
+            "title": "Pembayaran"
+          },
+          "foto": {
+            "items": {
+              "$ref": "#/components/schemas/FotoKonfirmasiOut"
+            },
+            "type": "array",
+            "title": "Foto"
+          },
+          "riwayat": {
+            "items": {
+              "$ref": "#/components/schemas/RiwayatStatusOut"
+            },
+            "type": "array",
+            "title": "Riwayat"
+          },
+          "tahap": {
+            "items": {
+              "$ref": "#/components/schemas/TahapOut"
+            },
+            "type": "array",
+            "title": "Tahap"
+          },
+          "rekening_tujuan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rekening Tujuan",
+            "description": "Terisi hanya saat pesanan menunggu pembayaran"
+          },
+          "bisa_dibatalkan": {
+            "type": "boolean",
+            "title": "Bisa Dibatalkan"
+          },
+          "ada_pengganti": {
+            "type": "boolean",
+            "title": "Ada Pengganti"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pesanan",
+          "kode_pesanan",
+          "status",
+          "ringkasan_item",
+          "tanggal_kirim",
+          "slot_jam",
+          "cara_serah_terima",
+          "total_harga",
+          "dibuat_pada",
+          "batas_bayar",
+          "perlu_tindakan_pelanggan",
+          "nama_penerima",
+          "alamat",
+          "kartu_ucapan",
+          "ongkos_antar",
+          "jumlah_revisi",
+          "revisi_gratis_tersisa",
+          "alasan_batal",
+          "detail",
+          "pembayaran",
+          "foto",
+          "riwayat",
+          "tahap",
+          "rekening_tujuan",
+          "bisa_dibatalkan",
+          "ada_pengganti"
+        ],
+        "title": "PesananOut"
+      },
+      "PesananRingkasOut": {
+        "properties": {
+          "id_pesanan": {
+            "type": "integer",
+            "title": "Id Pesanan"
+          },
+          "kode_pesanan": {
+            "type": "string",
+            "title": "Kode Pesanan"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusInfoOut"
+          },
+          "ringkasan_item": {
+            "type": "string",
+            "title": "Ringkasan Item"
+          },
+          "tanggal_kirim": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal Kirim"
+          },
+          "slot_jam": {
+            "type": "string",
+            "title": "Slot Jam"
+          },
+          "cara_serah_terima": {
+            "$ref": "#/components/schemas/CaraSerahTerima"
+          },
+          "total_harga": {
+            "type": "number",
+            "title": "Total Harga"
+          },
+          "dibuat_pada": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Dibuat Pada"
+          },
+          "batas_bayar": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batas Bayar"
+          },
+          "perlu_tindakan_pelanggan": {
+            "type": "boolean",
+            "title": "Perlu Tindakan Pelanggan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pesanan",
+          "kode_pesanan",
+          "status",
+          "ringkasan_item",
+          "tanggal_kirim",
+          "slot_jam",
+          "cara_serah_terima",
+          "total_harga",
+          "dibuat_pada",
+          "batas_bayar",
+          "perlu_tindakan_pelanggan"
+        ],
+        "title": "PesananRingkasOut"
+      },
+      "PratinjauIn": {
+        "properties": {
+          "items": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ItemPaketIn"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemRangkaiSendiriIn"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "jenis_item",
+                "mapping": {
+                  "paket": "#/components/schemas/ItemPaketIn",
+                  "rangkai_sendiri": "#/components/schemas/ItemRangkaiSendiriIn"
+                }
+              }
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Items"
+          },
+          "cara_serah_terima": {
+            "$ref": "#/components/schemas/CaraSerahTerima",
+            "default": "ambil_di_toko"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "PratinjauIn"
+      },
+      "PratinjauOut": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemHitungOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "subtotal": {
+            "type": "number",
+            "title": "Subtotal"
+          },
+          "ongkos_antar": {
+            "type": "number",
+            "title": "Ongkos Antar"
+          },
+          "total_harga": {
+            "type": "number",
+            "title": "Total Harga"
+          },
+          "dapat_dipesan": {
+            "type": "boolean",
+            "title": "Dapat Dipesan"
+          },
+          "masalah": {
+            "items": {
+              "$ref": "#/components/schemas/MasalahStokOut"
+            },
+            "type": "array",
+            "title": "Masalah"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "subtotal",
+          "ongkos_antar",
+          "total_harga",
+          "dapat_dipesan",
+          "masalah"
+        ],
+        "title": "PratinjauOut"
+      },
+      "ProdukIn": {
+        "properties": {
+          "nama_produk": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Nama Produk"
+          },
+          "acara": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acara"
+          },
+          "harga": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)"
+              }
+            ],
+            "title": "Harga"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "ditampilkan": {
+            "type": "boolean",
+            "title": "Ditampilkan",
+            "default": true
+          },
+          "komposisi": {
+            "items": {
+              "$ref": "#/components/schemas/KomposisiIn"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "minItems": 1,
+            "title": "Komposisi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama_produk",
+          "harga",
+          "komposisi"
+        ],
+        "title": "ProdukIn"
+      },
+      "ProdukOut": {
+        "properties": {
+          "id_produk": {
+            "type": "integer",
+            "title": "Id Produk"
+          },
+          "nama_produk": {
+            "type": "string",
+            "title": "Nama Produk"
+          },
+          "acara": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acara"
+          },
+          "harga": {
+            "type": "number",
+            "title": "Harga"
+          },
+          "foto_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foto Url"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "ditampilkan": {
+            "type": "boolean",
+            "title": "Ditampilkan"
+          },
+          "komposisi": {
+            "items": {
+              "$ref": "#/components/schemas/KomposisiProdukOut"
+            },
+            "type": "array",
+            "title": "Komposisi"
+          },
+          "total_tangkai": {
+            "type": "integer",
+            "title": "Total Tangkai"
+          },
+          "dapat_dipesan": {
+            "type": "boolean",
+            "title": "Dapat Dipesan",
+            "description": "Semua bunga penyusun paket masih tersedia hari ini"
+          },
+          "narasi": {
+            "type": "string",
+            "title": "Narasi",
+            "description": "Kalimat lengkap untuk dibacakan Text-to-Speech (F-PL-08)"
+          },
+          "makna_warna": {
+            "items": {
+              "$ref": "#/components/schemas/MaknaWarnaOut"
+            },
+            "type": "array",
+            "title": "Makna Warna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_produk",
+          "nama_produk",
+          "acara",
+          "harga",
+          "foto_url",
+          "deskripsi",
+          "ditampilkan",
+          "komposisi",
+          "total_tangkai",
+          "dapat_dipesan",
+          "narasi",
+          "makna_warna"
+        ],
+        "title": "ProdukOut"
+      },
+      "ProdukUbahIn": {
+        "properties": {
+          "nama_produk": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama Produk"
+          },
+          "acara": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acara"
+          },
+          "harga": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Harga"
+          },
+          "deskripsi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deskripsi"
+          },
+          "ditampilkan": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ditampilkan"
+          },
+          "komposisi": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/KomposisiIn"
+                },
+                "type": "array",
+                "maxItems": 30,
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Komposisi"
+          }
+        },
+        "type": "object",
+        "title": "ProdukUbahIn"
+      },
+      "ProfilUbahIn": {
+        "properties": {
+          "nama": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "no_hp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Hp"
+          }
+        },
+        "type": "object",
+        "title": "ProfilUbahIn"
+      },
+      "ProgresMerangkaiOut": {
+        "properties": {
+          "pesanan": {
+            "$ref": "#/components/schemas/PesananAdminOut"
+          },
+          "terpindai": {
+            "type": "integer",
+            "title": "Terpindai"
+          },
+          "target": {
+            "type": "integer",
+            "title": "Target"
+          },
+          "siap_foto": {
+            "type": "boolean",
+            "title": "Siap Foto"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pesanan",
+          "terpindai",
+          "target",
+          "siap_foto"
+        ],
+        "title": "ProgresMerangkaiOut"
+      },
+      "RingkasanAkurasiOut": {
+        "properties": {
+          "total_disimpan": {
+            "type": "integer",
+            "title": "Total Disimpan"
+          },
+          "jenis_benar": {
+            "type": "integer",
+            "title": "Jenis Benar"
+          },
+          "warna_benar": {
+            "type": "integer",
+            "title": "Warna Benar"
+          },
+          "akurasi_jenis": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Akurasi Jenis"
+          },
+          "akurasi_warna": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Akurasi Warna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_disimpan",
+          "jenis_benar",
+          "warna_benar",
+          "akurasi_jenis",
+          "akurasi_warna"
+        ],
+        "title": "RingkasanAkurasiOut"
+      },
+      "RiwayatPindaiOut": {
+        "properties": {
+          "id_pindai": {
+            "type": "integer",
+            "title": "Id Pindai"
+          },
+          "konteks": {
+            "type": "string",
+            "title": "Konteks"
+          },
+          "id_stok": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Stok"
+          },
+          "id_pesanan": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Pesanan"
+          },
+          "jenis_prediksi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jenis Prediksi"
+          },
+          "warna_prediksi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Warna Prediksi"
+          },
+          "tingkat_keyakinan": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tingkat Keyakinan"
+          },
+          "dikenali": {
+            "type": "boolean",
+            "title": "Dikenali"
+          },
+          "dikoreksi": {
+            "type": "boolean",
+            "title": "Dikoreksi"
+          },
+          "id_jenis_bunga_final": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Jenis Bunga Final"
+          },
+          "id_warna_final": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Warna Final"
+          },
+          "waktu_pindai": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Waktu Pindai"
+          },
+          "foto_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foto Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pindai",
+          "konteks",
+          "id_stok",
+          "id_pesanan",
+          "jenis_prediksi",
+          "warna_prediksi",
+          "tingkat_keyakinan",
+          "dikenali",
+          "dikoreksi",
+          "id_jenis_bunga_final",
+          "id_warna_final",
+          "waktu_pindai"
+        ],
+        "title": "RiwayatPindaiOut"
+      },
+      "RiwayatStatusOut": {
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/StatusPesanan"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "waktu": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Waktu"
+          },
+          "catatan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan"
+          },
+          "oleh_sistem": {
+            "type": "boolean",
+            "title": "Oleh Sistem"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kode",
+          "label",
+          "waktu",
+          "catatan",
+          "oleh_sistem"
+        ],
+        "title": "RiwayatStatusOut"
+      },
+      "SimpanPindaiIn": {
+        "properties": {
+          "id_pindai": {
+            "type": "integer",
+            "title": "Id Pindai"
+          },
+          "id_jenis_bunga": {
+            "type": "integer",
+            "title": "Id Jenis Bunga",
+            "description": "Jenis akhir setelah diperiksa/dikoreksi admin"
+          },
+          "id_warna": {
+            "type": "integer",
+            "title": "Id Warna",
+            "description": "Warna akhir setelah diperiksa/dikoreksi admin"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Jumlah Tangkai"
+          },
+          "harga_per_tangkai": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)"
+              }
+            ],
+            "title": "Harga Per Tangkai"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_pindai",
+          "id_jenis_bunga",
+          "id_warna",
+          "jumlah_tangkai",
+          "harga_per_tangkai"
+        ],
+        "title": "SimpanPindaiIn"
+      },
+      "StatusInfoOut": {
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/StatusPesanan"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "ikon": {
+            "type": "string",
+            "title": "Ikon"
+          },
+          "keterangan": {
+            "type": "string",
+            "title": "Keterangan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kode",
+          "label",
+          "ikon",
+          "keterangan"
+        ],
+        "title": "StatusInfoOut",
+        "description": "Status selalu punya ikon dan teks, tidak hanya warna (F-AK-02)."
+      },
+      "StatusKomplain": {
+        "type": "string",
+        "enum": [
+          "baru",
+          "diproses",
+          "selesai"
+        ],
+        "title": "StatusKomplain"
+      },
+      "StatusPersetujuan": {
+        "type": "string",
+        "enum": [
+          "menunggu",
+          "disetujui",
+          "revisi"
+        ],
+        "title": "StatusPersetujuan"
+      },
+      "StatusPesanan": {
+        "type": "string",
+        "enum": [
+          "menunggu_pembayaran",
+          "menunggu_verifikasi",
+          "sedang_dirangkai",
+          "menunggu_persetujuan_foto",
+          "siap_diambil",
+          "diantar",
+          "selesai",
+          "dibatalkan"
+        ],
+        "title": "StatusPesanan",
+        "description": "Tujuh tahap dari proposal ditambah ``dibatalkan`` (dibutuhkan AB-02 dan F-PL-15)."
+      },
+      "StatusVerifikasi": {
+        "type": "string",
+        "enum": [
+          "menunggu",
+          "sah",
+          "ditolak"
+        ],
+        "title": "StatusVerifikasi"
+      },
+      "StokManualIn": {
+        "properties": {
+          "id_jenis_bunga": {
+            "type": "integer",
+            "title": "Id Jenis Bunga"
+          },
+          "id_warna": {
+            "type": "integer",
+            "title": "Id Warna"
+          },
+          "jumlah_tangkai": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Jumlah Tangkai"
+          },
+          "harga_per_tangkai": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,8}|(?=[\\d.]{1,11}0*$)\\d{0,8}\\.\\d{0,2}0*$)"
+              }
+            ],
+            "title": "Harga Per Tangkai"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_jenis_bunga",
+          "id_warna",
+          "jumlah_tangkai",
+          "harga_per_tangkai"
+        ],
+        "title": "StokManualIn"
+      },
+      "StokOut": {
+        "properties": {
+          "id_stok": {
+            "type": "integer",
+            "title": "Id Stok"
+          },
+          "jenis": {
+            "$ref": "#/components/schemas/JenisRingkas"
+          },
+          "warna": {
+            "$ref": "#/components/schemas/WarnaRingkas"
+          },
+          "deskripsi": {
+            "type": "string",
+            "title": "Deskripsi"
+          },
+          "jumlah_masuk": {
+            "type": "integer",
+            "title": "Jumlah Masuk",
+            "description": "Total tangkai yang pernah masuk (pindai + manual)"
+          },
+          "jumlah_ditahan": {
+            "type": "integer",
+            "title": "Jumlah Ditahan"
+          },
+          "jumlah_tersedia": {
+            "type": "integer",
+            "title": "Jumlah Tersedia"
+          },
+          "harga_per_tangkai": {
+            "type": "number",
+            "title": "Harga Per Tangkai"
+          },
+          "tanggal_masuk": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Tanggal Masuk"
+          },
+          "menipis": {
+            "type": "boolean",
+            "title": "Menipis"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_stok",
+          "jenis",
+          "warna",
+          "deskripsi",
+          "jumlah_masuk",
+          "jumlah_ditahan",
+          "jumlah_tersedia",
+          "harga_per_tangkai",
+          "tanggal_masuk",
+          "menipis"
+        ],
+        "title": "StokOut",
+        "description": "Baris stok untuk admin (F-AD-13): masuk, ditahan, tersedia."
+      },
+      "TahapOut": {
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/StatusPesanan"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "ikon": {
+            "type": "string",
+            "title": "Ikon"
+          },
+          "keterangan": {
+            "type": "string",
+            "title": "Keterangan"
+          },
+          "keadaan": {
+            "type": "string",
+            "enum": [
+              "selesai",
+              "aktif",
+              "belum"
+            ],
+            "title": "Keadaan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kode",
+          "label",
+          "ikon",
+          "keterangan",
+          "keadaan"
+        ],
+        "title": "TahapOut"
+      },
+      "TandaiCocokIn": {
+        "properties": {
+          "id_komposisi_pesanan": {
+            "type": "integer",
+            "title": "Id Komposisi Pesanan"
+          },
+          "jumlah": {
+            "type": "integer",
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Jumlah",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_komposisi_pesanan"
+        ],
+        "title": "TandaiCocokIn"
+      },
+      "TanggapanFotoIn": {
+        "properties": {
+          "keputusan": {
+            "type": "string",
+            "enum": [
+              "setuju",
+              "revisi"
+            ],
+            "title": "Keputusan"
+          },
+          "catatan_revisi": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Catatan Revisi"
+          },
+          "setuju_pengganti": {
+            "type": "boolean",
+            "title": "Setuju Pengganti",
+            "description": "Pelanggan sudah membaca dan menyetujui bunga pengganti (AB-07)",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "keputusan"
+        ],
+        "title": "TanggapanFotoIn"
+      },
+      "TanggapiKomplainIn": {
+        "properties": {
+          "tanggapan": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 3,
+            "title": "Tanggapan"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusKomplain",
+            "default": "selesai"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tanggapan"
+        ],
+        "title": "TanggapiKomplainIn"
+      },
+      "Tema": {
+        "type": "string",
+        "enum": [
+          "terang",
+          "gelap"
+        ],
+        "title": "Tema"
+      },
+      "TerlarisOut": {
+        "properties": {
+          "nama": {
+            "type": "string",
+            "title": "Nama"
+          },
+          "terjual": {
+            "type": "integer",
+            "title": "Terjual"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama",
+          "terjual"
+        ],
+        "title": "TerlarisOut"
+      },
+      "TitikGrafikOut": {
+        "properties": {
+          "tanggal": {
+            "type": "string",
+            "format": "date",
+            "title": "Tanggal"
+          },
+          "jumlah": {
+            "type": "integer",
+            "title": "Jumlah"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tanggal",
+          "jumlah"
+        ],
+        "title": "TitikGrafikOut"
+      },
+      "TokenOut": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "pengguna": {
+            "$ref": "#/components/schemas/PenggunaOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "pengguna"
+        ],
+        "title": "TokenOut"
+      },
+      "TolakBuktiIn": {
+        "properties": {
+          "catatan": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Catatan",
+            "description": "Alasan penolakan, ditampilkan ke pelanggan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "catatan"
+        ],
+        "title": "TolakBuktiIn"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WarnaIn": {
+        "properties": {
+          "nama_warna": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 2,
+            "title": "Nama Warna"
+          },
+          "kode_hex": {
+            "type": "string",
+            "title": "Kode Hex"
+          },
+          "makna_warna": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Makna Warna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nama_warna",
+          "kode_hex"
+        ],
+        "title": "WarnaIn"
+      },
+      "WarnaOut": {
+        "properties": {
+          "id_warna": {
+            "type": "integer",
+            "title": "Id Warna"
+          },
+          "nama_warna": {
+            "type": "string",
+            "title": "Nama Warna"
+          },
+          "kode_hex": {
+            "type": "string",
+            "title": "Kode Hex"
+          },
+          "makna_warna": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Makna Warna"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_warna",
+          "nama_warna",
+          "kode_hex",
+          "makna_warna"
+        ],
+        "title": "WarnaOut"
+      },
+      "WarnaRingkas": {
+        "properties": {
+          "id_warna": {
+            "type": "integer",
+            "title": "Id Warna"
+          },
+          "nama_warna": {
+            "type": "string",
+            "title": "Nama Warna"
+          },
+          "kode_hex": {
+            "type": "string",
+            "title": "Kode Hex"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_warna",
+          "nama_warna",
+          "kode_hex"
+        ],
+        "title": "WarnaRingkas",
+        "description": "Nama warna SELALU disertai kode heksadesimalnya (F-AK-01)."
+      },
+      "WarnaUbahIn": {
+        "properties": {
+          "nama_warna": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nama Warna"
+          },
+          "kode_hex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kode Hex"
+          },
+          "makna_warna": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Makna Warna"
+          }
+        },
+        "type": "object",
+        "title": "WarnaUbahIn"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "description": "Token dari POST /auth/masuk",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

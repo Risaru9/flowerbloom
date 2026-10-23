@@ -1,0 +1,29 @@
+# MySQL untuk pengembangan. Kredensial di bawah hanya untuk mesin lokal, bukan untuk server sungguhan.
+#   docker compose up -d db
+#   set DATABASE_URL=mysql+pymysql://flowerbloom:flowerbloom-dev@127.0.0.1:3306/flowerbloom?charset=utf8mb4
+#   alembic upgrade head && python -m scripts.seed --demo
+# Basis data `flowerbloom_uji` (dibuat otomatis oleh docker/mysql-init) khusus untuk pengujian; lihat README bagian Pengujian.
+services:
+  db:
+    image: mysql:8.4
+    container_name: flowerbloom-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root-dev
+      MYSQL_DATABASE: flowerbloom
+      MYSQL_USER: flowerbloom
+      MYSQL_PASSWORD: flowerbloom-dev
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--default-time-zone=+00:00"]
+    ports:
+      - "3306:3306"
+    volumes:
+      - flowerbloom-db:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot-dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  flowerbloom-db:

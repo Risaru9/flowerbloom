@@ -1,0 +1,227 @@
+@import 'tailwindcss';
+
+/*
+ * Token desain FlowerBloom (diambil dari Figma: variabel "Color 1-6" dan warna yang paling sering dipakai).
+ * Warna teks/tombol memakai varian yang lebih tua dari desain agar lulus kontras WCAG 2.2 AA
+ * (proposal menjanjikan WCAG 2.2). Alasannya ada di docs/aksesibilitas.md.
+ */
+:root {
+  /* Sisi pelanggan */
+  --fb-latar: #fdf4eb; /* Color 1: krem */
+  --fb-latar-2: #fbead6;
+  --fb-permukaan: #fff8ee;
+  --fb-blush: #fbdae5; /* Color 3 */
+  --fb-blush-2: #fac4d2; /* Color 4 */
+  --fb-peach: #ffd4c9;
+  --fb-pasir: #f5cd99; /* Color 6 */
+  --fb-garis: #e5bcaa;
+  --fb-rose: #c97d87; /* dekorasi, isian, garis */
+  --fb-rose-teks: #b44b59; /* teks & tombol: 4.72:1 di atas krem, putih di atasnya 5.13:1 */
+  --fb-rose-tua: #973f4b;
+  --fb-magenta: #c53771; /* Color 5 */
+  --fb-pink: #f282b2; /* Color 2 */
+  --fb-pink-2: #d86a88;
+  --fb-olive: #6b7455; /* teks isi: 4.54:1 */
+  --fb-olive-tua: #586349;
+  --fb-redup: #67635b;
+  --fb-teks-atas-isian: #ffffff;
+
+  /* Sisi admin (frame admin_2) */
+  --ad-latar: #fbf7f8;
+  --ad-permukaan: #ffffff;
+  --ad-garis: #eee3e7;
+  --ad-teks: #2a1b23;
+  --ad-redup: #7a6870;
+  --ad-aksen: #c71f58; /* desain #e0356f dipertahankan untuk dekorasi; teks/tombol 5.58:1 */
+  --ad-aksen-lembut: #fde7ee;
+  --ad-sukses: #1d6631;
+  --ad-sukses-lembut: #e6f4ea;
+  --ad-peringatan: #8a4b00;
+  --ad-peringatan-lembut: #fdf0dc;
+  --ad-bahaya: #a01f1a;
+  --ad-bahaya-lembut: #fce8e7;
+  --ad-info: #1c4c9c;
+  --ad-info-lembut: #e7eefb;
+  --ad-ungu: #5a2b9c;
+  --ad-ungu-lembut: #efe7fa;
+  --ad-grafik: #c71f58; /* divalidasi: L 0.43-0.77, kontras >= 3:1 terhadap permukaan terang */
+
+  --skala-teks: 1;
+  color-scheme: light;
+}
+
+:root[data-tema='gelap'] {
+  --fb-latar: #1d1719;
+  --fb-latar-2: #261e21;
+  --fb-permukaan: #2b2226;
+  --fb-blush: #3a2a30;
+  --fb-blush-2: #4a333b;
+  --fb-peach: #43302c;
+  --fb-pasir: #4a3a24;
+  --fb-garis: #5a4148;
+  --fb-rose: #c97d87;
+  --fb-rose-teks: #f0a7b2;
+  --fb-rose-tua: #f7c3cb;
+  --fb-magenta: #f08cb4;
+  --fb-pink-2: #e894ab;
+  --fb-olive: #d7dcc6;
+  --fb-olive-tua: #eef0e4;
+  --fb-redup: #c2bab3;
+  --fb-teks-atas-isian: #1d1719;
+
+  --ad-latar: #17121a;
+  --ad-permukaan: #221a24;
+  --ad-garis: #3a2e3c;
+  --ad-teks: #f4ecf1;
+  --ad-redup: #c4b5be;
+  --ad-aksen: #ff7aa6;
+  --ad-aksen-lembut: #3e1f2b;
+  --ad-sukses: #7fd49a;
+  --ad-sukses-lembut: #17301f;
+  --ad-peringatan: #f3b862;
+  --ad-peringatan-lembut: #352611;
+  --ad-bahaya: #ff8f88;
+  --ad-bahaya-lembut: #3b1a18;
+  --ad-info: #8fb4ff;
+  --ad-info-lembut: #182640;
+  --ad-ungu: #c4a1ff;
+  --ad-ungu-lembut: #2a1d40;
+  --ad-grafik: #e8558a; /* langkah gelap, divalidasi terhadap permukaan gelap */
+  color-scheme: dark;
+}
+
+/* Kontras tinggi (pengaturan aksesibilitas): teks lebih gelap, garis lebih tegas. */
+:root[data-kontras='tinggi']:not([data-tema='gelap']) {
+  --fb-rose-teks: #7e343e;
+  --fb-rose-tua: #5e2530;
+  --fb-olive: #343a28;
+  --fb-olive-tua: #22271a;
+  --fb-redup: #3a3732;
+  --fb-garis: #8a5560;
+  --fb-magenta: #8f1f4c;
+  --ad-redup: #4a3c43;
+  --ad-garis: #8d7884;
+}
+
+:root[data-kontras='tinggi'][data-tema='gelap'] {
+  --fb-rose-teks: #ffd0d7;
+  --fb-olive: #ffffff;
+  --fb-olive-tua: #ffffff;
+  --fb-redup: #ece4dd;
+  --fb-garis: #c9a3ab;
+}
+
+:root[data-kontras='tinggi'] a:not([class*='rounded']) {
+  text-decoration: underline;
+}
+
+@theme inline {
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Rethink Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-admin: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Roboto Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  --color-latar: var(--fb-latar);
+  --color-latar-2: var(--fb-latar-2);
+  --color-permukaan: var(--fb-permukaan);
+  --color-blush: var(--fb-blush);
+  --color-blush-2: var(--fb-blush-2);
+  --color-peach: var(--fb-peach);
+  --color-pasir: var(--fb-pasir);
+  --color-garis: var(--fb-garis);
+  --color-rose: var(--fb-rose);
+  --color-rose-teks: var(--fb-rose-teks);
+  --color-rose-tua: var(--fb-rose-tua);
+  --color-magenta: var(--fb-magenta);
+  --color-pink: var(--fb-pink);
+  --color-pink-2: var(--fb-pink-2);
+  --color-olive: var(--fb-olive);
+  --color-olive-tua: var(--fb-olive-tua);
+  --color-redup: var(--fb-redup);
+  --color-atas-isian: var(--fb-teks-atas-isian);
+
+  --color-ad-latar: var(--ad-latar);
+  --color-ad-permukaan: var(--ad-permukaan);
+  --color-ad-garis: var(--ad-garis);
+  --color-ad-teks: var(--ad-teks);
+  --color-ad-redup: var(--ad-redup);
+  --color-ad-aksen: var(--ad-aksen);
+  --color-ad-aksen-lembut: var(--ad-aksen-lembut);
+  --color-ad-sukses: var(--ad-sukses);
+  --color-ad-sukses-lembut: var(--ad-sukses-lembut);
+  --color-ad-peringatan: var(--ad-peringatan);
+  --color-ad-peringatan-lembut: var(--ad-peringatan-lembut);
+  --color-ad-bahaya: var(--ad-bahaya);
+  --color-ad-bahaya-lembut: var(--ad-bahaya-lembut);
+  --color-ad-info: var(--ad-info);
+  --color-ad-info-lembut: var(--ad-info-lembut);
+  --color-ad-ungu: var(--ad-ungu);
+  --color-ad-ungu-lembut: var(--ad-ungu-lembut);
+  --color-ad-grafik: var(--ad-grafik);
+}
+
+@layer base {
+  html {
+    /* Ukuran teks dari pengaturan aksesibilitas (F-AK-05): semua ukuran memakai rem sehingga ikut berskala. */
+    font-size: calc(100% * var(--skala-teks));
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-latar font-sans text-olive antialiased;
+    min-height: 100dvh;
+  }
+
+  /* Fokus papan ketik selalu terlihat (F-AK-07, WCAG 2.4.7 dan 2.4.11). */
+  :focus-visible {
+    outline: 3px solid var(--fb-magenta);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  [data-area='admin'] :focus-visible {
+    outline-color: var(--ad-aksen);
+  }
+
+  /* Gambar produk dapat diberi filter penajaman warna sesuai jenis buta warna (F-PL-18). */
+  :root[data-penajaman='protan'] img[data-foto-bunga] {
+    filter: url('#fb-penajaman-protan');
+  }
+  :root[data-penajaman='deutan'] img[data-foto-bunga] {
+    filter: url('#fb-penajaman-deutan');
+  }
+  :root[data-penajaman='tritan'] img[data-foto-bunga] {
+    filter: url('#fb-penajaman-tritan');
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .sr-only-fokus:not(:focus) {
+    @apply sr-only;
+  }
+
+  /* Pratinjau mode warna per foto (halaman detail produk) menimpa pengaturan global. */
+  [data-pratinjau='normal'] img[data-foto-bunga] {
+    filter: none;
+  }
+  [data-pratinjau='protan'] img[data-foto-bunga] {
+    filter: url('#fb-penajaman-protan');
+  }
+  [data-pratinjau='deutan'] img[data-foto-bunga] {
+    filter: url('#fb-penajaman-deutan');
+  }
+  [data-pratinjau='tritan'] img[data-foto-bunga] {
+    filter: url('#fb-penajaman-tritan');
+  }
+}

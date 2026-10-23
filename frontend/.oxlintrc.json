@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "react",
+    "typescript",
+    "oxc",
+    "jsx-a11y",
+    "import",
+    "unicorn"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "react/only-export-components": "off",
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/anchor-has-content": "error",
+    "jsx-a11y/anchor-is-valid": "error",
+    "jsx-a11y/aria-props": "error",
+    "jsx-a11y/aria-role": "error",
+    "jsx-a11y/aria-unsupported-elements": "error",
+    "jsx-a11y/heading-has-content": "error",
+    "jsx-a11y/html-has-lang": "error",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/no-autofocus": "off",
+    "jsx-a11y/role-has-required-aria-props": "error",
+    "jsx-a11y/tabindex-no-positive": "error",
+    "typescript/no-explicit-any": "error",
+    "unicorn/no-array-sort": "off",
+    "unicorn/no-array-reverse": "off",
+    "import/no-cycle": "warn",
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "import/no-unassigned-import": [
+      "warn",
+      {
+        "allow": [
+          "**/*.css"
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "dist",
+    "dev-dist",
+    "coverage",
+    "src/api/schema.d.ts"
+  ]
+}

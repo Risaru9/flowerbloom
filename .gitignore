@@ -1,0 +1,40 @@
+# Dokumen internal tim: tidak ikut repositori publik
+/*.pdf
+/*.docx
+/*.doc
+~$*
+
+# Rahasia & konfigurasi lokal
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Node / frontend
+node_modules/
+dist/
+dev-dist/
+coverage/
+*.tsbuildinfo
+.vite/
+
+# Python / backend
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.db
+backend/penyimpanan/
+
+# OS & editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log
