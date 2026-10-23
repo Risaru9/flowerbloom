@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useState } from 'react'
 import type { Skema } from '@/api/client'
 import { cn } from '@/lib/cn'
 import { sisaWaktu } from '@/lib/format'
+import { IkonStatus } from '@/komponen/ui/IkonStatus'
 
 export const UKURAN_MAKS_MB = 8
 
@@ -35,7 +36,7 @@ export function Linimasa({ tahap, gaya = 'pelanggan' }: { tahap: Skema['TahapOut
                 !selesai && !aktif && (admin ? 'border-ad-garis bg-ad-permukaan text-ad-redup' : 'border-garis bg-permukaan text-redup'),
               )}
             >
-              {selesai ? <Check className="size-5" /> : <span>{t.ikon}</span>}
+              {selesai ? <Check className="size-5" /> : <IkonStatus nama={t.ikon} className="size-5" />}
             </span>
             <span className="sm:mt-2 sm:px-1">
               <span className={cn('block text-sm font-semibold', aktif ? (admin ? 'text-ad-aksen' : 'text-rose-tua') : '')}>

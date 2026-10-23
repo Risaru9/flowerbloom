@@ -18,9 +18,13 @@ describe('ChipWarna', () => {
 
 describe('LencanaStatus', () => {
   it('menampilkan ikon dan label, bukan hanya warna (F-AK-02)', () => {
-    render(<LencanaStatus status={{ kode: 'sedang_dirangkai', label: 'Sedang dirangkai', ikon: '💐', keterangan: 'Florist sedang merangkai' }} />)
+    const { container } = render(
+      <LencanaStatus status={{ kode: 'sedang_dirangkai', label: 'Sedang dirangkai', ikon: 'scissors', keterangan: 'Florist sedang merangkai' }} />,
+    )
     expect(screen.getByText('Sedang dirangkai')).toBeInTheDocument()
-    expect(screen.getByText('💐')).toHaveAttribute('aria-hidden')
+    // Pengenal ikon dari backend dipetakan ke ikon SVG dekoratif, bukan ditulis sebagai teks.
+    expect(container.querySelector('svg[aria-hidden="true"]')).not.toBeNull()
+    expect(screen.queryByText('scissors')).toBeNull()
   })
 })
 

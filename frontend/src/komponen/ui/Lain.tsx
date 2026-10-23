@@ -5,6 +5,7 @@ import type { Skema } from '@/api/client'
 import { useAksesibilitas } from '@/aksesibilitas/pengaturan'
 import { useBacakan } from '@/aksesibilitas/suara'
 import { cn } from '@/lib/cn'
+import { IkonStatus } from './IkonStatus'
 
 /** Mengatur <title> dokumen agar pembaca layar mengumumkan halaman baru (WCAG 2.4.2). */
 export function useJudul(judul: string): void {
@@ -51,7 +52,7 @@ export function LencanaStatus({ status, className }: { status: Skema['StatusInfo
       className={cn('inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold', NADA_STATUS[status.kode], className)}
       title={status.keterangan}
     >
-      <span aria-hidden>{status.ikon}</span>
+      <IkonStatus nama={status.ikon} className="size-3.5" />
       {status.label}
     </span>
   )

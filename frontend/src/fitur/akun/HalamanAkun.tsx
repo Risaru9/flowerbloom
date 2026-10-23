@@ -28,6 +28,7 @@ import { TautanTombol, Tombol } from '@/komponen/ui/Tombol'
 import { formatTanggal, formatTanggalJam } from '@/lib/format'
 import { TombolPasang } from '@/pwa/KomponenPwa'
 import { JudulAkun } from '@/tata-letak/TataLetakAkun'
+import { IkonStatus } from '@/komponen/ui/IkonStatus'
 
 /* ---------------- Profil ---------------- */
 
@@ -418,9 +419,7 @@ export function HalamanNotifikasi() {
                 {perlu.map((p) => (
                   <li key={p.id_pesanan}>
                     <Link to={`/akun/pesanan/${p.id_pesanan}`} className="flex items-start gap-3 rounded-3xl bg-blush p-4 ring-2 ring-magenta/60">
-                      <span aria-hidden className="text-xl">
-                        {p.status.ikon}
-                      </span>
+                      <IkonStatus nama={p.status.ikon} className="mt-0.5 size-5 shrink-0 text-rose-tua" />
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold text-olive-tua">
                           {p.status.label} · <span className="font-mono">{p.kode_pesanan}</span>

@@ -247,7 +247,8 @@ export function TataLetakPelanggan() {
       <KakiSitus />
       <NavigasiBawah />
       <DialogAksesibilitas terbuka={aksesibilitas} saatTutup={tutupDialogAksesibilitas} />
-      <ScrollRestoration />
+      {/* Muatan awal selalu berkunci "default"; pakai jalur agar posisi gulir halaman lain tidak terbawa. */}
+      <ScrollRestoration getKey={(l) => (l.key === 'default' ? `awal:${l.pathname}` : l.key)} />
     </div>
   )
 }
