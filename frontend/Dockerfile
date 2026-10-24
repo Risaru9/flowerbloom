@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 # Image produksi frontend FlowerBloom: build Vite lalu disajikan Nginx non-root (port 8080).
 
-FROM node:24-alpine AS bangun
+FROM node:25-alpine AS bangun
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH CI=true
 RUN corepack enable
 WORKDIR /app
