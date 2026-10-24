@@ -60,6 +60,13 @@ export function HalamanLaporan() {
               ikon={<Download aria-hidden className="size-4" />}
               onClick={() =>
                 unduhCsv(`laporan-flowerbloom-${dari}-${sampai}.csv`, [
+                  ['Ringkasan', `${dari} s.d. ${sampai}`],
+                  ['Total penjualan', data.total_penjualan],
+                  ['Pesanan dibayar', data.jumlah_pesanan_berbayar],
+                  ['Revisi foto', data.jumlah_revisi],
+                  ['Komplain', data.jumlah_komplain],
+                  ['Dibatalkan', data.jumlah_dibatalkan],
+                  [],
                   ['Awal minggu', 'Jumlah pesanan', 'Total penjualan'],
                   ...data.penjualan_per_minggu.map((m) => [m.awal_minggu, m.jumlah_pesanan, m.total]),
                   [],

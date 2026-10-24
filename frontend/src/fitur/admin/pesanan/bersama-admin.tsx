@@ -31,9 +31,3 @@ export function BenderaPesanan({
     </span>
   )
 }
-
-export const tautanWa = (noHp: string | null) => {
-  if (!noHp) return null
-  const angka = noHp.replace(/\D/g, '').replace(/^0/, '62')
-  return angka.length >= 9 ? `https://wa.me/${angka}` : null
-}

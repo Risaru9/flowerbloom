@@ -1,4 +1,5 @@
 import type { Skema } from '@/api/client'
+import { teksWarna } from '@/komponen/ui/Warna'
 import { bacaJson, tulisJson } from '@/lib/penyimpanan'
 import { buatToko, useToko } from '@/lib/toko-kecil'
 
@@ -55,7 +56,6 @@ export function tambahPaket(produk: Skema['ProdukOut'], jumlah = 1): void {
   tokoKeranjang.atur((isi) => {
     const ada = isi.find((i): i is ItemPaket => i.jenis_item === 'paket' && i.id_produk === produk.id_produk)
     if (ada) return isi.map((i) => (i === ada ? { ...ada, jumlah: Math.min(ada.jumlah + jumlah, 20) } : i))
-    const warna = [...new Set(produk.komposisi.map((k) => k.warna.nama_warna))].join(' • ')
     return [
       ...isi,
       {
@@ -66,7 +66,7 @@ export function tambahPaket(produk: Skema['ProdukOut'], jumlah = 1): void {
         nama: produk.nama_produk,
         harga: produk.harga,
         foto_url: produk.foto_url,
-        ringkasan_warna: warna,
+        ringkasan_warna: teksWarna(produk.komposisi.map((k) => k.warna)),
       },
     ]
   })
@@ -82,8 +82,15 @@ export function ubahJumlah(kunci: string, jumlah: number): void {
   )
 }
 
-export function hapusItem(kunci: string): void {
-  tokoKeranjang.atur((isi) => isi.filter((i) => i.kunci !== kunci))
+/** Menghapus item; fungsi yang dikembalikan mengurungkannya (item kembali ke posisi semula). */
+export function hapusItem(kunci: string): () => void {
+  const isi = tokoKeranjang.ambil()
+  const posisi = isi.findIndex((i) => i.kunci === kunci)
+  const item = isi[posisi]
+  if (!item) return () => {}
+  tokoKeranjang.atur(isi.filter((i) => i.kunci !== kunci))
+  return () =>
+    tokoKeranjang.atur((kini) => (kini.some((i) => i.kunci === kunci) ? kini : [...kini.slice(0, posisi), item, ...kini.slice(posisi)]))
 }
 
 export function kosongkanKeranjang(): void {

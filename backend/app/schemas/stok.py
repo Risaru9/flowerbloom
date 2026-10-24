@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.core.tipe import Uang
 from app.schemas.dasar import SkemaDasar
-from app.schemas.referensi import JenisRingkas, WarnaRingkas
+from app.schemas.referensi import JenisRingkas, WarnaOut, WarnaRingkas
 
 
 class StokOut(BaseModel):
@@ -29,7 +29,7 @@ class OpsiRangkaiOut(BaseModel):
 
     id_stok: int
     jenis: JenisRingkas
-    warna: WarnaRingkas
+    warna: WarnaOut  # memuat makna warna untuk ditampilkan saat memilih (F-PL-06)
     deskripsi: str
     harga_per_tangkai: Uang
     sisa: int

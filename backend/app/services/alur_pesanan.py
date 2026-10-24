@@ -32,16 +32,16 @@ INFO_STATUS: dict[StatusPesanan, InfoStatus] = {
         "Menunggu pembayaran", "clock", "Transfer sesuai total pesanan lalu unggah bukti sebelum batas waktu."
     ),
     S.menunggu_verifikasi: InfoStatus(
-        "Menunggu verifikasi", "file-search", "Admin sedang memeriksa bukti transfer Anda."
+        "Menunggu verifikasi", "file-search", "Admin sedang memeriksa bukti transfer."
     ),
-    S.sedang_dirangkai: InfoStatus("Sedang dirangkai", "scissors", "Bunga pesanan Anda sedang dirangkai."),
+    S.sedang_dirangkai: InfoStatus("Sedang dirangkai", "scissors", "Florist sedang merangkai bunga pesanan."),
     S.menunggu_persetujuan_foto: InfoStatus(
         "Menunggu persetujuan foto",
         "camera",
         "Periksa foto rangkaian dan nama warnanya, lalu setujui atau minta revisi.",
     ),
     S.siap_diambil: InfoStatus("Siap diambil", "store", "Pesanan siap diambil di toko sesuai jadwal."),
-    S.diantar: InfoStatus("Diantar", "truck", "Pesanan sedang diantar ke alamat penerima."),
+    S.diantar: InfoStatus("Diantar", "truck", "Pesanan dijadwalkan diantar ke alamat penerima sesuai tanggal dan jam kirim."),
     S.selesai: InfoStatus("Selesai", "check-circle", "Pesanan telah diterima."),
     S.dibatalkan: InfoStatus("Dibatalkan", "x-circle", "Pesanan dibatalkan."),
 }

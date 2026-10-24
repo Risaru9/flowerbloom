@@ -8,7 +8,7 @@ from app.core.tautan import tautan_berkas
 from app.models.katalog import Produk
 from app.models.stok import RiwayatPindai, Stok
 from app.schemas.katalog import KomposisiProdukOut, MaknaWarnaOut, ProdukOut
-from app.schemas.referensi import JenisRingkas, WarnaRingkas
+from app.schemas.referensi import JenisRingkas, WarnaOut, WarnaRingkas
 from app.schemas.stok import HasilPindaiOut, OpsiRangkaiOut, RiwayatPindaiOut, StokOut
 from app.services.pindai import HasilPindai
 
@@ -21,7 +21,7 @@ def stok_ke_out(stok: Stok, jumlah_masuk: int, ambang_menipis: int) -> StokOut:
     return StokOut(
         id_stok=stok.id_stok,
         jenis=JenisRingkas.model_validate(stok.jenis_bunga),
-        warna=WarnaRingkas.model_validate(stok.warna),
+        warna=WarnaOut.model_validate(stok.warna),
         deskripsi=deskripsi_stok(stok),
         jumlah_masuk=jumlah_masuk,
         jumlah_ditahan=stok.jumlah_ditahan,
@@ -36,7 +36,7 @@ def stok_ke_opsi_rangkai(stok: Stok) -> OpsiRangkaiOut:
     return OpsiRangkaiOut(
         id_stok=stok.id_stok,
         jenis=JenisRingkas.model_validate(stok.jenis_bunga),
-        warna=WarnaRingkas.model_validate(stok.warna),
+        warna=WarnaOut.model_validate(stok.warna),
         deskripsi=deskripsi_stok(stok),
         harga_per_tangkai=stok.harga_per_tangkai,
         sisa=stok.jumlah_tersedia,

@@ -189,6 +189,7 @@ class RiwayatStatusOut(BaseModel):
     waktu: datetime
     catatan: str | None
     oleh_sistem: bool
+    oleh: Literal["sistem", "pelanggan", "admin"]
 
 
 class PesananRingkasOut(BaseModel):
@@ -218,7 +219,7 @@ class PesananOut(PesananRingkasOut):
     foto: list[FotoKonfirmasiOut]
     riwayat: list[RiwayatStatusOut]
     tahap: list[TahapOut]
-    rekening_tujuan: str | None = Field(description="Terisi hanya saat pesanan menunggu pembayaran")
+    rekening_tujuan: str | None = Field(description="Terisi hanya saat pesanan menunggu pembayaran dan rekening sudah diatur admin")
     bisa_dibatalkan: bool
     ada_pengganti: bool
 

@@ -84,7 +84,7 @@ PAKET_CONTOH = [
      [("Alstroemeria", "Ungu muda", 6), ("Mawar", "Merah muda", 5), ("Daisy mata sapi", "Putih", 4)], "lavender-dream"),
     ("Peach Blossom", "Hadiah", 170000, "Mawar persik dan merah muda dalam vas bergaris.",
      [("Mawar", "Persik", 8), ("Alstroemeria", "Merah muda", 5)], "peach-blossom"),
-    ("Tulip Harmony", "Ulang Tahun", 160000, "Buket bernuansa merah muda dan putih yang segar.",
+    ("Blush Harmony", "Ulang Tahun", 160000, "Buket bernuansa merah muda dan putih yang segar.",
      [("Kamelia", "Merah muda", 6), ("Mawar", "Putih", 5), ("Anyelir", "Merah muda", 4)], "tulip-harmony"),
     ("Ruby Romance", "Hari Jadi", 190000, "Mawar merah tua dan merah muda dalam vas, untuk momen romantis.",
      [("Mawar", "Merah tua", 8), ("Mawar", "Merah muda", 6), ("Anyelir", "Putih", 4)], "ruby-romance"),

@@ -58,3 +58,11 @@ export function sisaWaktu(batas: string, sekarang: number = Date.now()): string 
   if (jam > 0) return `${jam} jam ${String(menit % 60).padStart(2, '0')} menit`
   return `${menit} menit ${String(detik).padStart(2, '0')} detik`
 }
+
+/** Tautan wa.me dari nomor lokal (08xx → 628xx), opsional dengan pesan awal; null bila nomornya tidak layak. */
+export function tautanWa(noHp: string | null | undefined, pesan?: string): string | null {
+  if (!noHp) return null
+  const angka = noHp.replace(/\D/g, '').replace(/^0/, '62')
+  if (angka.length < 9) return null
+  return `https://wa.me/${angka}${pesan ? `?text=${encodeURIComponent(pesan)}` : ''}`
+}

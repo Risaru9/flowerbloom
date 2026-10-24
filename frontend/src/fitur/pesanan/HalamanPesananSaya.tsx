@@ -15,7 +15,7 @@ import { LABEL_SERAH } from './bersama'
 const SARING: { nilai: Skema['StatusPesanan'] | ''; label: string }[] = [
   { nilai: '', label: 'Semua' },
   { nilai: 'menunggu_pembayaran', label: 'Belum dibayar' },
-  { nilai: 'menunggu_verifikasi', label: 'Diverifikasi' },
+  { nilai: 'menunggu_verifikasi', label: 'Menunggu verifikasi' },
   { nilai: 'sedang_dirangkai', label: 'Dirangkai' },
   { nilai: 'menunggu_persetujuan_foto', label: 'Perlu persetujuan' },
   { nilai: 'siap_diambil', label: 'Siap diambil' },

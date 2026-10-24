@@ -1353,8 +1353,20 @@ export interface components {
         InfoTokoOut: {
             /** Nama Toko */
             nama_toko: string;
-            /** Rekening Tujuan */
+            /**
+             * Rekening Tujuan
+             * @description Kosong bila belum diatur admin
+             */
             rekening_tujuan: string;
+            /**
+             * No Hp Toko
+             * @description Nomor HP/WhatsApp toko; kosong berarti disembunyikan
+             */
+            no_hp_toko: string;
+            /** Alamat Toko */
+            alamat_toko: string;
+            /** Email Toko */
+            email_toko: string;
             /** Batas Bayar Menit */
             batas_bayar_menit: number;
             /** Ongkos Antar */
@@ -1643,7 +1655,7 @@ export interface components {
             /** Id Stok */
             id_stok: number;
             jenis: components["schemas"]["JenisRingkas"];
-            warna: components["schemas"]["WarnaRingkas"];
+            warna: components["schemas"]["WarnaOut"];
             /** Deskripsi */
             deskripsi: string;
             /** Harga Per Tangkai */
@@ -1689,6 +1701,8 @@ export interface components {
         PengaturanItemOut: {
             /** Kunci */
             kunci: string;
+            /** Label */
+            label: string;
             /** Nilai */
             nilai: unknown;
             /** Keterangan */
@@ -1824,7 +1838,7 @@ export interface components {
             tahap: components["schemas"]["TahapOut"][];
             /**
              * Rekening Tujuan
-             * @description Terisi hanya saat pesanan menunggu pembayaran
+             * @description Terisi hanya saat pesanan menunggu pembayaran dan rekening sudah diatur admin
              */
             rekening_tujuan: string | null;
             /** Bisa Dibatalkan */
@@ -1939,7 +1953,7 @@ export interface components {
             tahap: components["schemas"]["TahapOut"][];
             /**
              * Rekening Tujuan
-             * @description Terisi hanya saat pesanan menunggu pembayaran
+             * @description Terisi hanya saat pesanan menunggu pembayaran dan rekening sudah diatur admin
              */
             rekening_tujuan: string | null;
             /** Bisa Dibatalkan */
@@ -2142,6 +2156,11 @@ export interface components {
             catatan: string | null;
             /** Oleh Sistem */
             oleh_sistem: boolean;
+            /**
+             * Oleh
+             * @enum {string}
+             */
+            oleh: "sistem" | "pelanggan" | "admin";
         };
         /** SimpanPindaiIn */
         SimpanPindaiIn: {

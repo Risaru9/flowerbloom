@@ -37,7 +37,7 @@ describe('keranjang', () => {
     tambahPaket(produk, 25)
     const isi = tokoKeranjang.ambil()
     expect(isi).toHaveLength(1)
-    expect(isi[0]).toMatchObject({ jenis_item: 'paket', jumlah: 20, ringkasan_warna: 'Merah • Putih' })
+    expect(isi[0]).toMatchObject({ jenis_item: 'paket', jumlah: 20, ringkasan_warna: 'Merah #FF0000 • Putih #FFFFFF' })
   })
 
   it('mengubah jumlah tidak pernah di bawah 1', () => {
@@ -73,5 +73,16 @@ describe('keranjang', () => {
     expect(JSON.parse(localStorage.getItem('fb.keranjang.v1') ?? '[]')).toHaveLength(1)
     hapusItem(tokoKeranjang.ambil()[0]!.kunci)
     expect(tokoKeranjang.ambil()).toEqual([])
+  })
+
+  it('penghapusan bisa diurungkan dan item kembali ke posisi semula', () => {
+    tambahPaket(produk)
+    tambahRangkaian([])
+    const awal = tokoKeranjang.ambil()
+    const urungkan = hapusItem(awal[0]!.kunci)
+    expect(tokoKeranjang.ambil()).toHaveLength(1)
+    urungkan()
+    urungkan() // dipanggil dua kali tidak menggandakan item
+    expect(tokoKeranjang.ambil()).toEqual(awal)
   })
 })

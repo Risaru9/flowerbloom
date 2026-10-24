@@ -9,7 +9,7 @@ import { Galat, Kerangka } from '@/komponen/ui/Keadaan'
 import { FotoBunga, PengaturJumlah, TombolDengarkan, useJudul } from '@/komponen/ui/Lain'
 import { tampilkanToast } from '@/komponen/ui/Toast'
 import { Tombol } from '@/komponen/ui/Tombol'
-import { ChipWarna } from '@/komponen/ui/Warna'
+import { ChipWarna, SaranPerpaduan } from '@/komponen/ui/Warna'
 import { cn } from '@/lib/cn'
 import { formatRupiah } from '@/lib/format'
 
@@ -242,6 +242,9 @@ export function HalamanProduk() {
                       <ChipWarna warna={m} makna={m.makna ?? 'Belum ada keterangan makna.'} />
                     </li>
                   ))}
+                  <li>
+                    <SaranPerpaduan daftar={produk.makna_warna} />
+                  </li>
                 </ul>
               )}
               {tab === 'Perawatan' && (

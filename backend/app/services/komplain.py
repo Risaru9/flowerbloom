@@ -36,6 +36,10 @@ def ajukan(db: Session, *, id_pesanan: int, pelanggan: Pengguna, isi: str, foto:
             f"Batas pengajuan komplain ({int(batas.total_seconds() // 3600)} jam setelah diterima) sudah lewat.",
             kode="komplain_lewat_batas",
         )
+    if db.scalar(select(Komplain.id_komplain).where(Komplain.id_pesanan == pesanan.id_pesanan)):
+        raise Konflik(
+            "Komplain untuk pesanan ini sudah diajukan. Pantau tanggapannya di halaman pesanan.", kode="komplain_sudah_ada"
+        )
     jalur = ambil_penyimpanan().simpan_gambar(buka_gambar(foto), area="privat", kategori="komplain") if foto else None
     komplain = Komplain(id_pesanan=pesanan.id_pesanan, id_pengguna=pelanggan.id_pengguna, isi=isi.strip(), foto_komplain=jalur)
     db.add(komplain)

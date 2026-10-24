@@ -1,7 +1,6 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { Bell, CheckCircle2, Heart, LogOut, MapPin, MessageSquareReply, Pencil, Plus, ShieldCheck, Star, Trash2 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 
 import { pesanGalat, type Skema } from '@/api/client'
 import {
@@ -17,17 +16,16 @@ import {
   useSimpanAlamat,
   useUbahProfil,
 } from '@/api/pelanggan'
-import { hapusSesi } from '@/auth/sesi'
 import { GridProduk } from '@/fitur/katalog/KartuProduk'
 import { AreaTeks, Bidang, Masukan } from '@/komponen/ui/Bidang'
-import { Dialog } from '@/komponen/ui/Dialog'
+import { Dialog, DialogKonfirmasi } from '@/komponen/ui/Dialog'
 import { Galat, Kerangka, Kosong, Memuat } from '@/komponen/ui/Keadaan'
 import { LencanaStatus, useJudul } from '@/komponen/ui/Lain'
 import { tampilkanToast } from '@/komponen/ui/Toast'
 import { TautanTombol, Tombol } from '@/komponen/ui/Tombol'
 import { formatTanggal, formatTanggalJam } from '@/lib/format'
 import { TombolPasang } from '@/pwa/KomponenPwa'
-import { JudulAkun } from '@/tata-letak/TataLetakAkun'
+import { JudulAkun, useKeluar } from '@/tata-letak/TataLetakAkun'
 import { IkonStatus } from '@/komponen/ui/IkonStatus'
 
 /* ---------------- Profil ---------------- */
@@ -38,8 +36,8 @@ export function HalamanProfil() {
   const ubah = useUbahProfil()
   const gantiSandi = useGantiKataSandi()
   const keluarSemua = useKeluarSemua()
-  const qc = useQueryClient()
-  const navigasi = useNavigate()
+  const keluar = useKeluar()
+  const [konfirmasiKeluar, setKonfirmasiKeluar] = useState(false)
   const [isian, setIsian] = useState<{ nama: string; email: string; no_hp: string } | null>(null)
   const [sandi, setSandi] = useState({ lama: '', baru: '', ulang: '' })
   const [galatSandi, setGalatSandi] = useState<string | null>(null)
@@ -168,24 +166,26 @@ export function HalamanProfil() {
             <Tombol type="submit" varian="garis" memuat={gantiSandi.isPending} disabled={!sandi.lama || !sandi.baru}>
               Ganti kata sandi
             </Tombol>
-            <Tombol
-              varian="teks"
-              ikon={<LogOut aria-hidden className="size-4" />}
+            <Tombol varian="teks" ikon={<LogOut aria-hidden className="size-4" />} onClick={() => setKonfirmasiKeluar(true)}>
+              Keluar dari semua perangkat
+            </Tombol>
+            <DialogKonfirmasi
+              terbuka={konfirmasiKeluar}
+              saatTutup={() => setKonfirmasiKeluar(false)}
+              judul="Keluar dari semua perangkat?"
+              deskripsi="Semua sesi Anda, termasuk di perangkat ini, akan berakhir dan Anda perlu masuk lagi."
+              label="Ya, keluar"
               memuat={keluarSemua.isPending}
-              onClick={async () => {
+              saatYa={async () => {
                 try {
                   await keluarSemua.mutateAsync()
-                  hapusSesi()
-                  qc.clear()
                   tampilkanToast('Anda telah keluar dari semua perangkat.')
-                  navigasi('/masuk', { replace: true })
+                  keluar('/masuk')
                 } catch (err) {
                   tampilkanToast(pesanGalat(err), 'galat')
                 }
               }}
-            >
-              Keluar dari semua perangkat
-            </Tombol>
+            />
           </div>
         </form>
 

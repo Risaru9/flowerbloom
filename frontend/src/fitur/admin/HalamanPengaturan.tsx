@@ -10,22 +10,6 @@ import { tampilkanToast } from '@/komponen/ui/Toast'
 import { Tombol } from '@/komponen/ui/Tombol'
 import { JudulAdmin, Kartu } from '@/tata-letak/TataLetakAdmin'
 
-const JUDUL: Record<string, string> = {
-  nama_toko: 'Nama toko',
-  rekening_tujuan: 'Rekening tujuan transfer',
-  batas_bayar_menit: 'Batas waktu bayar (menit)',
-  ongkos_antar: 'Ongkos antar (Rp)',
-  jasa_merangkai: 'Jasa merangkai (Rp)',
-  jumlah_revisi_gratis: 'Revisi foto gratis',
-  minimal_tangkai_rangkai_sendiri: 'Minimal tangkai rangkai sendiri',
-  slot_pengiriman: 'Slot jam serah terima',
-  kebijakan_pengganti: 'Kebijakan bunga pengganti',
-  ambang_stok_menipis: 'Ambang stok menipis',
-  minimal_hari_pemesanan: 'Minimal hari pemesanan (H-n)',
-  batas_tanggapan_foto_jam: 'Batas tanggapan foto (jam)',
-  batas_komplain_jam: 'Batas pengajuan komplain (jam)',
-}
-
 const PILIHAN: Record<string, [string, string][]> = {
   kebijakan_pengganti: [
     ['hanya_warna_berbeda', 'Persetujuan hanya bila warnanya berbeda'],
@@ -35,6 +19,7 @@ const PILIHAN: Record<string, [string, string][]> = {
 
 const KELOMPOK: [string, string[]][] = [
   ['Toko & pembayaran', ['nama_toko', 'rekening_tujuan', 'batas_bayar_menit']],
+  ['Kontak toko', ['no_hp_toko', 'email_toko', 'alamat_toko']],
   [
     'Harga & pengiriman',
     ['ongkos_antar', 'jasa_merangkai', 'minimal_tangkai_rangkai_sendiri', 'minimal_hari_pemesanan', 'slot_pengiriman'],
@@ -74,7 +59,7 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
   function kontrol(kunci: string) {
     const d = peta.get(kunci)
     if (!d) return null
-    const label = JUDUL[kunci] ?? kunci
+    const label = d.label
     if (d.tipe === 'int') {
       return (
         <Bidang key={kunci} label={label} gaya="admin" bantuan={d.keterangan}>
@@ -159,9 +144,14 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
         label={label}
         gaya="admin"
         bantuan={d.keterangan}
-        className={kunci === 'rekening_tujuan' ? 'sm:col-span-2' : undefined}
+        className={kunci === 'rekening_tujuan' || kunci === 'alamat_toko' ? 'sm:col-span-2' : undefined}
       >
-        <Masukan gaya="admin" value={String(nilai[kunci] ?? '')} onChange={(e) => setNilai((n) => ({ ...n, [kunci]: e.target.value }))} />
+        <Masukan
+          gaya="admin"
+          type={d.tipe === 'telepon' ? 'tel' : kunci === 'email_toko' ? 'email' : 'text'}
+          value={String(nilai[kunci] ?? '')}
+          onChange={(e) => setNilai((n) => ({ ...n, [kunci]: e.target.value }))}
+        />
       </Bidang>
     )
   }

@@ -1,14 +1,12 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { LogOut, Plus, ShieldCheck, UserRound } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
 
 import { useAdminPengguna, useAturAktif, useTambahAdmin } from '@/api/admin'
 import { pesanGalat } from '@/api/client'
 import { useGantiKataSandi, useKeluarSemua, useSaya, useUbahProfil } from '@/api/pelanggan'
-import { hapusSesi, useSesi } from '@/auth/sesi'
+import { useSesi } from '@/auth/sesi'
 import { Bidang, Masukan } from '@/komponen/ui/Bidang'
-import { Dialog } from '@/komponen/ui/Dialog'
+import { Dialog, DialogKonfirmasi } from '@/komponen/ui/Dialog'
 import { Galat, Memuat } from '@/komponen/ui/Keadaan'
 import { useJudul } from '@/komponen/ui/Lain'
 import { tampilkanToast } from '@/komponen/ui/Toast'
@@ -16,6 +14,7 @@ import { Tombol } from '@/komponen/ui/Tombol'
 import { cn } from '@/lib/cn'
 import { formatTanggal } from '@/lib/format'
 import { JudulAdmin, Kartu } from '@/tata-letak/TataLetakAdmin'
+import { useKeluar } from '@/tata-letak/TataLetakAkun'
 
 export function HalamanAkunAdmin() {
   useJudul('Akun Admin')
@@ -26,6 +25,20 @@ export function HalamanAkunAdmin() {
   const [buka, setBuka] = useState(false)
   const [isian, setIsian] = useState({ nama: '', email: '', no_hp: '', kata_sandi: '' })
   const [galat, setGalat] = useState<string | null>(null)
+  const [dinonaktifkan, setDinonaktifkan] = useState<{ id_pengguna: number; nama: string } | null>(null)
+
+  function aturStatus(u: { id_pengguna: number; nama: string }, aktif: boolean) {
+    aturAktif.mutate(
+      { id: u.id_pengguna, aktif },
+      {
+        onSuccess: () => {
+          setDinonaktifkan(null)
+          tampilkanToast(aktif ? `${u.nama} diaktifkan kembali.` : `${u.nama} dinonaktifkan.`)
+        },
+        onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
+      },
+    )
+  }
 
   async function kirim(e: FormEvent) {
     e.preventDefault()
@@ -58,7 +71,7 @@ export function HalamanAkunAdmin() {
       ) : isError ? (
         <Galat galat={error} ulangi={() => void refetch()} />
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {data.map((u) => {
             const saya = u.id_pengguna === sesi?.pengguna.id_pengguna
             return (
@@ -89,16 +102,8 @@ export function HalamanAkunAdmin() {
                     varian={u.aktif ? 'admin-garis' : 'admin-lembut'}
                     ukuran="kecil"
                     className="rounded-lg"
-                    memuat={aturAktif.isPending && aturAktif.variables?.id === u.id_pengguna}
-                    onClick={() =>
-                      aturAktif.mutate(
-                        { id: u.id_pengguna, aktif: !u.aktif },
-                        {
-                          onSuccess: () => tampilkanToast(u.aktif ? `${u.nama} dinonaktifkan.` : `${u.nama} diaktifkan kembali.`),
-                          onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
-                        },
-                      )
-                    }
+                    memuat={!u.aktif && aturAktif.isPending && aturAktif.variables?.id === u.id_pengguna}
+                    onClick={() => (u.aktif ? setDinonaktifkan(u) : aturStatus(u, true))}
                   >
                     {u.aktif ? 'Nonaktifkan' : 'Aktifkan'}
                   </Tombol>
@@ -108,6 +113,17 @@ export function HalamanAkunAdmin() {
           })}
         </ul>
       )}
+      <DialogKonfirmasi
+        gaya="admin"
+        bahaya
+        terbuka={!!dinonaktifkan}
+        saatTutup={() => setDinonaktifkan(null)}
+        judul={`Nonaktifkan ${dinonaktifkan?.nama ?? ''}?`}
+        deskripsi="Akun ini langsung keluar dari semua perangkat dan tidak bisa masuk sampai diaktifkan kembali."
+        label="Ya, nonaktifkan"
+        memuat={aturAktif.isPending}
+        saatYa={() => dinonaktifkan && aturStatus(dinonaktifkan, false)}
+      />
       <Dialog
         gaya="admin"
         terbuka={buka}
@@ -151,7 +167,12 @@ export function HalamanAkunAdmin() {
           <Bidang label="Nomor HP" gaya="admin">
             <Masukan gaya="admin" type="tel" value={isian.no_hp} onChange={(e) => setIsian({ ...isian, no_hp: e.target.value })} />
           </Bidang>
-          <Bidang label="Kata sandi sementara" gaya="admin" wajib bantuan="Minimal 8 karakter.">
+          <Bidang
+            label="Kata sandi awal"
+            gaya="admin"
+            wajib
+            bantuan="Minimal 8 karakter. Minta pemiliknya menggantinya di Profil Saya setelah masuk."
+          >
             <Masukan
               gaya="admin"
               type="password"
@@ -173,8 +194,8 @@ export function HalamanProfilAdmin() {
   const ubah = useUbahProfil()
   const ganti = useGantiKataSandi()
   const keluarSemua = useKeluarSemua()
-  const qc = useQueryClient()
-  const navigasi = useNavigate()
+  const keluar = useKeluar()
+  const [konfirmasiKeluar, setKonfirmasiKeluar] = useState(false)
   const [isian, setIsian] = useState<{ nama: string; email: string; no_hp: string } | null>(null)
   const [sandi, setSandi] = useState({ lama: '', baru: '', ulang: '' })
   const [galatSandi, setGalatSandi] = useState<string | null>(null)
@@ -279,20 +300,27 @@ export function HalamanProfilAdmin() {
                 varian="admin-garis"
                 className="rounded-xl"
                 ikon={<LogOut aria-hidden className="size-4" />}
+                onClick={() => setKonfirmasiKeluar(true)}
+              >
+                Keluar dari semua perangkat
+              </Tombol>
+              <DialogKonfirmasi
+                gaya="admin"
+                terbuka={konfirmasiKeluar}
+                saatTutup={() => setKonfirmasiKeluar(false)}
+                judul="Keluar dari semua perangkat?"
+                deskripsi="Semua sesi Anda, termasuk di perangkat ini, akan berakhir dan Anda perlu masuk lagi."
+                label="Ya, keluar"
                 memuat={keluarSemua.isPending}
-                onClick={async () => {
+                saatYa={async () => {
                   try {
                     await keluarSemua.mutateAsync()
-                    hapusSesi()
-                    qc.clear()
-                    navigasi('/admin/masuk', { replace: true })
+                    keluar('/admin/masuk')
                   } catch (err) {
                     tampilkanToast(pesanGalat(err), 'galat')
                   }
                 }}
-              >
-                Keluar dari semua perangkat
-              </Tombol>
+              />
             </div>
           </form>
         </Kartu>

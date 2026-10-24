@@ -17,6 +17,7 @@ import { Link, NavLink, Outlet, ScrollRestoration } from 'react-router'
 
 import { bukaDialogAksesibilitas, tutupDialogAksesibilitas, useDialogAksesibilitasTerbuka } from '@/aksesibilitas/dialog'
 import { DialogAksesibilitas } from '@/aksesibilitas/DialogAksesibilitas'
+import { useInfoToko } from '@/api/pelanggan'
 import garisBunga from '@/assets/gambar/garis-bunga.webp'
 import logo from '@/assets/merek/logo.svg'
 import logoFooter from '@/assets/merek/logo-footer.svg'
@@ -24,6 +25,7 @@ import { useSesi } from '@/auth/sesi'
 import { jumlahBarang, useKeranjang } from '@/fitur/keranjang/keranjang'
 import { Memuat } from '@/komponen/ui/Keadaan'
 import { cn } from '@/lib/cn'
+import { tautanWa } from '@/lib/format'
 import { SpandukPasang, StatusJaringan, TombolPasang } from '@/pwa/KomponenPwa'
 
 const TAHUN = new Date().getFullYear()
@@ -166,6 +168,8 @@ function NavigasiBawah() {
 }
 
 function KakiSitus() {
+  const { data: info } = useInfoToko()
+  const wa = tautanWa(info?.no_hp_toko)
   const kolom = [
     {
       judul: 'Jelajahi',
@@ -212,21 +216,35 @@ function KakiSitus() {
         <div id="kontak">
           <h2 className="font-display text-xl font-bold">Kontak</h2>
           <ul className="mt-3 flex flex-col gap-2">
-            <li className="flex items-center gap-2">
-              <MapPin aria-hidden className="size-4" /> Surabaya, Indonesia
-            </li>
-            <li className="flex items-center gap-2">
-              <Phone aria-hidden className="size-4" /> 08xx-xxxx-xxxx
-            </li>
-            <li className="flex items-center gap-2">
-              <Mail aria-hidden className="size-4" />
-              <a href="mailto:halo@flowerbloom.id" className="underline">
-                halo@flowerbloom.id
-              </a>
-            </li>
-            <li className="flex items-center gap-2">
-              <MessageCircle aria-hidden className="size-4" /> WhatsApp: 08xx-xxxx-xxxx
-            </li>
+            {info?.alamat_toko && (
+              <li className="flex items-center gap-2">
+                <MapPin aria-hidden className="size-4 shrink-0" /> {info.alamat_toko}
+              </li>
+            )}
+            {info?.no_hp_toko && (
+              <li className="flex items-center gap-2">
+                <Phone aria-hidden className="size-4 shrink-0" />
+                <a href={`tel:${info.no_hp_toko.replace(/[^\d+]/g, '')}`} className="underline">
+                  {info.no_hp_toko}
+                </a>
+              </li>
+            )}
+            {wa && (
+              <li className="flex items-center gap-2">
+                <MessageCircle aria-hidden className="size-4 shrink-0" />
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="underline">
+                  Chat WhatsApp
+                </a>
+              </li>
+            )}
+            {info?.email_toko && (
+              <li className="flex items-center gap-2">
+                <Mail aria-hidden className="size-4 shrink-0" />
+                <a href={`mailto:${info.email_toko}`} className="break-all underline">
+                  {info.email_toko}
+                </a>
+              </li>
+            )}
           </ul>
         </div>
       </div>

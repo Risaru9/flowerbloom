@@ -4,6 +4,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router'
 
 import garisBunga from '@/assets/gambar/garis-bunga.webp'
 import { hapusSesi, useSesi } from '@/auth/sesi'
+import { kosongkanKeranjang } from '@/fitur/keranjang/keranjang'
 import { cn } from '@/lib/cn'
 
 const MENU = [
@@ -19,6 +20,7 @@ export function useKeluar() {
   const navigasi = useNavigate()
   return (ke = '/') => {
     hapusSesi()
+    kosongkanKeranjang() // perangkat bersama: keranjang tidak terbawa ke pengguna berikutnya
     qc.clear()
     navigasi(ke, { replace: true })
   }
@@ -35,7 +37,7 @@ export function TataLetakAkun() {
         aria-hidden
         className="pointer-events-none absolute end-0 top-24 -z-10 hidden h-[28rem] opacity-25 lg:block"
       />
-      <aside aria-label="Menu akun" className="md:sticky md:top-28 md:self-start">
+      <aside aria-label="Menu akun" className="min-w-0 md:sticky md:top-28 md:self-start">
         <div className="mb-3 hidden items-center gap-3 md:flex">
           <span aria-hidden className="grid size-12 place-items-center rounded-full bg-rose-teks font-display text-xl text-white">
             {sesi?.pengguna.nama.charAt(0).toUpperCase()}

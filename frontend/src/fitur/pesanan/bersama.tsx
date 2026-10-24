@@ -56,13 +56,17 @@ export function Linimasa({ tahap, gaya = 'pelanggan' }: { tahap: Skema['TahapOut
   )
 }
 
-export function HitungMundur({ batas, className }: { batas: string; className?: string }) {
+export function HitungMundur({ batas, className, saatLewat }: { batas: string; className?: string; saatLewat?: () => void }) {
   const [sekarang, setSekarang] = useState(() => Date.now())
   useEffect(() => {
     const t = window.setInterval(() => setSekarang(Date.now()), 1000)
     return () => window.clearInterval(t)
   }, [])
   const sisa = sisaWaktu(batas, sekarang)
+  const lewat = sisa === null
+  useEffect(() => {
+    if (lewat) saatLewat?.()
+  }, [lewat, saatLewat])
   return (
     <span className={className} role="timer" aria-live="off">
       {sisa ?? 'Batas waktu sudah lewat'}

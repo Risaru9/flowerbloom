@@ -6,11 +6,17 @@ import { useInfoToko, usePratinjau } from '@/api/pelanggan'
 import { useSesi } from '@/auth/sesi'
 import { Kosong } from '@/komponen/ui/Keadaan'
 import { FotoBunga, PengaturJumlah, useJudul } from '@/komponen/ui/Lain'
+import { tampilkanToast } from '@/komponen/ui/Toast'
 import { TautanTombol, Tombol } from '@/komponen/ui/Tombol'
 import { ChipWarna } from '@/komponen/ui/Warna'
 import { formatRupiah } from '@/lib/format'
 
 import { hapusItem, hargaItem, keItemApi, ubahJumlah, useKeranjang } from './keranjang'
+
+function hapus(kunci: string, nama: string) {
+  const urungkan = hapusItem(kunci)
+  tampilkanToast(`${nama} dihapus dari keranjang.`, 'info', 8000, { label: 'Urungkan', jalankan: urungkan })
+}
 
 /** Memvalidasi isi keranjang ke server (harga terbaru dan ketersediaan stok) setiap kali isinya berubah. */
 export function usePratinjauKeranjang(cara: 'ambil_di_toko' | 'antar' = 'ambil_di_toko') {
@@ -98,7 +104,7 @@ export function HalamanKeranjang() {
                         <PengaturJumlah label={`Jumlah ${i.nama}`} nilai={i.jumlah} maks={20} ubah={(n) => ubahJumlah(i.kunci, n)} />
                         <button
                           type="button"
-                          onClick={() => hapusItem(i.kunci)}
+                          onClick={() => hapus(i.kunci, i.nama)}
                           className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-sm font-semibold text-rose-teks hover:bg-blush"
                         >
                           <Trash2 aria-hidden className="size-4" /> Hapus
@@ -116,7 +122,7 @@ export function HalamanKeranjang() {
                       <ul className="flex flex-col gap-1 text-sm">
                         {i.bunga.map((b) => (
                           <li key={b.id_stok}>
-                            {b.jumlah_tangkai}× {b.nama} · <ChipWarna warna={b.warna} ukuran="kecil" tampilkanKode={false} />
+                            {b.jumlah_tangkai}× {b.nama} · <ChipWarna warna={b.warna} ukuran="kecil" />
                           </li>
                         ))}
                       </ul>
@@ -125,7 +131,7 @@ export function HalamanKeranjang() {
                       </p>
                       <button
                         type="button"
-                        onClick={() => hapusItem(i.kunci)}
+                        onClick={() => hapus(i.kunci, 'Rangkaian buatanku')}
                         className="inline-flex min-h-10 items-center gap-1 self-end rounded-full px-3 text-sm font-semibold text-rose-teks hover:bg-blush"
                       >
                         <Trash2 aria-hidden className="size-4" /> Hapus

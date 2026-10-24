@@ -3,12 +3,14 @@ import { useEffect, useId, useRef, type ReactNode } from 'react'
 
 import { cn } from '@/lib/cn'
 
+import { Tombol } from './Tombol'
+
 interface PropsDialog {
   terbuka: boolean
   saatTutup: () => void
   judul: ReactNode
   deskripsi?: ReactNode
-  children: ReactNode
+  children?: ReactNode
   kaki?: ReactNode
   gaya?: 'pelanggan' | 'admin'
   lebar?: 'sm' | 'md' | 'lg'
@@ -80,7 +82,7 @@ export function Dialog({ terbuka, saatTutup, judul, deskripsi, children, kaki, g
               <X aria-hidden className="size-5" />
             </button>
           </div>
-          <div className="overflow-y-auto px-5 py-4">{children}</div>
+          {children && <div className="overflow-y-auto px-5 py-4">{children}</div>}
           {kaki && (
             <div className={cn('flex flex-wrap justify-end gap-2 border-t px-5 py-4', admin ? 'border-ad-garis' : 'border-garis/60')}>
               {kaki}
@@ -89,5 +91,50 @@ export function Dialog({ terbuka, saatTutup, judul, deskripsi, children, kaki, g
         </div>
       )}
     </dialog>
+  )
+}
+
+/** Konfirmasi singkat sebelum tindakan yang sulit dibatalkan. */
+export function DialogKonfirmasi({
+  terbuka,
+  saatTutup,
+  judul,
+  deskripsi,
+  label,
+  saatYa,
+  memuat,
+  bahaya,
+  gaya = 'pelanggan',
+}: Pick<PropsDialog, 'terbuka' | 'saatTutup' | 'judul' | 'deskripsi' | 'gaya'> & {
+  label: string
+  saatYa: () => void
+  memuat?: boolean
+  bahaya?: boolean
+}) {
+  const admin = gaya === 'admin'
+  return (
+    <Dialog
+      gaya={gaya}
+      lebar="sm"
+      terbuka={terbuka}
+      saatTutup={saatTutup}
+      judul={judul}
+      deskripsi={deskripsi}
+      kaki={
+        <>
+          <Tombol varian={admin ? 'admin-garis' : 'garis'} className={cn(admin && 'rounded-xl')} onClick={saatTutup}>
+            Batal
+          </Tombol>
+          <Tombol
+            varian={bahaya ? 'bahaya' : admin ? 'admin' : 'utama'}
+            className={cn(admin && 'rounded-xl')}
+            memuat={memuat}
+            onClick={saatYa}
+          >
+            {label}
+          </Tombol>
+        </>
+      }
+    />
   )
 }

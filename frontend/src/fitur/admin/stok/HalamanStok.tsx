@@ -17,6 +17,9 @@ import { JudulAdmin } from '@/tata-letak/TataLetakAdmin'
 
 import { PilihJenis, PilihWarna } from './PilihBunga'
 
+/** Tangkai yang sudah keluar dari stok: terpakai pesanan, dipakai sebagai pengganti, atau dikoreksi turun. */
+const keluar = (s: Skema['StokOut']) => Math.max(0, s.jumlah_masuk - s.jumlah_ditahan - s.jumlah_tersedia)
+
 function DialogStokManual({ terbuka, tutup }: { terbuka: boolean; tutup: () => void }) {
   const simpan = useStokManual()
   const [jenis, setJenis] = useState<number | ''>('')
@@ -192,7 +195,7 @@ export function HalamanStok() {
     <>
       <JudulAdmin
         judul="Daftar Stok Bunga"
-        keterangan="Jumlah masuk, ditahan pesanan belum dibayar, dan yang tersedia."
+        keterangan="Jumlah masuk, keluar (terpakai pesanan, pengganti, atau koreksi), ditahan pesanan belum dibayar, dan yang tersedia."
         jejak={[{ ke: '/admin', label: 'Dasbor' }]}
         aksi={
           <>
@@ -239,8 +242,8 @@ export function HalamanStok() {
       ) : daftar.length === 0 ? (
         <Kosong
           ikon={<Boxes className="size-8" />}
-          judul="Belum ada stok"
-          pesan="Pindai bunga yang baru datang atau input secara manual."
+          judul={menipis ? 'Tidak ada stok yang menipis' : 'Belum ada stok'}
+          pesan={menipis ? 'Semua stok masih di atas ambang menipis.' : 'Pindai bunga yang baru datang atau input secara manual.'}
         />
       ) : (
         <>
@@ -249,13 +252,13 @@ export function HalamanStok() {
               <caption className="sr-only">Daftar stok bunga</caption>
               <thead className="bg-ad-latar text-xs text-ad-redup uppercase">
                 <tr>
-                  {['Bunga', 'Warna', 'Masuk', 'Ditahan', 'Tersedia', 'Harga/tangkai', 'Terakhir masuk', ''].map((h) => (
+                  {['Bunga', 'Warna', 'Masuk', 'Keluar', 'Ditahan', 'Tersedia', 'Harga/tangkai', 'Terakhir masuk', ''].map((h) => (
                     <th
                       key={h}
                       scope="col"
                       className={cn(
                         'px-4 py-3 font-semibold',
-                        ['Masuk', 'Ditahan', 'Tersedia', 'Harga/tangkai'].includes(h) ? 'text-end' : 'text-start',
+                        ['Masuk', 'Keluar', 'Ditahan', 'Tersedia', 'Harga/tangkai'].includes(h) ? 'text-end' : 'text-start',
                       )}
                     >
                       {h || <span className="sr-only">Aksi</span>}
@@ -271,6 +274,7 @@ export function HalamanStok() {
                       <ChipWarna warna={s.warna} ukuran="kecil" />
                     </td>
                     <td className="px-4 py-3 text-end tabular-nums">{s.jumlah_masuk}</td>
+                    <td className="px-4 py-3 text-end tabular-nums">{keluar(s)}</td>
                     <td className="px-4 py-3 text-end tabular-nums">{s.jumlah_ditahan}</td>
                     <td className="px-4 py-3 text-end font-bold tabular-nums">
                       {s.jumlah_tersedia}
@@ -314,7 +318,7 @@ export function HalamanStok() {
                   </p>
                 </div>
                 <p className="mt-2 text-xs text-ad-redup">
-                  Masuk {s.jumlah_masuk} · ditahan {s.jumlah_ditahan} · {formatRupiah(s.harga_per_tangkai)}/tangkai
+                  Masuk {s.jumlah_masuk} · keluar {keluar(s)} · ditahan {s.jumlah_ditahan} · {formatRupiah(s.harga_per_tangkai)}/tangkai
                 </p>
                 <div className="mt-2 flex items-center justify-between">
                   {s.menipis ? (

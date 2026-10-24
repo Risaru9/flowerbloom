@@ -88,7 +88,7 @@ export function KartuProduk({ produk, prioritas }: { produk: Produk; prioritas?:
         </h3>
         <p className="flex items-center gap-2 text-sm text-redup">
           <DeretTitikWarna daftar={warna} />
-          <span className="line-clamp-1">{teksWarna(warna)}</span>
+          <span className="line-clamp-2">{teksWarna(warna)}</span>
         </p>
         <p className="mt-auto pt-1 text-base font-bold text-rose-teks">{formatRupiah(produk.harga)}</p>
       </div>

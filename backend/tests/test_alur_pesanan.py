@@ -13,12 +13,17 @@ def _toko(client, db) -> Toko:
 
 def test_alur_lengkap_ambil_di_toko(client, db, klasifikator):
     toko = _toko(client, db)
+    awal = toko.pesan()
+    assert awal["rekening_tujuan"] is None  # belum diatur admin: pelanggan diminta menghubungi toko
+    assert client.post(f"{API}/pesanan/{awal['id_pesanan']}/batal", headers=toko.pel, json={}).status_code == 200
+    rekening = {"pengaturan": {"rekening_tujuan": "Bank Uji 123 a.n. Toko Uji"}}
+    assert client.patch(f"{API}/admin/pengaturan-toko", headers=toko.admin, json=rekening).status_code == 200
     pesanan = toko.pesan()
     id_ = pesanan["id_pesanan"]
     assert pesanan["status"]["kode"] == "menunggu_pembayaran"
     assert pesanan["status"]["ikon"] and pesanan["status"]["label"]  # status tidak hanya warna
     assert pesanan["total_harga"] == 150000 and pesanan["ongkos_antar"] == 0
-    assert pesanan["kode_pesanan"].startswith("FB-") and pesanan["rekening_tujuan"]
+    assert pesanan["kode_pesanan"].startswith("FB-") and pesanan["rekening_tujuan"] == "Bank Uji 123 a.n. Toko Uji"
     assert pesanan["batas_bayar"] is not None and pesanan["bisa_dibatalkan"] is True
 
     # stok ditahan saat pesanan dibuat (AB-02)

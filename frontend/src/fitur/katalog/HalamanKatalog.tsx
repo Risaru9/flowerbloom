@@ -1,5 +1,5 @@
 import { Search, SlidersHorizontal, X } from 'lucide-react'
-import { useDeferredValue, useMemo, useState, type ReactNode } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router'
 
 import type { Skema } from '@/api/client'
@@ -47,21 +47,24 @@ function Chip({ aktif, onClick, children }: { aktif: boolean; onClick: () => voi
   )
 }
 
+type Nilai = string | null | ((lama: string | null) => string | null)
+
 interface PropsSaring {
   acara: string[]
   warna: Skema['WarnaRingkas'][]
   q: URLSearchParams
-  atur: (kunci: string, nilai: string | null) => void
+  atur: (kunci: string, nilai: Nilai) => void
 }
 
 function PanelSaring({ acara, warna, q, atur }: PropsSaring) {
   const warnaDipilih = new Set((q.get('warna') ?? '').split(',').filter(Boolean))
-  const toggleWarna = (nama: string) => {
-    const s = new Set(warnaDipilih)
-    if (s.has(nama)) s.delete(nama)
-    else s.add(nama)
-    atur('warna', [...s].join(',') || null)
-  }
+  const toggleWarna = (nama: string) =>
+    atur('warna', (lama) => {
+      const s = new Set((lama ?? '').split(',').filter(Boolean))
+      if (s.has(nama)) s.delete(nama)
+      else s.add(nama)
+      return [...s].join(',') || null
+    })
   return (
     <div className="flex flex-col gap-6">
       <fieldset>
@@ -85,6 +88,7 @@ function PanelSaring({ acara, warna, q, atur }: PropsSaring) {
             <Chip key={w.id_warna} aktif={warnaDipilih.has(w.nama_warna)} onClick={() => toggleWarna(w.nama_warna)}>
               <span aria-hidden className="size-4 rounded-full border border-black/20" style={{ backgroundColor: w.kode_hex }} />
               {w.nama_warna}
+              <span className="font-mono text-[0.8em] opacity-80">{w.kode_hex.toUpperCase()}</span>
             </Chip>
           ))}
         </div>
@@ -120,17 +124,20 @@ export function HalamanKatalog() {
   const cari = q.get('cari') ?? ''
   const cariTertunda = useDeferredValue(cari)
 
-  const atur = (kunci: string, nilai: string | null) => {
-    setQ(
-      (lama) => {
-        const baru = new URLSearchParams(lama)
-        if (nilai === null || nilai === '') baru.delete(kunci)
-        else baru.set(kunci, nilai)
-        if (kunci !== 'hal') baru.delete('hal')
-        return baru
-      },
-      { replace: kunci === 'cari', preventScrollReset: true },
-    )
+  // setQ(fn) menerima parameter saat render, jadi dua klik cepat sebelum render ulang saling menimpa (T-02).
+  // Simpan parameter terbaru di ref agar setiap perubahan dibangun di atas perubahan sebelumnya.
+  const terkini = useRef(q)
+  useEffect(() => {
+    terkini.current = q
+  }, [q])
+  const atur = (kunci: string, nilai: Nilai) => {
+    const baru = new URLSearchParams(terkini.current)
+    const isi = typeof nilai === 'function' ? nilai(baru.get(kunci)) : nilai
+    if (isi === null || isi === '') baru.delete(kunci)
+    else baru.set(kunci, isi)
+    if (kunci !== 'hal') baru.delete('hal')
+    terkini.current = baru
+    setQ(baru, { replace: kunci === 'cari', preventScrollReset: true })
   }
 
   const semuaWarna = useMemo(() => {
