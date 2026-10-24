@@ -10,7 +10,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM nginxinc/nginx-unprivileged:1.29-alpine AS jalan
+FROM nginxinc/nginx-unprivileged:1.31-alpine AS jalan
 LABEL org.opencontainers.image.title="flowerbloom-frontend" \
       org.opencontainers.image.description="PWA FlowerBloom (React + Vite) disajikan Nginx" \
       org.opencontainers.image.source="https://github.com/Risaru9/flowerbloom"
