@@ -1,10 +1,12 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { createMemoryRouter, RouterProvider } from 'react-router'
+import { afterEach, describe, expect, it } from 'vitest'
 
 import { GrafikBatang } from './GrafikBatang'
 import { Bidang, Masukan } from './ui/Bidang'
 import { LencanaStatus } from './ui/Lain'
+import { TombolKembali } from './ui/TombolKembali'
 import { ChipWarna } from './ui/Warna'
 
 describe('ChipWarna', () => {
@@ -72,5 +74,34 @@ describe('GrafikBatang', () => {
     expect(screen.getByRole('table')).toBeInTheDocument()
     expect(screen.getByRole('rowheader', { name: 'Senin, 19 Oktober 2026' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: '7' })).toBeInTheDocument()
+  })
+})
+
+function pasangHalamanMasuk(entri: string[]) {
+  const router = createMemoryRouter(
+    [
+      { path: '/', element: <p>Beranda</p> },
+      { path: '/katalog', element: <p>Katalog</p> },
+      { path: '/masuk', element: <TombolKembali /> },
+    ],
+    { initialEntries: entri, initialIndex: entri.length - 1 },
+  )
+  render(<RouterProvider router={router} />)
+}
+
+describe('TombolKembali', () => {
+  afterEach(() => window.history.replaceState(null, ''))
+
+  it('kembali ke halaman sebelumnya di aplikasi', async () => {
+    window.history.replaceState({ idx: 1 }, '')
+    pasangHalamanMasuk(['/katalog', '/masuk'])
+    await userEvent.click(screen.getByRole('button', { name: 'Kembali' }))
+    expect(await screen.findByText('Katalog')).toBeInTheDocument()
+  })
+
+  it('menuju beranda bila halaman masuk dibuka langsung, tidak keluar situs', async () => {
+    pasangHalamanMasuk(['/masuk'])
+    await userEvent.click(screen.getByRole('button', { name: 'Kembali' }))
+    expect(await screen.findByText('Beranda')).toBeInTheDocument()
   })
 })

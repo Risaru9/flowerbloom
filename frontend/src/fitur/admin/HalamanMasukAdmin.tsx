@@ -12,6 +12,7 @@ import { tujuanAman } from '@/auth/Penjaga'
 import { Masukan } from '@/komponen/ui/Bidang'
 import { useJudul } from '@/komponen/ui/Lain'
 import { Tombol } from '@/komponen/ui/Tombol'
+import { TombolKembali } from '@/komponen/ui/TombolKembali'
 
 function KerangkaAuthAdmin({ judul, keterangan, children }: { judul: string; keterangan: string; children: React.ReactNode }) {
   return (
@@ -22,7 +23,8 @@ function KerangkaAuthAdmin({ judul, keterangan, children }: { judul: string; ket
         <p className="relative font-display text-2xl text-white/95 italic">Bunga terbaik, untuk setiap cerita</p>
         <img src={heroKotak} alt="" aria-hidden className="relative w-80 drop-shadow-2xl" />
       </div>
-      <main id="konten" className="flex items-center justify-center px-5 py-10">
+      <main id="konten" className="relative flex items-center justify-center px-5 pt-16 pb-10">
+        <TombolKembali className="absolute start-3 top-3 text-ad-aksen hover:bg-ad-permukaan sm:start-6 sm:top-6" />
         <div className="w-full max-w-md rounded-3xl border border-ad-garis bg-ad-permukaan p-6 shadow-sm sm:p-8">
           <p className="mb-1 text-xs font-bold tracking-widest text-ad-aksen uppercase">Panel Admin FlowerBloom</p>
           <h1 className="text-3xl font-bold tracking-tight">{judul}</h1>

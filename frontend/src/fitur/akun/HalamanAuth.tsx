@@ -139,6 +139,7 @@ export function HalamanMasuk() {
           Belum memiliki akun?{' '}
           <Link
             to={`/daftar${q.get('kembali') ? `?kembali=${encodeURIComponent(kembali)}` : ''}`}
+            replace
             className="font-display font-semibold text-rose-teks italic underline"
           >
             Daftar sekarang
@@ -244,6 +245,7 @@ export function HalamanDaftar() {
           Sudah punya akun?{' '}
           <Link
             to={`/masuk${q.get('kembali') ? `?kembali=${encodeURIComponent(kembali)}` : ''}`}
+            replace
             className="font-display font-semibold text-rose-teks italic underline"
           >
             Masuk

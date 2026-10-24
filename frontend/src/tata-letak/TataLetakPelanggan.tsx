@@ -230,8 +230,16 @@ function KakiSitus() {
           </ul>
         </div>
       </div>
-      <p className="relative bg-rose-teks/90 py-4 pb-[calc(1rem+4rem+env(safe-area-inset-bottom))] text-center text-sm text-white md:pb-4">
-        © {TAHUN} FlowerBloom. Seluruh hak dilindungi.
+      <p className="relative bg-rose-teks/90 px-4 py-4 pb-[calc(1rem+4rem+env(safe-area-inset-bottom))] text-center text-sm text-white md:pb-4">
+        © {TAHUN} FlowerBloom. Seluruh hak dilindungi.{' '}
+        <span className="inline-block whitespace-nowrap">
+          <span aria-hidden className="me-2 max-sm:hidden">
+            ·
+          </span>
+          <Link to="/admin/masuk" className="underline hover:no-underline">
+            Masuk admin
+          </Link>
+        </span>
       </p>
     </footer>
   )

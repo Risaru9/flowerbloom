@@ -7,6 +7,7 @@ import mask from '@/assets/gambar/masker-gelombang.svg'
 import bungaKecil from '@/assets/merek/bunga-kecil.svg'
 import logo from '@/assets/merek/logo.svg'
 import logoPutih from '@/assets/merek/logo-putih.svg'
+import { TombolKembali } from '@/komponen/ui/TombolKembali'
 
 /** Halaman masuk/daftar: panel foto bergelombang di layar lebar, panel ringkas di ponsel. */
 export function TataLetakAuth({ judul, children }: { judul: string; children: ReactNode }) {
@@ -23,8 +24,9 @@ export function TataLetakAuth({ judul, children }: { judul: string; children: Re
           <img src={logoPutih} alt="" className="w-full" />
         </Link>
       </div>
-      <main id="konten" className="relative flex flex-col items-center justify-center px-5 py-10 sm:px-10">
+      <main id="konten" className="relative flex flex-col items-center justify-center px-5 pt-16 pb-10 sm:px-10">
         <img src={garisBunga} alt="" aria-hidden className="pointer-events-none absolute end-0 bottom-0 h-3/4 opacity-15" />
+        <TombolKembali className="absolute start-3 top-3 text-rose-teks hover:bg-blush sm:start-6 sm:top-6" />
         <Link to="/" className="mb-8 lg:hidden" aria-label="FlowerBloom, ke beranda">
           <img src={logo} alt="" className="h-9 w-auto" />
         </Link>
@@ -32,6 +34,11 @@ export function TataLetakAuth({ judul, children }: { judul: string; children: Re
           <img src={bungaKecil} alt="" aria-hidden className="mx-auto mb-3 size-10" />
           <h1 className="mb-8 text-center font-display text-4xl text-rose-teks md:text-5xl">{judul}</h1>
           {children}
+          <p className="mt-6 text-center text-sm">
+            <Link to="/katalog" className="text-redup underline hover:text-rose-teks">
+              Lihat-lihat dulu tanpa akun
+            </Link>
+          </p>
         </div>
       </main>
     </div>
