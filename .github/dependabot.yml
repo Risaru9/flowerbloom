@@ -19,6 +19,13 @@ updates:
     groups:
       frontend-minor-patch:
         update-types: [minor, patch]
+    ignore:
+      # TypeScript 7 (port Go) belum menyediakan API JavaScript (ts.factory) yang dipakai openapi-typescript.
+      - dependency-name: typescript
+        versions: [">=7"]
+      # Tipe Node mengikuti runtime di CI dan Docker (Node 24 LTS); naik mayor bersamaan secara manual.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
@@ -34,3 +41,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    ignore:
+      # Node mayor (termasuk rilis ganjil non-LTS) dinaikkan manual bersama node-version di workflow.
+      - dependency-name: node
+        update-types: ["version-update:semver-major"]
