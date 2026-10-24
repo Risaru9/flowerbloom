@@ -58,12 +58,8 @@ def downgrade() -> None:
     with op.batch_alter_table('pengguna', schema=None) as batch_op:
         batch_op.drop_column('versi_sesi')
 
-    with op.batch_alter_table('favorit', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_favorit_id_pengguna'))
-
+    # Indeks ikut terhapus bersama tabel. Menghapusnya lebih dulu ditolak MySQL (galat 1553) karena InnoDB
+    # memakai ix_*_id_pengguna sebagai indeks foreign key setelah indeks bawaannya dibuang otomatis.
     op.drop_table('favorit')
-    with op.batch_alter_table('alamat', schema=None) as batch_op:
-        batch_op.drop_index(batch_op.f('ix_alamat_id_pengguna'))
-
     op.drop_table('alamat')
     # ### end Alembic commands ###

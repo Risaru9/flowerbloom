@@ -17,7 +17,8 @@ def main() -> None:
     tujuan = Path(__file__).resolve().parent.parent / "docs" / "openapi.json"
     tujuan.parent.mkdir(exist_ok=True)
     skema = app.openapi()
-    tujuan.write_text(json.dumps(skema, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # newline="\n": hasil di Windows harus identik dengan CI (Linux) agar cek kontrak tidak gagal karena CRLF.
+    tujuan.write_text(json.dumps(skema, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     operasi = sum(len(v) for v in skema["paths"].values())
     print(f"{tujuan} ditulis: {len(skema['paths'])} path, {operasi} operasi.")
 
