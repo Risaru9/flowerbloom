@@ -16,7 +16,7 @@ from app.schemas.stok import (
     StokManualIn,
     StokOut,
 )
-from app.services import pengaturan_toko, pindai, penyaji
+from app.services import pengaturan_toko, penyaji, pindai
 from app.services import stok as layanan
 
 router = APIRouter(prefix="/admin", tags=["Admin - Stok & Pindai"])

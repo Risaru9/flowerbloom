@@ -26,7 +26,6 @@ import app.models  # noqa: E402,F401  (mendaftarkan semua tabel)
 from app.database import Base, buat_engine, get_db  # noqa: E402
 from app.main import app  # noqa: E402
 
-
 # Basis data eksternal (mis. MySQL) untuk membuktikan perilaku yang tidak dapat diuji di SQLite, terutama kunci baris
 # dan benturan transaksi sungguhan. Isinya DIKOSONGKAN setiap tes, jadi namanya wajib berakhiran "_uji".
 URL_UJI_EKSTERNAL = os.environ.get("UJI_DATABASE_URL")
@@ -37,7 +36,8 @@ def _kosongkan(mesin) -> None:
     with mesin.begin() as koneksi:
         koneksi.execute(text("SET FOREIGN_KEY_CHECKS=0"))
         for tabel in reversed(Base.metadata.sorted_tables):
-            if koneksi.execute(text(f"SELECT 1 FROM `{tabel.name}` LIMIT 1")).first() is not None:
+            # Nama tabel berasal dari metadata model, bukan dari masukan pengguna.
+            if koneksi.execute(text(f"SELECT 1 FROM `{tabel.name}` LIMIT 1")).first() is not None:  # noqa: S608
                 koneksi.execute(text(f"TRUNCATE TABLE `{tabel.name}`"))
         koneksi.execute(text("SET FOREIGN_KEY_CHECKS=1"))
 

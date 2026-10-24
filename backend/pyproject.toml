@@ -1,0 +1,28 @@
+[project]
+name = "flowerbloom-backend"
+version = "0.1.0"
+description = "REST API FlowerBloom: toko bunga dengan aksesibilitas warna bagi pelanggan buta warna."
+requires-python = ">=3.13"
+
+[tool.ruff]
+line-length = 140
+target-version = "py313"
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+# E/W pycodestyle, F pyflakes, I isort, B bugbear, UP pyupgrade, S bandit (keamanan), SIM, C4
+select = ["E", "W", "F", "I", "B", "UP", "S", "SIM", "C4"]
+ignore = [
+  "E501",   # panjang baris diserahkan ke formatter/editor
+  "B008",   # Depends()/File() di parameter adalah pola FastAPI
+  "SIM108", # ternary tidak selalu lebih jelas
+  "UP042",  # (str, Enum) dipertahankan: mengganti ke StrEnum mengubah perilaku Enum di SQLAlchemy
+  "UP046",  # Generic[T] dipertahankan untuk kompatibilitas skema Pydantic
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S311", "B017"]
+"scripts/**" = ["S311"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "scripts", "tests"]

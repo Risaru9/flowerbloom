@@ -19,7 +19,6 @@ from app.services import pesanan as layanan
 from app.services import stok as layanan_stok
 from tests.bantu import buat_pengguna, gambar_bytes, siapkan_referensi
 
-
 butuh_kunci_baris = pytest.mark.skipif(
     not os.environ.get("UJI_DATABASE_URL"),
     reason="Mengandalkan SELECT ... FOR UPDATE yang diabaikan SQLite; jalankan dengan UJI_DATABASE_URL (MySQL).",

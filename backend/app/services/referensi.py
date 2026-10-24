@@ -55,9 +55,12 @@ def buat_warna(db: Session, *, nama_warna: str, kode_hex: str, makna_warna: str 
 def ubah_warna(db: Session, id_warna: int, perubahan: dict) -> Warna:
     warna = ambil_warna(db, id_warna)
     nama_baru = perubahan.get("nama_warna")
-    if nama_baru and nama_baru.strip() != warna.nama_warna:
-        if db.scalar(select(Warna).where(Warna.nama_warna == nama_baru.strip())):
-            raise Konflik("Nama warna sudah ada.", kode="warna_ganda")
+    if (
+        nama_baru
+        and nama_baru.strip() != warna.nama_warna
+        and db.scalar(select(Warna).where(Warna.nama_warna == nama_baru.strip()))
+    ):
+        raise Konflik("Nama warna sudah ada.", kode="warna_ganda")
     for kunci, nilai in perubahan.items():
         setattr(warna, kunci, nilai.strip() if isinstance(nilai, str) and kunci == "nama_warna" else nilai)
     db.flush()

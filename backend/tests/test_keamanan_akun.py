@@ -1,6 +1,6 @@
 """Ganti kata sandi, pencabutan sesi, dan pembatas percobaan masuk."""
-from app.core.pembatas import PembatasPercobaan
 from app.core.errors import TerlaluBanyak
+from app.core.pembatas import PembatasPercobaan
 from app.models.enums import Peran
 from tests.bantu import KATA_SANDI, buat_pengguna, header_masuk
 

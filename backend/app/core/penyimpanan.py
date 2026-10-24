@@ -9,6 +9,7 @@ Struktur di bawah ``direktori_berkas``:
 Setiap unggahan divalidasi sebagai gambar, diputar sesuai EXIF, lalu disimpan ulang sebagai JPEG
 sehingga metadata (mis. lokasi GPS) hilang dan ukuran berkas terkendali.
 """
+import contextlib
 import io
 import uuid
 from pathlib import Path
@@ -95,10 +96,8 @@ class Penyimpanan:
     def hapus(self, relatif: str | None) -> None:
         if not relatif:
             return
-        try:
+        with contextlib.suppress(TidakDitemukan):
             self.jalur_absolut(relatif).unlink(missing_ok=True)
-        except TidakDitemukan:
-            pass
 
 
 def ambil_penyimpanan() -> Penyimpanan:

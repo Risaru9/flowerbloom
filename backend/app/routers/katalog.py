@@ -8,7 +8,7 @@ from app.dependencies import DB, Admin
 from app.schemas.katalog import ProdukIn, ProdukOut, ProdukUbahIn
 from app.schemas.stok import OpsiRangkaiOut
 from app.schemas.toko import InfoTokoOut, PengaturanItemOut, PengaturanUbahIn
-from app.services import katalog, penyaji, pengaturan_toko
+from app.services import katalog, pengaturan_toko, penyaji
 from app.services import stok as layanan_stok
 
 router = APIRouter(tags=["Katalog"])

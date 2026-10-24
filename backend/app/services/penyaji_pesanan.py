@@ -30,6 +30,7 @@ from app.services import alur_pesanan, foto_konfirmasi
 from app.services.alur_pesanan import S
 from app.services.pengaturan_toko import PengaturanTerkini
 
+
 def status_info(status: StatusPesanan) -> StatusInfoOut:
     i = alur_pesanan.info(status)
     return StatusInfoOut(kode=status, label=i.label, ikon=i.ikon, keterangan=i.keterangan)

@@ -40,7 +40,7 @@ class PenggunaOut(SkemaDasar):
 
 class TokenOut(BaseModel):
     access_token: str
-    token_type: str = "bearer"
+    token_type: str = "bearer"  # noqa: S105 -- jenis token OAuth2, bukan kata sandi
     pengguna: PenggunaOut
 
 

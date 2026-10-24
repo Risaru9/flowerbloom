@@ -18,7 +18,7 @@ API = "/api/v1"
 def test_data_awal_lengkap_dan_sesuai_batas_kolom():
     kelas = [k for k, *_ in JENIS_BUNGA_AWAL]
     assert sorted(kelas) == list(range(1, 103))  # tepat 102 kelas, tanpa duplikat/lubang
-    for k, nama, ilmiah, bentuk, nama_dataset in JENIS_BUNGA_AWAL:
+    for _kelas, nama, ilmiah, bentuk, nama_dataset in JENIS_BUNGA_AWAL:
         assert 2 <= len(nama) <= 100 and (ilmiah is None or len(ilmiah) <= 150) and (bentuk is None or len(bentuk) <= 100)
         assert nama_dataset
     nama_warna = [n for n, _, _ in WARNA_AWAL]
