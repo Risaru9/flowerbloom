@@ -131,7 +131,10 @@ export function HalamanMasukAdmin() {
           Masuk
         </Tombol>
         <p className="text-center text-xs text-ad-redup">
-          Hanya untuk staf toko. Pelanggan? <Link to="/masuk" className="font-semibold text-ad-aksen underline">Masuk di sini</Link>
+          Hanya untuk staf toko. Pelanggan?{' '}
+          <Link to="/masuk" className="font-semibold text-ad-aksen underline">
+            Masuk di sini
+          </Link>
         </p>
       </form>
     </KerangkaAuthAdmin>
@@ -145,12 +148,14 @@ export function HalamanLupaSandi() {
       <ol className="flex list-decimal flex-col gap-3 ps-5 text-sm">
         <li>Hubungi admin lain atau pemilik toko.</li>
         <li>
-          Admin lain dapat <strong>menonaktifkan akun lama</strong> Anda dan <strong>membuatkan akun admin baru</strong> dari menu Akun Admin.
+          Admin lain dapat <strong>menonaktifkan akun lama</strong> Anda dan <strong>membuatkan akun admin baru</strong> dari menu Akun
+          Admin.
         </li>
         <li>Setelah masuk, segera ganti kata sandi dari menu Profil Saya.</li>
       </ol>
       <p className="mt-4 rounded-xl bg-ad-info-lembut p-3 text-xs text-ad-info">
-        Bila tidak ada admin lain, pengelola server dapat membuat akun admin lewat perintah <code className="font-mono">python -m scripts.seed</code>.
+        Bila tidak ada admin lain, pengelola server dapat membuat akun admin lewat perintah{' '}
+        <code className="font-mono">python -m scripts.seed</code>.
       </p>
       <Link to="/admin/masuk" className="mt-6 inline-flex font-semibold text-ad-aksen hover:underline">
         ← Kembali ke halaman masuk

@@ -173,7 +173,11 @@ function Notifikasi() {
     ? [
         { n: data.perlu_verifikasi, teks: 'pembayaran menunggu verifikasi', ke: '/admin/pembayaran' },
         { n: data.perlu_dirangkai, teks: 'pesanan siap dirangkai', ke: '/admin/pesanan?status=sedang_dirangkai' },
-        { n: data.menunggu_persetujuan_foto, teks: 'foto menunggu persetujuan pelanggan', ke: '/admin/pesanan?status=menunggu_persetujuan_foto' },
+        {
+          n: data.menunggu_persetujuan_foto,
+          teks: 'foto menunggu persetujuan pelanggan',
+          ke: '/admin/pesanan?status=menunggu_persetujuan_foto',
+        },
         { n: data.perlu_pengembalian_dana, teks: 'pengembalian dana perlu diproses', ke: '/admin/pesanan?status=dibatalkan' },
         { n: data.komplain_baru, teks: 'komplain baru', ke: '/admin/komplain' },
         { n: data.stok_menipis.length, teks: 'jenis stok menipis', ke: '/admin/stok?menipis=1' },
@@ -191,7 +195,10 @@ function Notifikasi() {
       >
         <Bell aria-hidden className="size-5" />
         {total > 0 && (
-          <span aria-hidden className="absolute end-1 top-1 grid min-w-5 place-items-center rounded-full bg-ad-aksen px-1 text-[0.65rem] font-bold leading-5 text-white">
+          <span
+            aria-hidden
+            className="absolute end-1 top-1 grid min-w-5 place-items-center rounded-full bg-ad-aksen px-1 text-[0.65rem] leading-5 font-bold text-white"
+          >
             {total}
           </span>
         )}
@@ -205,8 +212,14 @@ function Notifikasi() {
             <ul>
               {item.map((i) => (
                 <li key={i.teks}>
-                  <Link to={i.ke} onClick={() => setBuka(false)} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm hover:bg-ad-latar">
-                    <span className="grid min-w-8 place-items-center rounded-lg bg-ad-aksen-lembut px-1.5 py-1 font-bold text-ad-aksen">{i.n}</span>
+                  <Link
+                    to={i.ke}
+                    onClick={() => setBuka(false)}
+                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm hover:bg-ad-latar"
+                  >
+                    <span className="grid min-w-8 place-items-center rounded-lg bg-ad-aksen-lembut px-1.5 py-1 font-bold text-ad-aksen">
+                      {i.n}
+                    </span>
                     {i.teks}
                   </Link>
                 </li>
@@ -233,7 +246,10 @@ export function TataLetakAdmin() {
   }
   return (
     <div data-area="admin" className="min-h-dvh bg-ad-latar font-admin text-ad-teks">
-      <a href="#konten" className="sr-only-fokus fixed start-3 top-3 z-[80] rounded-lg bg-ad-teks px-4 py-2 text-sm font-semibold text-ad-permukaan">
+      <a
+        href="#konten"
+        className="sr-only-fokus fixed start-3 top-3 z-[80] rounded-lg bg-ad-teks px-4 py-2 text-sm font-semibold text-ad-permukaan"
+      >
         Lewati ke konten utama
       </a>
       <aside className="fixed inset-y-0 start-0 z-30 hidden w-64 border-e border-ad-garis bg-ad-permukaan lg:block">
@@ -294,7 +310,17 @@ export function TataLetakAdmin() {
   )
 }
 
-export function JudulAdmin({ judul, keterangan, jejak, aksi }: { judul: string; keterangan?: string; jejak?: { ke: string; label: string }[]; aksi?: React.ReactNode }) {
+export function JudulAdmin({
+  judul,
+  keterangan,
+  jejak,
+  aksi,
+}: {
+  judul: string
+  keterangan?: string
+  jejak?: { ke: string; label: string }[]
+  aksi?: React.ReactNode
+}) {
   return (
     <div className="mb-6 flex flex-wrap items-end gap-3">
       <div className="min-w-0 flex-1">

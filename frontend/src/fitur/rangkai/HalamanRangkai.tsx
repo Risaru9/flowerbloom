@@ -101,7 +101,9 @@ export function HalamanRangkai() {
           {terpilih.map((o) => (
             <li key={o.id_stok} className="flex items-center justify-between gap-2 text-sm">
               <span className="min-w-0">
-                <span className="font-semibold text-olive-tua">{pilihan.get(o.id_stok)}× {o.jenis.nama_bunga}</span>{' '}
+                <span className="font-semibold text-olive-tua">
+                  {pilihan.get(o.id_stok)}× {o.jenis.nama_bunga}
+                </span>{' '}
                 <ChipWarna warna={o.warna} ukuran="kecil" tampilkanKode={false} />
               </span>
               <button
@@ -190,7 +192,10 @@ export function HalamanRangkai() {
           ) : opsi.isError ? (
             <Galat galat={opsi.error} ulangi={() => void opsi.refetch()} />
           ) : daftar.length === 0 ? (
-            <Kosong judul="Stok bunga sedang kosong" pesan="Florist kami sedang menyiapkan bunga segar. Coba lagi nanti atau pilih paket di katalog." />
+            <Kosong
+              judul="Stok bunga sedang kosong"
+              pesan="Florist kami sedang menyiapkan bunga segar. Coba lagi nanti atau pilih paket di katalog."
+            />
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {disaring.map((o) => {

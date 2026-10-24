@@ -49,7 +49,11 @@ const NADA_STATUS: Record<Skema['StatusPesanan'], string> = {
 export function LencanaStatus({ status, className }: { status: Skema['StatusInfoOut']; className?: string }) {
   return (
     <span
-      className={cn('inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold', NADA_STATUS[status.kode], className)}
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold',
+        NADA_STATUS[status.kode],
+        className,
+      )}
       title={status.keterangan}
     >
       <IkonStatus nama={status.ikon} className="size-3.5" />
@@ -85,7 +89,13 @@ export function Paginasi({
       <span className="text-sm" aria-live="polite">
         Halaman <strong>{halaman}</strong> dari {jumlah}
       </span>
-      <button type="button" className={kelas} disabled={halaman >= jumlah} onClick={() => ubah(halaman + 1)} aria-label="Halaman berikutnya">
+      <button
+        type="button"
+        className={kelas}
+        disabled={halaman >= jumlah}
+        onClick={() => ubah(halaman + 1)}
+        aria-label="Halaman berikutnya"
+      >
         <ChevronRight aria-hidden className="size-5" />
       </button>
     </nav>
@@ -133,12 +143,7 @@ export function PengaturJumlah({
 }
 
 /** Foto bunga: diberi data-foto-bunga agar filter penajaman warna berlaku, dimuat lambat, ada cadangan bila kosong/gagal. */
-export function FotoBunga({
-  src,
-  alt,
-  className,
-  ...sisa
-}: Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> & { src?: string | null }) {
+export function FotoBunga({ src, alt, className, ...sisa }: Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'> & { src?: string | null }) {
   const [gagal, setGagal] = useState(false)
   if (!src || gagal) {
     return (
@@ -176,12 +181,23 @@ export function Sakelar({
 }) {
   return (
     <label className="flex cursor-pointer items-center gap-3 rounded-2xl border-2 border-garis bg-permukaan px-4 py-3">
-      {ikon && <span aria-hidden className="text-rose-teks">{ikon}</span>}
+      {ikon && (
+        <span aria-hidden className="text-rose-teks">
+          {ikon}
+        </span>
+      )}
       <span className="flex-1">
         <span className="block font-semibold text-olive-tua">{label}</span>
         {keterangan && <span className="block text-xs text-redup">{keterangan}</span>}
       </span>
-      <input type="checkbox" role="switch" aria-checked={nyala} checked={nyala} onChange={(e) => ubah(e.target.checked)} className="peer sr-only" />
+      <input
+        type="checkbox"
+        role="switch"
+        aria-checked={nyala}
+        checked={nyala}
+        onChange={(e) => ubah(e.target.checked)}
+        className="peer sr-only"
+      />
       <span
         aria-hidden
         className="relative h-7 w-12 shrink-0 rounded-full bg-garis transition-colors peer-checked:bg-rose-teks peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-magenta after:absolute after:start-1 after:top-1 after:size-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:after:translate-x-5"

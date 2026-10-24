@@ -1,0 +1,33 @@
+name: Laporan bug
+description: Ada yang tidak berjalan semestinya
+labels: [bug]
+body:
+  - type: textarea
+    id: kejadian
+    attributes:
+      label: Apa yang terjadi?
+      description: Jelaskan masalahnya dan apa yang seharusnya terjadi.
+    validations:
+      required: true
+  - type: textarea
+    id: langkah
+    attributes:
+      label: Langkah reproduksi
+      placeholder: |
+        1. Buka halaman ...
+        2. Klik ...
+        3. Muncul ...
+    validations:
+      required: true
+  - type: dropdown
+    id: bagian
+    attributes:
+      label: Bagian
+      options: [Pelanggan, Admin, Backend/API, PWA/instalasi, Aksesibilitas]
+    validations:
+      required: true
+  - type: input
+    id: perangkat
+    attributes:
+      label: Perangkat & peramban
+      placeholder: Android 15, Chrome 140 / aplikasi terpasang

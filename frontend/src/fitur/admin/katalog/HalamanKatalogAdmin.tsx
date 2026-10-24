@@ -56,8 +56,18 @@ export function HalamanKatalogAdmin() {
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {daftar.map((p) => (
-            <li key={p.id_produk} className={cn('flex gap-3 rounded-2xl border bg-ad-permukaan p-3', p.ditampilkan ? 'border-ad-garis' : 'border-dashed border-ad-redup/50')}>
-              <FotoBunga src={p.foto_url} alt={p.nama_produk} className={cn('size-24 shrink-0 rounded-xl', !p.ditampilkan && 'opacity-50')} />
+            <li
+              key={p.id_produk}
+              className={cn(
+                'flex gap-3 rounded-2xl border bg-ad-permukaan p-3',
+                p.ditampilkan ? 'border-ad-garis' : 'border-dashed border-ad-redup/50',
+              )}
+            >
+              <FotoBunga
+                src={p.foto_url}
+                alt={p.nama_produk}
+                className={cn('size-24 shrink-0 rounded-xl', !p.ditampilkan && 'opacity-50')}
+              />
               <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <p className="truncate font-semibold">{p.nama_produk}</p>
                 <p className="text-xs text-ad-redup">
@@ -83,7 +93,10 @@ export function HalamanKatalogAdmin() {
                       ubah.mutate(
                         { id: p.id_produk, isian: { ditampilkan: !p.ditampilkan } },
                         {
-                          onSuccess: () => tampilkanToast(p.ditampilkan ? `${p.nama_produk} disembunyikan dari katalog.` : `${p.nama_produk} ditampilkan di katalog.`),
+                          onSuccess: () =>
+                            tampilkanToast(
+                              p.ditampilkan ? `${p.nama_produk} disembunyikan dari katalog.` : `${p.nama_produk} ditampilkan di katalog.`,
+                            ),
                           onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
                         },
                       )
@@ -91,7 +104,11 @@ export function HalamanKatalogAdmin() {
                   >
                     {p.ditampilkan ? 'Tampil' : 'Tersembunyi'}
                   </Tombol>
-                  {!p.dapat_dipesan && p.ditampilkan && <span className="self-center rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-xs font-bold text-ad-peringatan">Stok kurang</span>}
+                  {!p.dapat_dipesan && p.ditampilkan && (
+                    <span className="self-center rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-xs font-bold text-ad-peringatan">
+                      Stok kurang
+                    </span>
+                  )}
                 </div>
               </div>
             </li>

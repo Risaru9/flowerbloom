@@ -44,7 +44,11 @@ function KartuPilihan({
       )}
     >
       <input type="radio" name={nama} value={nilai} checked={dipilih} onChange={ubah} className="mt-1 size-4 accent-rose-teks" />
-      {ikon && <span aria-hidden className="text-rose-teks">{ikon}</span>}
+      {ikon && (
+        <span aria-hidden className="text-rose-teks">
+          {ikon}
+        </span>
+      )}
       <span>
         <span className="block font-semibold text-olive-tua">{judul}</span>
         {ket && <span className="block text-sm text-redup">{ket}</span>}
@@ -178,11 +182,28 @@ export function HalamanCheckout() {
                   />
                 ))}
                 {!!alamatTersimpan.data?.length && (
-                  <KartuPilihan nama="alamat" nilai="baru" dipilih={idAlamat === 'baru'} ubah={() => setIdAlamat('baru')} judul="Gunakan alamat lain" />
+                  <KartuPilihan
+                    nama="alamat"
+                    nilai="baru"
+                    dipilih={idAlamat === 'baru'}
+                    ubah={() => setIdAlamat('baru')}
+                    judul="Gunakan alamat lain"
+                  />
                 )}
                 {(idAlamat === 'baru' || !alamatTersimpan.data?.length) && (
-                  <Bidang label="Alamat lengkap" labelTersembunyi={!!alamatTersimpan.data?.length} galat={galat.alamat} bantuan="Sertakan nomor rumah, patokan, dan nomor HP penerima.">
-                    <AreaTeks id="bidang-alamat" value={alamatBaru} onChange={(e) => setAlamatBaru(e.target.value)} autoComplete="street-address" maxLength={480} />
+                  <Bidang
+                    label="Alamat lengkap"
+                    labelTersembunyi={!!alamatTersimpan.data?.length}
+                    galat={galat.alamat}
+                    bantuan="Sertakan nomor rumah, patokan, dan nomor HP penerima."
+                  >
+                    <AreaTeks
+                      id="bidang-alamat"
+                      value={alamatBaru}
+                      onChange={(e) => setAlamatBaru(e.target.value)}
+                      autoComplete="street-address"
+                      maxLength={480}
+                    />
                   </Bidang>
                 )}
                 {galat.alamat && idAlamat !== 'baru' && !!alamatTersimpan.data?.length && (
@@ -196,7 +217,12 @@ export function HalamanCheckout() {
               </fieldset>
             )}
             <Bidang label="Kartu ucapan (opsional)" bantuan={`${kartu.length}/500 karakter`}>
-              <AreaTeks value={kartu} onChange={(e) => setKartu(e.target.value)} maxLength={500} placeholder="Selamat ulang tahun, semoga…" />
+              <AreaTeks
+                value={kartu}
+                onChange={(e) => setKartu(e.target.value)}
+                maxLength={500}
+                placeholder="Selamat ulang tahun, semoga…"
+              />
             </Bidang>
           </section>
 
@@ -210,7 +236,14 @@ export function HalamanCheckout() {
               galat={galat.tanggal}
               bantuan={`Paling cepat ${formatTanggalHari(minTanggal)} (pemesanan H-${toko.minimal_hari_pemesanan}).`}
             >
-              <Masukan id="bidang-tanggal" type="date" min={minTanggal} max={maksTanggal} value={tanggal} onChange={(e) => setTanggal(e.target.value)} />
+              <Masukan
+                id="bidang-tanggal"
+                type="date"
+                min={minTanggal}
+                max={maksTanggal}
+                value={tanggal}
+                onChange={(e) => setTanggal(e.target.value)}
+              />
             </Bidang>
             <fieldset>
               <legend className="mb-2 flex items-center gap-2 text-sm font-semibold text-olive-tua">
@@ -226,7 +259,14 @@ export function HalamanCheckout() {
                       slot === s ? 'border-rose-teks bg-rose-teks text-white' : 'border-garis bg-permukaan text-olive-tua',
                     )}
                   >
-                    <input id={i === 0 ? 'bidang-slot' : undefined} type="radio" name="slot" className="sr-only" checked={slot === s} onChange={() => setSlot(s)} />
+                    <input
+                      id={i === 0 ? 'bidang-slot' : undefined}
+                      type="radio"
+                      name="slot"
+                      className="sr-only"
+                      checked={slot === s}
+                      onChange={() => setSlot(s)}
+                    />
                     {s}
                   </label>
                 ))}
@@ -282,7 +322,8 @@ export function HalamanCheckout() {
             Buat pesanan
           </Tombol>
           <p className="mt-3 text-xs text-redup">
-            Stok ditahan untuk Anda selama {toko.batas_bayar_menit} menit. Lakukan pembayaran sebelum batas waktu agar pesanan tidak batal otomatis.
+            Stok ditahan untuk Anda selama {toko.batas_bayar_menit} menit. Lakukan pembayaran sebelum batas waktu agar pesanan tidak batal
+            otomatis.
           </p>
         </aside>
       </div>

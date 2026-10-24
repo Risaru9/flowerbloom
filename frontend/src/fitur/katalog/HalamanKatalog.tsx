@@ -146,7 +146,9 @@ export function HalamanKatalog() {
     const rentang = RENTANG.find((r) => r.nilai === (q.get('harga') ?? '')) ?? RENTANG[0]!
     const daftar = produk.data.filter((p) => {
       if (kata) {
-        const teks = normal([p.nama_produk, p.deskripsi, p.acara, ...p.komposisi.map((k) => `${k.jenis.nama_bunga} ${k.warna.nama_warna}`)].join(' '))
+        const teks = normal(
+          [p.nama_produk, p.deskripsi, p.acara, ...p.komposisi.map((k) => `${k.jenis.nama_bunga} ${k.warna.nama_warna}`)].join(' '),
+        )
         if (!kata.split(/\s+/).every((k) => teks.includes(k))) return false
       }
       if (warna.size && !p.komposisi.some((k) => warna.has(k.warna.nama_warna))) return false

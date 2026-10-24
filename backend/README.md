@@ -16,7 +16,7 @@ REST API untuk FlowerBloom: toko bunga dengan aksesibilitas warna bagi pelanggan
 ```powershell
 cd backend
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pip install --require-hashes -r requirements-dev.txt   # versi terkunci (lihat requirements.in)
 copy .env.example .env                                   # lalu sesuaikan (JWT_RAHASIA, dsb.)
 
 .\.venv\Scripts\python.exe -m alembic upgrade head       # buat tabel
@@ -46,7 +46,7 @@ docker compose up -d db                                  # Docker Desktop harus 
 Jalur cepat memakai SQLite di memori:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest              # 112 lulus + 2 dilewati (bergantung pada kunci baris MySQL)
+.\.venv\Scripts\python.exe -m pytest              # 125 lulus + 2 dilewati (bergantung pada kunci baris MySQL)
 ```
 
 Jalur penuh di MySQL (membuktikan kunci baris, isolasi transaksi, dan konkurensi sungguhan). `docker compose up -d db` sudah
@@ -55,7 +55,7 @@ menyediakan basis data khusus uji `flowerbloom_uji`; namanya **wajib berakhiran 
 
 ```powershell
 $env:UJI_DATABASE_URL = "mysql+pymysql://flowerbloom:flowerbloom-dev@127.0.0.1:3306/flowerbloom_uji?charset=utf8mb4"
-.\.venv\Scripts\python.exe -m pytest              # 114 lulus; ±2 menit
+.\.venv\Scripts\python.exe -m pytest              # 127 lulus; ±2 menit
 ```
 
 Yang diuji: mesin status (setiap transisi sah dan terlarang), siklus stok dan uji rebutan serentak, alur lengkap

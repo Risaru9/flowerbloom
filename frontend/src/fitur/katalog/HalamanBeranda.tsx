@@ -63,7 +63,10 @@ function JudulBagian({ judul, ke, teksTautan }: { judul: string; ke?: string; te
     <div className="mb-5 flex items-end justify-between gap-4">
       <h2 className="font-display text-3xl text-olive-tua md:text-4xl">{judul}</h2>
       {ke && (
-        <Link to={ke} className="inline-flex shrink-0 items-center gap-2 rounded-full px-2 py-1 text-sm font-semibold text-rose-teks hover:underline">
+        <Link
+          to={ke}
+          className="inline-flex shrink-0 items-center gap-2 rounded-full px-2 py-1 text-sm font-semibold text-rose-teks hover:underline"
+        >
           {teksTautan ?? 'Lihat semua'} <ArrowRight aria-hidden className="size-4" />
         </Link>
       )}
@@ -86,7 +89,9 @@ export function HalamanBeranda() {
             <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-latar/80 px-3 py-1 text-xs font-semibold text-rose-teks">
               <Palette aria-hidden className="size-4" /> Toko bunga ramah buta warna
             </p>
-            <h1 className="font-display text-[2.6rem] leading-[1.05] text-olive-tua sm:text-5xl lg:text-6xl">Cerita Dalam Setiap Rangkaian</h1>
+            <h1 className="font-display text-[2.6rem] leading-[1.05] text-olive-tua sm:text-5xl lg:text-6xl">
+              Cerita Dalam Setiap Rangkaian
+            </h1>
             <p className="mt-4 max-w-lg text-lg text-olive">
               Temukan rangkaian bunga dengan <strong>nama warna, kode warna, dan makna</strong> yang jelas untuk setiap momen.
             </p>
@@ -136,7 +141,12 @@ export function HalamanBeranda() {
             {KATEGORI.map((k) => (
               <li key={k.judul} className="w-[70%] shrink-0 snap-start sm:w-[45%] md:w-auto">
                 <Link to={k.ke} className="group relative block overflow-hidden rounded-3xl bg-peach">
-                  <img src={k.gambar} alt="" loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  <img
+                    src={k.gambar}
+                    alt=""
+                    loading="lazy"
+                    className="aspect-[4/5] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                   <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-rose-tua/90 to-transparent p-4 pt-12 text-white">
                     <span>
                       <span className="block font-display text-xl">{k.judul}</span>
@@ -181,11 +191,21 @@ export function HalamanBeranda() {
               Setiap rangkaian dibuat dengan bunga segar dan dilengkapi informasi jenis, nama warna, serta maknanya, sehingga Anda yakin
               dengan pilihan Anda.
             </p>
-            <TautanTombol to="/tentang" varian="garis" className="self-start" ikon={<ArrowRight aria-hidden className="order-last size-4" />}>
+            <TautanTombol
+              to="/tentang"
+              varian="garis"
+              className="self-start"
+              ikon={<ArrowRight aria-hidden className="order-last size-4" />}
+            >
               Tentang kami
             </TautanTombol>
           </div>
-          <img src={floristTersenyum} alt="Florist FlowerBloom sedang merangkai bunga" loading="lazy" className="h-64 w-full object-cover md:h-full" />
+          <img
+            src={floristTersenyum}
+            alt="Florist FlowerBloom sedang merangkai bunga"
+            loading="lazy"
+            className="h-64 w-full object-cover md:h-full"
+          />
         </section>
 
         {/* Momen */}
@@ -215,7 +235,12 @@ export function HalamanBeranda() {
 
         {/* Rangkai sendiri */}
         <section className="relative grid overflow-hidden rounded-[2rem] bg-latar-2 md:grid-cols-2">
-          <img src={rakBunga} alt="Rak penuh bunga segar aneka warna di toko" loading="lazy" className="h-60 w-full object-cover md:h-full" />
+          <img
+            src={rakBunga}
+            alt="Rak penuh bunga segar aneka warna di toko"
+            loading="lazy"
+            className="h-60 w-full object-cover md:h-full"
+          />
           <div className="flex flex-col justify-center gap-4 p-7 md:p-12 md:text-end">
             <h2 className="font-display text-3xl text-rose-teks md:text-4xl">Rangkai Sesukamu</h2>
             <p className="text-olive">
@@ -261,7 +286,12 @@ export function HalamanBeranda() {
               Atur aksesibilitas <ArrowRight aria-hidden className="size-4" />
             </button>
           </div>
-          <img src={bungaWarnaWarni} alt="Lili putih, mawar merah, mawar merah muda, gerbera kuning, dan anyelir peach" loading="lazy" className="h-60 w-full object-cover md:h-full" />
+          <img
+            src={bungaWarnaWarni}
+            alt="Lili putih, mawar merah, mawar merah muda, gerbera kuning, dan anyelir peach"
+            loading="lazy"
+            className="h-60 w-full object-cover md:h-full"
+          />
         </section>
       </div>
     </>

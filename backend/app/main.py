@@ -39,6 +39,9 @@ def buat_aplikasi() -> FastAPI:
         description="Backend toko bunga dengan aksesibilitas warna bagi pengguna buta warna. "
         "Alur kerja lengkap: docs/alur-kerja.md.",
         lifespan=siklus_hidup,
+        docs_url="/docs" if pengaturan.tampilkan_dokumentasi else None,
+        redoc_url="/redoc" if pengaturan.tampilkan_dokumentasi else None,
+        openapi_url="/openapi.json" if pengaturan.tampilkan_dokumentasi else None,
     )
     app.add_middleware(
         CORSMiddleware,

@@ -12,10 +12,16 @@ export const LABEL_STATUS: Record<Skema['StatusPesanan'], string> = {
 }
 
 /** Bendera tindak lanjut selalu berupa teks (bukan hanya warna). */
-export function BenderaPesanan({ p }: { p: Pick<Skema['PesananAdminRingkasOut'], 'perlu_tindakan_admin' | 'perlu_pengembalian_dana' | 'terlambat_ditanggapi'> }) {
+export function BenderaPesanan({
+  p,
+}: {
+  p: Pick<Skema['PesananAdminRingkasOut'], 'perlu_tindakan_admin' | 'perlu_pengembalian_dana' | 'terlambat_ditanggapi'>
+}) {
   return (
     <span className="flex flex-wrap gap-1">
-      {p.perlu_tindakan_admin && <span className="rounded-md bg-ad-aksen-lembut px-1.5 py-0.5 text-[0.7rem] font-bold text-ad-aksen">Perlu tindakan</span>}
+      {p.perlu_tindakan_admin && (
+        <span className="rounded-md bg-ad-aksen-lembut px-1.5 py-0.5 text-[0.7rem] font-bold text-ad-aksen">Perlu tindakan</span>
+      )}
       {p.perlu_pengembalian_dana && (
         <span className="rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-[0.7rem] font-bold text-ad-peringatan">Kembalikan dana</span>
       )}

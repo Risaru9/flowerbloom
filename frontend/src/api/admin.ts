@@ -47,8 +47,7 @@ export const useAdminPesanan = (q: SaringPesanan) =>
 export const useAdminPesananDetail = (id: number) =>
   useQuery({
     queryKey: kunciAdmin.pesananDetail(id),
-    queryFn: () =>
-      ambil(api.GET('/api/v1/admin/pesanan/{id_pesanan}', { params: { path: { id_pesanan: id } } })),
+    queryFn: () => ambil(api.GET('/api/v1/admin/pesanan/{id_pesanan}', { params: { path: { id_pesanan: id } } })),
     enabled: Number.isFinite(id),
   })
 
@@ -90,9 +89,7 @@ export const useTandaiSelesai = (id: number) =>
   useMutasiPesananAdmin(id, () => ambil(api.POST('/api/v1/admin/pesanan/{id_pesanan}/selesai', jalur(id))))
 
 export const usePengembalianDanaSelesai = (id: number) =>
-  useMutasiPesananAdmin(id, () =>
-    ambil(api.POST('/api/v1/admin/pesanan/{id_pesanan}/pengembalian-dana-selesai', jalur(id))),
-  )
+  useMutasiPesananAdmin(id, () => ambil(api.POST('/api/v1/admin/pesanan/{id_pesanan}/pengembalian-dana-selesai', jalur(id))))
 
 export const useUnggahFotoHasil = (id: number) =>
   useMutasiPesananAdmin(id, (foto: File) =>
@@ -188,9 +185,7 @@ export const usePindaiStok = () =>
   })
 
 export const useSimpanPindai = () =>
-  useMutasiStok((isian: Skema['SimpanPindaiIn']) =>
-    ambil(api.POST('/api/v1/admin/stok/simpan-pindai', { body: isian })),
-  )
+  useMutasiStok((isian: Skema['SimpanPindaiIn']) => ambil(api.POST('/api/v1/admin/stok/simpan-pindai', { body: isian })))
 
 export const useKoreksiStok = () =>
   useMutasiStok((v: { id: number; isian: Skema['KoreksiStokIn'] }) =>
@@ -220,8 +215,7 @@ export const useJenisBunga = (cari?: string) =>
 
 /* ---------- Katalog ---------- */
 
-export const useAdminProduk = () =>
-  useQuery({ queryKey: kunciAdmin.produk, queryFn: () => ambil(api.GET('/api/v1/admin/produk')) })
+export const useAdminProduk = () => useQuery({ queryKey: kunciAdmin.produk, queryFn: () => ambil(api.GET('/api/v1/admin/produk')) })
 
 function useMutasiProduk<V>(fn: (v: V) => Promise<Skema['ProdukOut']>) {
   const qc = useQueryClient()
@@ -234,8 +228,7 @@ function useMutasiProduk<V>(fn: (v: V) => Promise<Skema['ProdukOut']>) {
   })
 }
 
-export const useTambahProduk = () =>
-  useMutasiProduk((isian: Skema['ProdukIn']) => ambil(api.POST('/api/v1/admin/produk', { body: isian })))
+export const useTambahProduk = () => useMutasiProduk((isian: Skema['ProdukIn']) => ambil(api.POST('/api/v1/admin/produk', { body: isian })))
 
 export const useUbahProduk = () =>
   useMutasiProduk((v: { id: number; isian: Skema['ProdukUbahIn'] }) =>
@@ -269,8 +262,7 @@ export const usePengaturanToko = () =>
 export function useUbahPengaturan() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (pengaturan: Record<string, unknown>) =>
-      ambil(api.PATCH('/api/v1/admin/pengaturan-toko', { body: { pengaturan } })),
+    mutationFn: (pengaturan: Record<string, unknown>) => ambil(api.PATCH('/api/v1/admin/pengaturan-toko', { body: { pengaturan } })),
     onSuccess: (data) => {
       qc.setQueryData(kunciAdmin.pengaturan, data)
       void qc.invalidateQueries({ queryKey: ['toko'] })
@@ -288,9 +280,7 @@ export function useTanggapiKomplain() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (v: { id: number; isian: Skema['TanggapiKomplainIn'] }) =>
-      ambil(
-        api.PATCH('/api/v1/admin/komplain/{id_komplain}', { params: { path: { id_komplain: v.id } }, body: v.isian }),
-      ),
+      ambil(api.PATCH('/api/v1/admin/komplain/{id_komplain}', { params: { path: { id_komplain: v.id } }, body: v.isian })),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['admin', 'komplain'] })
       void qc.invalidateQueries({ queryKey: kunciAdmin.dasbor })

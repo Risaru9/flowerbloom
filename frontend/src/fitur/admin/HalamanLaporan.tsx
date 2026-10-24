@@ -18,7 +18,11 @@ const PRESET = [
 
 /** Rupiah ringkas untuk sumbu grafik: 1,5 jt, 250 rb. */
 const singkat = (n: number) =>
-  n >= 1_000_000 ? `${(n / 1_000_000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt` : n >= 1000 ? `${Math.round(n / 1000)} rb` : String(n)
+  n >= 1_000_000
+    ? `${(n / 1_000_000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt`
+    : n >= 1000
+      ? `${Math.round(n / 1000)} rb`
+      : String(n)
 
 function unduhCsv(nama: string, baris: (string | number)[][]) {
   const isi = baris.map((b) => b.map((s) => `"${String(s).replace(/"/g, '""')}"`).join(',')).join('\r\n')
@@ -35,7 +39,9 @@ export function HalamanLaporan() {
   const { data, isPending, isError, error, refetch } = useLaporan(dari, sampai)
 
   const grafik = (data?.penjualan_per_minggu ?? []).map((m) => ({
-    label: new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', timeZone: 'Asia/Jakarta' }).format(new Date(`${m.awal_minggu}T12:00:00+07:00`)),
+    label: new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', timeZone: 'Asia/Jakarta' }).format(
+      new Date(`${m.awal_minggu}T12:00:00+07:00`),
+    ),
     labelPanjang: `Minggu mulai ${formatTanggal(m.awal_minggu)} (${m.jumlah_pesanan} pesanan)`,
     nilai: m.total,
   }))

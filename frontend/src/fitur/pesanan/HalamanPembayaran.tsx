@@ -69,7 +69,9 @@ export function HalamanPembayaran() {
         <div>
           <p className="text-sm text-redup">Total yang harus dibayar</p>
           <p className="text-3xl font-bold text-rose-teks">{formatRupiah(p.total_harga)}</p>
-          <p className="mt-1 text-xs text-redup">Serah terima {formatTanggalHari(p.tanggal_kirim)}, pukul {p.slot_jam}</p>
+          <p className="mt-1 text-xs text-redup">
+            Serah terima {formatTanggalHari(p.tanggal_kirim)}, pukul {p.slot_jam}
+          </p>
         </div>
         {p.batas_bayar && (
           <div className="flex items-center gap-3 rounded-2xl bg-latar/80 p-4">

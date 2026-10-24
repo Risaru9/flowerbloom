@@ -30,3 +30,12 @@ def test_produksi_menolak_rahasia_bawaan_atau_pendek():
 
 def test_batas_unggah_dalam_byte():
     assert Pengaturan(ukuran_maks_unggah_mb=8, _env_file=None).batas_unggah_byte == 8 * 1024 * 1024
+
+
+def test_dokumentasi_api_mati_di_produksi_kecuali_diaktifkan(monkeypatch):
+    from app.config import Pengaturan
+
+    rahasia = "x" * 40
+    assert Pengaturan(lingkungan="pengembangan").tampilkan_dokumentasi is True
+    assert Pengaturan(lingkungan="produksi", jwt_rahasia=rahasia).tampilkan_dokumentasi is False
+    assert Pengaturan(lingkungan="produksi", jwt_rahasia=rahasia, dokumentasi_api=True).tampilkan_dokumentasi is True

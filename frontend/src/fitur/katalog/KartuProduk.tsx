@@ -44,7 +44,9 @@ export function TombolFavorit({ produk, className, denganTeks }: { produk: Produ
       type="button"
       onClick={klik}
       aria-pressed={disimpan}
-      aria-label={denganTeks ? undefined : disimpan ? `Hapus ${produk.nama_produk} dari favorit` : `Simpan ${produk.nama_produk} ke favorit`}
+      aria-label={
+        denganTeks ? undefined : disimpan ? `Hapus ${produk.nama_produk} dari favorit` : `Simpan ${produk.nama_produk} ke favorit`
+      }
       className={cn(
         'inline-flex items-center justify-center gap-2 rounded-full transition-colors',
         denganTeks
@@ -98,7 +100,10 @@ export function GridProduk({ daftar, className }: { daftar: Produk[]; className?
   return (
     <ul className={cn('grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4', className)}>
       {daftar.map((p, i) => (
-        <li key={p.id_produk} className="has-[:focus-visible]:rounded-3xl has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-magenta">
+        <li
+          key={p.id_produk}
+          className="has-[:focus-visible]:rounded-3xl has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-magenta"
+        >
           <KartuProduk produk={p} prioritas={i < 4} />
         </li>
       ))}

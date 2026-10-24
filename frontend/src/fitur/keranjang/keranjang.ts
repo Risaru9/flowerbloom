@@ -49,8 +49,7 @@ if (typeof window !== 'undefined') {
   })
 }
 
-const idAcak = () =>
-  typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : String(Date.now() + Math.random())
+const idAcak = () => (typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : String(Date.now() + Math.random()))
 
 export function tambahPaket(produk: Skema['ProdukOut'], jumlah = 1): void {
   tokoKeranjang.atur((isi) => {
@@ -101,12 +100,9 @@ export function keItemApi(i: ItemKeranjang): Skema['ItemPaketIn'] | Skema['ItemR
 }
 
 export function hargaItem(i: ItemKeranjang): number {
-  return i.jenis_item === 'paket'
-    ? i.harga * i.jumlah
-    : i.bunga.reduce((t, b) => t + b.harga_per_tangkai * b.jumlah_tangkai, 0)
+  return i.jenis_item === 'paket' ? i.harga * i.jumlah : i.bunga.reduce((t, b) => t + b.harga_per_tangkai * b.jumlah_tangkai, 0)
 }
 
 export const useKeranjang = () => useToko(tokoKeranjang)
 
-export const jumlahBarang = (isi: ItemKeranjang[]) =>
-  isi.reduce((t, i) => t + (i.jenis_item === 'paket' ? i.jumlah : 1), 0)
+export const jumlahBarang = (isi: ItemKeranjang[]) => isi.reduce((t, i) => t + (i.jenis_item === 'paket' ? i.jumlah : 1), 0)

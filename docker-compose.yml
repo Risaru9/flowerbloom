@@ -1,0 +1,63 @@
+# Menjalankan seluruh FlowerBloom: MySQL + API (FastAPI) + web (PWA di belakang Nginx).
+#   cp .env.example .env   # lalu isi nilai rahasia
+#   docker compose up -d --build
+# Web: http://localhost:8080  (API hanya dapat diakses lewat Nginx, tidak dipublikasikan langsung)
+name: flowerbloom
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: flowerbloom
+      MYSQL_USER: flowerbloom
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?isi MYSQL_PASSWORD di .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?isi MYSQL_ROOT_PASSWORD di .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--default-time-zone=+00:00"]
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$${MYSQL_ROOT_PASSWORD}\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [internal]
+
+  api:
+    image: ghcr.io/risaru9/flowerbloom-backend:${TAG:-latest}
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      LINGKUNGAN: produksi
+      DATABASE_URL: mysql+pymysql://flowerbloom:${MYSQL_PASSWORD}@db:3306/flowerbloom?charset=utf8mb4
+      JWT_RAHASIA: ${JWT_RAHASIA:?isi JWT_RAHASIA (minimal 32 karakter acak) di .env}
+      CORS_ORIGINS: '["${URL_PUBLIK:-http://localhost:8080}"]'
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      AI_MODE: ${AI_MODE:-tiruan}
+    volumes:
+      - penyimpanan:/data/penyimpanan
+    networks: [internal]
+
+  web:
+    image: ghcr.io/risaru9/flowerbloom-frontend:${TAG:-latest}
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_UPSTREAM: http://api:8000
+    ports:
+      - "${PORT_WEB:-8080}:8080"
+    networks: [internal]
+
+volumes:
+  db-data:
+  penyimpanan:
+
+networks:
+  internal:

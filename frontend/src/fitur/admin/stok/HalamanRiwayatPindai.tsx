@@ -72,9 +72,16 @@ export function HalamanRiwayatPindai() {
                   </p>
                   <p className="mt-1 flex flex-wrap gap-1">
                     {r.tingkat_keyakinan !== null && (
-                      <span className="rounded-md bg-ad-latar px-1.5 text-xs font-semibold tabular-nums">{Math.round(r.tingkat_keyakinan * 100)}% yakin</span>
+                      <span className="rounded-md bg-ad-latar px-1.5 text-xs font-semibold tabular-nums">
+                        {Math.round(r.tingkat_keyakinan * 100)}% yakin
+                      </span>
                     )}
-                    <span className={cn('rounded-md px-1.5 text-xs font-bold', r.dikoreksi ? 'bg-ad-peringatan-lembut text-ad-peringatan' : 'bg-ad-sukses-lembut text-ad-sukses')}>
+                    <span
+                      className={cn(
+                        'rounded-md px-1.5 text-xs font-bold',
+                        r.dikoreksi ? 'bg-ad-peringatan-lembut text-ad-peringatan' : 'bg-ad-sukses-lembut text-ad-sukses',
+                      )}
+                    >
                       {r.dikoreksi ? 'Dikoreksi admin' : 'Sesuai AI'}
                     </span>
                   </p>

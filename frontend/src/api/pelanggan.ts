@@ -40,11 +40,9 @@ export const useAcara = () =>
     staleTime: 5 * 60_000,
   })
 
-export const useWarna = () =>
-  useQuery({ queryKey: kunci.warna, queryFn: () => ambil(api.GET('/api/v1/warna')), staleTime: 10 * 60_000 })
+export const useWarna = () => useQuery({ queryKey: kunci.warna, queryFn: () => ambil(api.GET('/api/v1/warna')), staleTime: 10 * 60_000 })
 
-export const useOpsiRangkai = () =>
-  useQuery({ queryKey: kunci.opsiRangkai, queryFn: () => ambil(api.GET('/api/v1/rangkai/opsi')) })
+export const useOpsiRangkai = () => useQuery({ queryKey: kunci.opsiRangkai, queryFn: () => ambil(api.GET('/api/v1/rangkai/opsi')) })
 
 export const useInfoToko = () =>
   useQuery({ queryKey: kunci.infoToko, queryFn: () => ambil(api.GET('/api/v1/toko/info')), staleTime: 5 * 60_000 })
@@ -88,8 +86,7 @@ export const useGantiKataSandi = () =>
     onSuccess: (hasil) => gantiToken(hasil.access_token, hasil.pengguna),
   })
 
-export const useKeluarSemua = () =>
-  useMutation({ mutationFn: () => ambil(api.POST('/api/v1/auth/keluar-semua')) })
+export const useKeluarSemua = () => useMutation({ mutationFn: () => ambil(api.POST('/api/v1/auth/keluar-semua')) })
 
 export const useAksesibilitasSaya = (aktif: boolean) =>
   useQuery({
@@ -101,8 +98,7 @@ export const useAksesibilitasSaya = (aktif: boolean) =>
 export function useUbahAksesibilitas() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (isian: Skema['AksesibilitasUbahIn']) =>
-      ambil(api.PATCH('/api/v1/aksesibilitas/saya', { body: isian })),
+    mutationFn: (isian: Skema['AksesibilitasUbahIn']) => ambil(api.PATCH('/api/v1/aksesibilitas/saya', { body: isian })),
     onSuccess: (data) => qc.setQueryData(kunci.aksesibilitas, data),
   })
 }
@@ -130,10 +126,7 @@ export function useCheckout() {
 export const usePesananSaya = (status?: Skema['StatusPesanan'], halaman = 1, perHalaman = 10) =>
   useQuery({
     queryKey: [...kunci.pesananSaya(status, halaman), perHalaman],
-    queryFn: () =>
-      ambil(
-        api.GET('/api/v1/pesanan', { params: { query: { status, halaman, per_halaman: perHalaman } } }),
-      ),
+    queryFn: () => ambil(api.GET('/api/v1/pesanan', { params: { query: { status, halaman, per_halaman: perHalaman } } })),
     placeholderData: keepPreviousData,
   })
 
@@ -150,9 +143,7 @@ export const usePesanan = (id: number, opsi: { pantau?: boolean } = {}) =>
     queryKey: kunci.pesanan(id),
     queryFn: () => ambil(api.GET('/api/v1/pesanan/{id_pesanan}', { params: { path: { id_pesanan: id } } })),
     enabled: Number.isFinite(id),
-    refetchInterval: opsi.pantau
-      ? (q) => (q.state.data && STATUS_BERJALAN.includes(q.state.data.status.kode) ? 30_000 : false)
-      : undefined,
+    refetchInterval: opsi.pantau ? (q) => (q.state.data && STATUS_BERJALAN.includes(q.state.data.status.kode) ? 30_000 : false) : undefined,
   })
 
 function useMutasiPesanan<V>(fn: (v: V) => Promise<Skema['PesananOut']>) {
@@ -209,8 +200,7 @@ export function useAjukanKomplain(id: number) {
   })
 }
 
-export const useKomplainSaya = () =>
-  useQuery({ queryKey: kunci.komplainSaya, queryFn: () => ambil(api.GET('/api/v1/komplain/saya')) })
+export const useKomplainSaya = () => useQuery({ queryKey: kunci.komplainSaya, queryFn: () => ambil(api.GET('/api/v1/komplain/saya')) })
 
 /* ---------- Favorit & alamat ---------- */
 

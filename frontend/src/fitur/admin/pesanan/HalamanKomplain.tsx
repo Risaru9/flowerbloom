@@ -32,7 +32,11 @@ export function HalamanKomplain() {
 
   return (
     <>
-      <JudulAdmin judul="Komplain" keterangan="Tanggapi keluhan pelanggan; batas pengajuan 1×24 jam setelah pesanan diterima." jejak={[{ ke: '/admin', label: 'Dasbor' }]} />
+      <JudulAdmin
+        judul="Komplain"
+        keterangan="Tanggapi keluhan pelanggan; batas pengajuan 1×24 jam setelah pesanan diterima."
+        jejak={[{ ke: '/admin', label: 'Dasbor' }]}
+      />
       <div className="mb-4 flex flex-wrap gap-2">
         {(['baru', 'diproses', 'selesai', ''] as const).map((s) => (
           <button
@@ -40,7 +44,10 @@ export function HalamanKomplain() {
             type="button"
             aria-pressed={status === s}
             onClick={() => setStatus(s)}
-            className={cn('min-h-10 rounded-full border px-4 text-sm font-semibold', status === s ? 'border-ad-aksen bg-ad-aksen text-white' : 'border-ad-garis bg-ad-permukaan')}
+            className={cn(
+              'min-h-10 rounded-full border px-4 text-sm font-semibold',
+              status === s ? 'border-ad-aksen bg-ad-aksen text-white' : 'border-ad-garis bg-ad-permukaan',
+            )}
           >
             {s ? LABEL[s] : 'Semua'}
           </button>
@@ -51,7 +58,11 @@ export function HalamanKomplain() {
       ) : isError ? (
         <Galat galat={error} ulangi={() => void refetch()} />
       ) : data.length === 0 ? (
-        <Kosong ikon={<MessageSquareWarning className="size-8" />} judul="Tidak ada komplain" pesan="Belum ada keluhan dengan status ini." />
+        <Kosong
+          ikon={<MessageSquareWarning className="size-8" />}
+          judul="Tidak ada komplain"
+          pesan="Belum ada keluhan dengan status ini."
+        />
       ) : (
         <ul className="grid gap-3 md:grid-cols-2">
           {data.map((k) => (

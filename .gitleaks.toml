@@ -1,0 +1,14 @@
+# Konfigurasi pemindai rahasia (dipakai workflow Keamanan). Aturan bawaan gitleaks tetap aktif.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Nilai uji/contoh yang sengaja ditulis dan tidak pernah dipakai di produksi"
+paths = [
+  '''^backend/tests/''',
+  '''^backend/scripts/seed\.py$''',
+  '''^backend/docker-compose\.yml$''',
+  '''(^|/)\.env\.example$''',
+  '''^frontend/src/.*\.test\.tsx?$''',
+  '''^\.github/workflows/ci\.yml$''',
+]

@@ -41,7 +41,11 @@ export function HalamanPembayaranAdmin() {
 
   return (
     <>
-      <JudulAdmin judul="Pembayaran" keterangan="Verifikasi bukti transfer agar pesanan masuk antrean rangkai." jejak={[{ ke: '/admin', label: 'Dasbor' }]} />
+      <JudulAdmin
+        judul="Pembayaran"
+        keterangan="Verifikasi bukti transfer agar pesanan masuk antrean rangkai."
+        jejak={[{ ke: '/admin', label: 'Dasbor' }]}
+      />
       <div role="tablist" aria-label="Status pembayaran" className="mb-4 inline-flex rounded-xl border border-ad-garis bg-ad-permukaan p-1">
         {(
           [
@@ -58,7 +62,10 @@ export function HalamanPembayaranAdmin() {
               setTab(nilai)
               setDipilih(null)
             }}
-            className={cn('min-h-10 rounded-lg px-4 text-sm font-semibold', tab === nilai ? 'bg-ad-aksen text-white' : 'text-ad-redup hover:bg-ad-latar')}
+            className={cn(
+              'min-h-10 rounded-lg px-4 text-sm font-semibold',
+              tab === nilai ? 'bg-ad-aksen text-white' : 'text-ad-redup hover:bg-ad-latar',
+            )}
           >
             {label}
           </button>
@@ -69,7 +76,11 @@ export function HalamanPembayaranAdmin() {
       ) : isError ? (
         <Galat galat={error} ulangi={() => void refetch()} />
       ) : data.data.length === 0 ? (
-        <Kosong ikon={<Wallet className="size-8" />} judul={tab === 'menunggu_verifikasi' ? 'Tidak ada bukti yang menunggu' : 'Tidak ada tagihan tertunda'} pesan="Semua sudah ditangani." />
+        <Kosong
+          ikon={<Wallet className="size-8" />}
+          judul={tab === 'menunggu_verifikasi' ? 'Tidak ada bukti yang menunggu' : 'Tidak ada tagihan tertunda'}
+          pesan="Semua sudah ditangani."
+        />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[20rem_1fr]">
           <ul className="flex flex-col gap-2" aria-label="Daftar pesanan">
@@ -90,20 +101,25 @@ export function HalamanPembayaranAdmin() {
                   </span>
                   <span className="block text-sm">{p.pemesan.nama}</span>
                   <span className="block text-xs text-ad-redup">
-                    {tab === 'menunggu_pembayaran' && p.batas_bayar ? `Batas bayar ${formatTanggalJam(p.batas_bayar)}` : `Dipesan ${formatTanggalJam(p.dibuat_pada)}`}
+                    {tab === 'menunggu_pembayaran' && p.batas_bayar
+                      ? `Batas bayar ${formatTanggalJam(p.batas_bayar)}`
+                      : `Dipesan ${formatTanggalJam(p.dibuat_pada)}`}
                   </span>
                 </button>
               </li>
             ))}
           </ul>
-          {aktif !== null && (tab === 'menunggu_verifikasi' ? <PanelVerifikasi id={aktif} /> : (
-            <Kartu>
-              <p className="text-sm">Pelanggan belum mengunggah bukti. Pesanan otomatis batal bila melewati batas bayar.</p>
-              <Link to={`/admin/pesanan/${aktif}`} className="mt-2 inline-block text-sm font-semibold text-ad-aksen underline">
-                Lihat detail pesanan
-              </Link>
-            </Kartu>
-          ))}
+          {aktif !== null &&
+            (tab === 'menunggu_verifikasi' ? (
+              <PanelVerifikasi id={aktif} />
+            ) : (
+              <Kartu>
+                <p className="text-sm">Pelanggan belum mengunggah bukti. Pesanan otomatis batal bila melewati batas bayar.</p>
+                <Link to={`/admin/pesanan/${aktif}`} className="mt-2 inline-block text-sm font-semibold text-ad-aksen underline">
+                  Lihat detail pesanan
+                </Link>
+              </Kartu>
+            ))}
         </div>
       )}
     </>

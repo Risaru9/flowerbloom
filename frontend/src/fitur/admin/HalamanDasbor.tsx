@@ -24,7 +24,21 @@ import { cn } from '@/lib/cn'
 import { formatRupiah, formatTanggal, formatTanggalHari } from '@/lib/format'
 import { Kartu } from '@/tata-letak/TataLetakAdmin'
 
-function KartuAngka({ judul, nilai, ket, Ikon, nada, ke }: { judul: string; nilai: string; ket: string; Ikon: LucideIcon; nada: string; ke: string }) {
+function KartuAngka({
+  judul,
+  nilai,
+  ket,
+  Ikon,
+  nada,
+  ke,
+}: {
+  judul: string
+  nilai: string
+  ket: string
+  Ikon: LucideIcon
+  nada: string
+  ke: string
+}) {
   return (
     <Link to={ke} className="group rounded-2xl border border-ad-garis bg-ad-permukaan p-4 transition-shadow hover:shadow-md sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -61,7 +75,12 @@ export function HalamanDasbor() {
   const tindakan: { n: number; teks: string; ke: string; Ikon: LucideIcon }[] = [
     { n: data.perlu_verifikasi, teks: 'Pembayaran menunggu verifikasi', ke: '/admin/pembayaran', Ikon: Wallet },
     { n: data.perlu_dirangkai, teks: 'Pesanan siap dirangkai', ke: '/admin/pesanan?status=sedang_dirangkai', Ikon: Flower2 },
-    { n: data.menunggu_persetujuan_foto, teks: 'Foto menunggu persetujuan pelanggan', ke: '/admin/pesanan?status=menunggu_persetujuan_foto', Ikon: ImageUp },
+    {
+      n: data.menunggu_persetujuan_foto,
+      teks: 'Foto menunggu persetujuan pelanggan',
+      ke: '/admin/pesanan?status=menunggu_persetujuan_foto',
+      Ikon: ImageUp,
+    },
     { n: data.perlu_pengembalian_dana, teks: 'Pengembalian dana perlu diproses', ke: '/admin/pesanan?status=dibatalkan', Ikon: RotateCcw },
     { n: data.komplain_baru, teks: 'Komplain baru dari pelanggan', ke: '/admin/komplain', Ikon: MessageSquareWarning },
   ]
@@ -85,9 +104,30 @@ export function HalamanDasbor() {
       </div>
 
       <section aria-label="Ringkasan angka" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KartuAngka judul="Pesanan aktif" nilai={String(data.pesanan_aktif)} ket="Sedang berjalan" Ikon={ClipboardList} nada="bg-ad-info-lembut text-ad-info" ke="/admin/pesanan" />
-        <KartuAngka judul="Penjualan hari ini" nilai={formatRupiah(data.penjualan_hari_ini)} ket="Pembayaran sah hari ini" Ikon={CircleDollarSign} nada="bg-ad-sukses-lembut text-ad-sukses" ke="/admin/laporan" />
-        <KartuAngka judul="Penjualan minggu ini" nilai={formatRupiah(data.penjualan_minggu_ini)} ket="Sejak Senin" Ikon={CircleDollarSign} nada="bg-ad-ungu-lembut text-ad-ungu" ke="/admin/laporan" />
+        <KartuAngka
+          judul="Pesanan aktif"
+          nilai={String(data.pesanan_aktif)}
+          ket="Sedang berjalan"
+          Ikon={ClipboardList}
+          nada="bg-ad-info-lembut text-ad-info"
+          ke="/admin/pesanan"
+        />
+        <KartuAngka
+          judul="Penjualan hari ini"
+          nilai={formatRupiah(data.penjualan_hari_ini)}
+          ket="Pembayaran sah hari ini"
+          Ikon={CircleDollarSign}
+          nada="bg-ad-sukses-lembut text-ad-sukses"
+          ke="/admin/laporan"
+        />
+        <KartuAngka
+          judul="Penjualan minggu ini"
+          nilai={formatRupiah(data.penjualan_minggu_ini)}
+          ket="Sejak Senin"
+          Ikon={CircleDollarSign}
+          nada="bg-ad-ungu-lembut text-ad-ungu"
+          ke="/admin/laporan"
+        />
         <KartuAngka
           judul="Stok menipis"
           nilai={String(data.stok_menipis.length)}
@@ -122,7 +162,12 @@ export function HalamanDasbor() {
                 >
                   <Ikon aria-hidden className={cn('size-5 shrink-0', n > 0 ? 'text-ad-aksen' : 'text-ad-redup')} />
                   <span className="flex-1 text-sm font-semibold">{teks}</span>
-                  <span className={cn('min-w-8 rounded-lg px-2 py-1 text-center text-sm font-bold tabular-nums', n > 0 ? 'bg-ad-aksen text-white' : 'bg-ad-latar text-ad-redup')}>
+                  <span
+                    className={cn(
+                      'min-w-8 rounded-lg px-2 py-1 text-center text-sm font-bold tabular-nums',
+                      n > 0 ? 'bg-ad-aksen text-white' : 'bg-ad-latar text-ad-redup',
+                    )}
+                  >
                     {n}
                   </span>
                 </Link>
@@ -138,7 +183,11 @@ export function HalamanDasbor() {
           { ke: '/admin/pembayaran', teks: 'Verifikasi pembayaran', Ikon: Wallet },
           { ke: '/admin/stok/pindai', teks: 'Pindai stok masuk', Ikon: ScanLine },
         ].map(({ ke, teks, Ikon }) => (
-          <Link key={ke} to={ke} className="flex min-h-16 items-center gap-3 rounded-2xl bg-ad-aksen px-5 font-semibold text-white shadow-sm hover:opacity-90">
+          <Link
+            key={ke}
+            to={ke}
+            className="flex min-h-16 items-center gap-3 rounded-2xl bg-ad-aksen px-5 font-semibold text-white shadow-sm hover:opacity-90"
+          >
             <Ikon aria-hidden className="size-6" /> {teks}
           </Link>
         ))}

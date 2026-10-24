@@ -1,0 +1,105 @@
+name: CD · image GHCR
+
+# Setiap merge ke main menerbitkan image siap pakai ke GitHub Container Registry; tag vX.Y.Z menerbitkan rilis.
+# Deploy ke server: docker compose pull && docker compose up -d (lihat README bagian Deploy).
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  image:
+    name: Terbitkan image ${{ matrix.komponen }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write # push ke ghcr.io
+      id-token: write # atestasi asal-usul build (Sigstore)
+      attestations: write
+      security-events: write # unggah hasil Trivy ke tab Security
+    strategy:
+      fail-fast: false
+      matrix:
+        komponen: [backend, frontend]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Nama image (huruf kecil, wajib untuk registry)
+        id: nama
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/flowerbloom-${{ matrix.komponen }}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ${{ steps.nama.outputs.image }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=short
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - id: bangun
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./${{ matrix.komponen }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: mode=max
+          sbom: true
+          cache-from: type=gha,scope=${{ matrix.komponen }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.komponen }}
+      - name: Atestasi asal-usul build
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ steps.nama.outputs.image }}
+          subject-digest: ${{ steps.bangun.outputs.digest }}
+          push-to-registry: true
+      - name: Pindai kerentanan image (laporan)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ steps.nama.outputs.image }}@${{ steps.bangun.outputs.digest }}
+          format: sarif
+          output: trivy-${{ matrix.komponen }}.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+      - uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          sarif_file: trivy-${{ matrix.komponen }}.sarif
+          category: trivy-${{ matrix.komponen }}
+      - name: Gagalkan bila ada kerentanan KRITIS yang sudah ada perbaikannya
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ steps.nama.outputs.image }}@${{ steps.bangun.outputs.digest }}
+          format: table
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          skip-setup-trivy: true
+
+  rilis:
+    name: Rilis GitHub
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: image
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Buat rilis dengan catatan otomatis
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes --verify-tag

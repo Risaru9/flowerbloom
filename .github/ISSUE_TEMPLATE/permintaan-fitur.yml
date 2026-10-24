@@ -1,0 +1,20 @@
+name: Permintaan fitur
+description: Usulan fitur atau perbaikan pengalaman pengguna
+labels: [fitur]
+body:
+  - type: textarea
+    id: masalah
+    attributes:
+      label: Masalah yang ingin diselesaikan
+      description: Siapa penggunanya dan apa kesulitannya?
+    validations:
+      required: true
+  - type: textarea
+    id: usulan
+    attributes:
+      label: Usulan solusi
+  - type: input
+    id: kode-fitur
+    attributes:
+      label: Kode fitur di dokumen (bila ada)
+      placeholder: F-PL-06

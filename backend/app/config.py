@@ -30,6 +30,9 @@ class Pengaturan(BaseSettings):
     direktori_berkas: Path = Path("./penyimpanan")
     ukuran_maks_unggah_mb: int = 8
 
+    # Swagger/ReDoc (/docs, /redoc, /openapi.json). Bawaan: aktif kecuali di produksi.
+    dokumentasi_api: bool | None = None
+
     # CORS untuk frontend
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5500"]
 
@@ -53,6 +56,10 @@ class Pengaturan(BaseSettings):
         if self.lingkungan == "produksi" and (self.jwt_rahasia == RAHASIA_BAWAAN or len(self.jwt_rahasia) < 32):
             raise ValueError("JWT_RAHASIA harus diganti dan minimal 32 karakter pada lingkungan produksi.")
         return self
+
+    @property
+    def tampilkan_dokumentasi(self) -> bool:
+        return self.dokumentasi_api if self.dokumentasi_api is not None else self.lingkungan != "produksi"
 
     @property
     def batas_unggah_byte(self) -> int:

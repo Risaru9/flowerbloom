@@ -21,7 +21,9 @@ function Kotak({ judul, ikon, children }: { judul: string; ikon: React.ReactNode
   return (
     <section className="rounded-3xl bg-permukaan p-4 ring-1 ring-garis/60">
       <h2 className="mb-2 flex items-center gap-2 text-sm font-bold text-olive-tua">
-        <span aria-hidden className="text-rose-teks">{ikon}</span>
+        <span aria-hidden className="text-rose-teks">
+          {ikon}
+        </span>
         {judul}
       </h2>
       <div className="text-sm text-olive">{children}</div>
@@ -59,7 +61,11 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
         Foto hasil rangkaian
       </h2>
       <div className="grid gap-5 md:grid-cols-[1fr_1.1fr]">
-        <FotoBunga src={foto.foto_url} alt={`Foto hasil rangkaian. Warna terbaca: ${foto.label_teks}`} className="aspect-square w-full rounded-3xl" />
+        <FotoBunga
+          src={foto.foto_url}
+          alt={`Foto hasil rangkaian. Warna terbaca: ${foto.label_teks}`}
+          className="aspect-square w-full rounded-3xl"
+        />
         <div className="flex flex-col gap-4">
           <div>
             <p className="mb-2 text-sm font-semibold text-olive-tua">Warna yang terbaca dari foto</p>
@@ -93,12 +99,21 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
             <>
               {penggantiBeda && (
                 <label className="flex items-start gap-3 rounded-2xl bg-latar/80 p-3 text-sm">
-                  <input type="checkbox" checked={setujuPengganti} onChange={(e) => setSetujuPengganti(e.target.checked)} className="mt-0.5 size-5 accent-rose-teks" />
+                  <input
+                    type="checkbox"
+                    checked={setujuPengganti}
+                    onChange={(e) => setSetujuPengganti(e.target.checked)}
+                    className="mt-0.5 size-5 accent-rose-teks"
+                  />
                   Saya sudah membaca dan menyetujui bunga pengganti dengan warna berbeda.
                 </label>
               )}
               <div className="grid gap-2 sm:grid-cols-2">
-                <Tombol onClick={() => void kirim('setuju')} memuat={tanggapi.isPending && !revisi} disabled={penggantiBeda && !setujuPengganti}>
+                <Tombol
+                  onClick={() => void kirim('setuju')}
+                  memuat={tanggapi.isPending && !revisi}
+                  disabled={penggantiBeda && !setujuPengganti}
+                >
                   Setujui rangkaian
                 </Tombol>
                 <Tombol varian="garis" onClick={() => setRevisi(true)}>
@@ -111,7 +126,14 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
             </>
           ) : (
             <p className="rounded-2xl bg-latar/80 p-3 text-sm">
-              Status: <strong>{foto.status_persetujuan === 'disetujui' ? 'Disetujui' : foto.status_persetujuan === 'revisi' ? 'Diminta revisi' : 'Menunggu'}</strong>
+              Status:{' '}
+              <strong>
+                {foto.status_persetujuan === 'disetujui'
+                  ? 'Disetujui'
+                  : foto.status_persetujuan === 'revisi'
+                    ? 'Diminta revisi'
+                    : 'Menunggu'}
+              </strong>
               {foto.catatan_revisi && ` — “${foto.catatan_revisi}”`}
             </p>
           )}
@@ -159,7 +181,10 @@ export function HalamanDetailPesanan() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Link to="/akun/pesanan" className="inline-flex min-h-10 items-center gap-1 self-start text-sm font-semibold text-rose-teks hover:underline">
+      <Link
+        to="/akun/pesanan"
+        className="inline-flex min-h-10 items-center gap-1 self-start text-sm font-semibold text-rose-teks hover:underline"
+      >
         <ChevronLeft aria-hidden className="size-4" /> Semua pesanan
       </Link>
 
@@ -227,7 +252,9 @@ export function HalamanDetailPesanan() {
                   {d.komposisi.map((k) => (
                     <li key={k.id_komposisi_pesanan}>
                       {k.jumlah_tangkai}× {k.jenis.nama_bunga} · <ChipWarna warna={k.warna} ukuran="kecil" />
-                      {k.is_pengganti && <span className="ms-2 rounded-full bg-[#fdf0dc] px-2 text-xs font-semibold text-[#6b3a00]">pengganti</span>}
+                      {k.is_pengganti && (
+                        <span className="ms-2 rounded-full bg-[#fdf0dc] px-2 text-xs font-semibold text-[#6b3a00]">pengganti</span>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -263,7 +290,11 @@ export function HalamanDetailPesanan() {
                 <div className="flex justify-between text-xs text-redup">
                   <dt>Bukti terakhir</dt>
                   <dd>
-                    {pembayaranTerakhir.status_verifikasi === 'sah' ? 'Terverifikasi' : pembayaranTerakhir.status_verifikasi === 'ditolak' ? 'Ditolak' : 'Menunggu verifikasi'}
+                    {pembayaranTerakhir.status_verifikasi === 'sah'
+                      ? 'Terverifikasi'
+                      : pembayaranTerakhir.status_verifikasi === 'ditolak'
+                        ? 'Ditolak'
+                        : 'Menunggu verifikasi'}
                   </dd>
                 </div>
               )}
@@ -279,7 +310,12 @@ export function HalamanDetailPesanan() {
               </Tombol>
             )}
             {BOLEH_KOMPLAIN.includes(p.status.kode) && (
-              <Tombol varian="garis" ukuran="kecil" ikon={<MessageSquareWarning aria-hidden className="size-4" />} onClick={() => setDialog('komplain')}>
+              <Tombol
+                varian="garis"
+                ukuran="kecil"
+                ikon={<MessageSquareWarning aria-hidden className="size-4" />}
+                onClick={() => setDialog('komplain')}
+              >
                 Ajukan komplain
               </Tombol>
             )}

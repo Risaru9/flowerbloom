@@ -19,7 +19,9 @@ describe('ChipWarna', () => {
 describe('LencanaStatus', () => {
   it('menampilkan ikon dan label, bukan hanya warna (F-AK-02)', () => {
     const { container } = render(
-      <LencanaStatus status={{ kode: 'sedang_dirangkai', label: 'Sedang dirangkai', ikon: 'scissors', keterangan: 'Florist sedang merangkai' }} />,
+      <LencanaStatus
+        status={{ kode: 'sedang_dirangkai', label: 'Sedang dirangkai', ikon: 'scissors', keterangan: 'Florist sedang merangkai' }}
+      />,
     )
     expect(screen.getByText('Sedang dirangkai')).toBeInTheDocument()
     // Pengenal ikon dari backend dipetakan ke ikon SVG dekoratif, bukan ditulis sebagai teks.

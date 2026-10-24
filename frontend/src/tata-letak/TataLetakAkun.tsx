@@ -29,7 +29,12 @@ export function TataLetakAkun() {
   const keluar = useKeluar()
   return (
     <div className="relative mx-auto grid max-w-7xl gap-6 px-4 py-6 md:grid-cols-[15rem_1fr] md:px-6 md:py-10">
-      <img src={garisBunga} alt="" aria-hidden className="pointer-events-none absolute end-0 top-24 -z-10 hidden h-[28rem] opacity-25 lg:block" />
+      <img
+        src={garisBunga}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute end-0 top-24 -z-10 hidden h-[28rem] opacity-25 lg:block"
+      />
       <aside aria-label="Menu akun" className="md:sticky md:top-28 md:self-start">
         <div className="mb-3 hidden items-center gap-3 md:flex">
           <span aria-hidden className="grid size-12 place-items-center rounded-full bg-rose-teks font-display text-xl text-white">
@@ -49,7 +54,7 @@ export function TataLetakAkun() {
                   end={akhir}
                   className={({ isActive }) =>
                     cn(
-                      'flex min-h-11 items-center gap-2.5 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors md:rounded-2xl',
+                      'flex min-h-11 items-center gap-2.5 rounded-full px-4 text-sm font-semibold whitespace-nowrap transition-colors md:rounded-2xl',
                       isActive ? 'bg-rose-teks text-white' : 'bg-blush/70 text-olive-tua hover:bg-blush-2 md:bg-transparent',
                     )
                   }
@@ -63,7 +68,7 @@ export function TataLetakAkun() {
               <button
                 type="button"
                 onClick={() => keluar()}
-                className="flex min-h-11 w-full items-center gap-2.5 whitespace-nowrap rounded-full px-4 text-sm font-semibold text-rose-teks hover:bg-blush-2 md:rounded-2xl"
+                className="flex min-h-11 w-full items-center gap-2.5 rounded-full px-4 text-sm font-semibold whitespace-nowrap text-rose-teks hover:bg-blush-2 md:rounded-2xl"
               >
                 <LogOut aria-hidden className="size-4" /> Keluar
               </button>
@@ -83,7 +88,7 @@ export function JudulAkun({ judul, keterangan, aksi }: { judul: string; keterang
     <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-3xl bg-blush/70 px-5 py-4">
       <h1 className="font-display text-2xl text-olive-tua md:text-3xl">{judul}</h1>
       {keterangan && (
-        <p className="flex items-center gap-3 text-sm italic text-redup">
+        <p className="flex items-center gap-3 text-sm text-redup italic">
           <span aria-hidden className="hidden h-px w-8 bg-redup sm:block" />
           {keterangan}
         </p>

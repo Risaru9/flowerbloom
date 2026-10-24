@@ -43,7 +43,9 @@ export function HalamanPesananSaya() {
             onClick={() => setQ(s.nilai ? { status: s.nilai } : {})}
             className={cn(
               'min-h-10 shrink-0 rounded-full border-2 px-4 text-sm font-semibold',
-              (status ?? '') === s.nilai ? 'border-rose-teks bg-rose-teks text-white' : 'border-garis bg-permukaan text-olive-tua hover:bg-blush',
+              (status ?? '') === s.nilai
+                ? 'border-rose-teks bg-rose-teks text-white'
+                : 'border-garis bg-permukaan text-olive-tua hover:bg-blush',
             )}
           >
             {s.label}
@@ -81,7 +83,9 @@ export function HalamanPesananSaya() {
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-mono text-sm font-semibold text-olive-tua">{p.kode_pesanan}</span>
                       <LencanaStatus status={p.status} />
-                      {p.perlu_tindakan_pelanggan && <span className="rounded-full bg-magenta px-2 py-0.5 text-xs font-bold text-white">Perlu tindakanmu</span>}
+                      {p.perlu_tindakan_pelanggan && (
+                        <span className="rounded-full bg-magenta px-2 py-0.5 text-xs font-bold text-white">Perlu tindakanmu</span>
+                      )}
                     </div>
                     <p className="mt-1 line-clamp-1 font-display text-lg text-olive-tua">{p.ringkasan_item}</p>
                     <p className="text-sm text-redup">
@@ -100,11 +104,13 @@ export function HalamanPesananSaya() {
             halaman={halaman}
             total={data.total}
             perHalaman={data.per_halaman}
-            ubah={(h) => setQ((l) => {
-              const b = new URLSearchParams(l)
-              b.set('hal', String(h))
-              return b
-            })}
+            ubah={(h) =>
+              setQ((l) => {
+                const b = new URLSearchParams(l)
+                b.set('hal', String(h))
+                return b
+              })
+            }
           />
         </>
       )}

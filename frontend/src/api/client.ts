@@ -63,9 +63,7 @@ export function keGalat(status: number, isi: unknown): GalatApi {
  * Membuka hasil openapi-fetch: mengembalikan `data` atau melempar GalatApi.
  * Dipakai di queryFn/mutationFn React Query agar status galat ditangani di satu tempat.
  */
-export async function ambil<T>(
-  janji: Promise<{ data?: T; error?: unknown; response: Response }>,
-): Promise<T> {
+export async function ambil<T>(janji: Promise<{ data?: T; error?: unknown; response: Response }>): Promise<T> {
   let hasil: { data?: T; error?: unknown; response: Response }
   try {
     hasil = await janji

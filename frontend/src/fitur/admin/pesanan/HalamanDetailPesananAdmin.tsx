@@ -28,14 +28,21 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
   return (
     <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
       {bukti.bukti_url ? (
-        <a href={bukti.bukti_url} target="_blank" rel="noopener noreferrer" className="group relative block overflow-hidden rounded-xl border border-ad-garis">
+        <a
+          href={bukti.bukti_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative block overflow-hidden rounded-xl border border-ad-garis"
+        >
           <img src={bukti.bukti_url} alt={`Bukti transfer dari ${bukti.nama_pengirim}`} className="aspect-[3/4] w-full object-cover" />
           <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-black/55 py-1.5 text-xs text-white">
             Buka ukuran penuh <ExternalLink aria-hidden className="size-3" />
           </span>
         </a>
       ) : (
-        <div className="grid aspect-[3/4] place-items-center rounded-xl bg-ad-latar text-xs text-ad-redup">Tautan bukti kedaluwarsa, muat ulang halaman</div>
+        <div className="grid aspect-[3/4] place-items-center rounded-xl bg-ad-latar text-xs text-ad-redup">
+          Tautan bukti kedaluwarsa, muat ulang halaman
+        </div>
       )}
       <div className="flex flex-col gap-2 text-sm">
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
@@ -56,15 +63,29 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
           <dd>{formatTanggalJam(bukti.diunggah_pada)}</dd>
           <dt className="text-ad-redup">Status</dt>
           <dd className="font-semibold">
-            {bukti.status_verifikasi === 'sah' ? 'Sah' : bukti.status_verifikasi === 'ditolak' ? `Ditolak — ${bukti.catatan_penolakan ?? ''}` : 'Menunggu verifikasi'}
+            {bukti.status_verifikasi === 'sah'
+              ? 'Sah'
+              : bukti.status_verifikasi === 'ditolak'
+                ? `Ditolak — ${bukti.catatan_penolakan ?? ''}`
+                : 'Menunggu verifikasi'}
           </dd>
         </dl>
         {menunggu && (
           <div className="mt-auto flex flex-wrap gap-2 pt-2">
-            <Tombol varian="admin" className="rounded-xl" ikon={<BadgeCheck aria-hidden className="size-4" />} onClick={() => setDialog('sahkan')}>
+            <Tombol
+              varian="admin"
+              className="rounded-xl"
+              ikon={<BadgeCheck aria-hidden className="size-4" />}
+              onClick={() => setDialog('sahkan')}
+            >
               Sahkan pembayaran
             </Tombol>
-            <Tombol varian="admin-garis" className="rounded-xl" ikon={<XCircle aria-hidden className="size-4" />} onClick={() => setDialog('tolak')}>
+            <Tombol
+              varian="admin-garis"
+              className="rounded-xl"
+              ikon={<XCircle aria-hidden className="size-4" />}
+              onClick={() => setDialog('tolak')}
+            >
               Tolak bukti
             </Tombol>
           </div>
@@ -141,7 +162,12 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap gap-2">
             {['Nominal tidak sesuai', 'Bukti tidak terbaca', 'Dana belum masuk'].map((a) => (
-              <button key={a} type="button" onClick={() => setCatatan(a)} className="rounded-full border border-ad-garis px-3 py-1 text-xs font-semibold hover:bg-ad-latar">
+              <button
+                key={a}
+                type="button"
+                onClick={() => setCatatan(a)}
+                className="rounded-full border border-ad-garis px-3 py-1 text-xs font-semibold hover:bg-ad-latar"
+              >
                 {a}
               </button>
             ))}
@@ -223,7 +249,9 @@ export function HalamanDetailPesananAdmin() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <LencanaStatus status={p.status} className="text-sm" />
         <BenderaPesanan p={p} />
-        {p.revisi_berbayar && <span className="rounded-md bg-ad-ungu-lembut px-1.5 py-0.5 text-xs font-bold text-ad-ungu">Revisi melebihi jatah gratis</span>}
+        {p.revisi_berbayar && (
+          <span className="rounded-md bg-ad-ungu-lembut px-1.5 py-0.5 text-xs font-bold text-ad-ungu">Revisi melebihi jatah gratis</span>
+        )}
       </div>
 
       {p.status.kode !== 'dibatalkan' ? (
@@ -240,7 +268,10 @@ export function HalamanDetailPesananAdmin() {
         <div className="flex flex-col gap-4">
           {buktiTerbaru && (
             <Kartu>
-              <h2 className="mb-3 text-lg font-bold">Bukti pembayaran {p.pembayaran.length > 1 && <span className="text-sm font-normal text-ad-redup">(unggahan ke-{p.pembayaran.length})</span>}</h2>
+              <h2 className="mb-3 text-lg font-bold">
+                Bukti pembayaran{' '}
+                {p.pembayaran.length > 1 && <span className="text-sm font-normal text-ad-redup">(unggahan ke-{p.pembayaran.length})</span>}
+              </h2>
               <VerifikasiBukti pesanan={p} bukti={buktiTerbaru} />
             </Kartu>
           )}
@@ -251,15 +282,19 @@ export function HalamanDetailPesananAdmin() {
                 <li key={d.id_detail} className="border-b border-ad-garis pb-4 last:border-0 last:pb-0">
                   <div className="flex justify-between gap-3">
                     <p className="font-semibold">
-                      {d.jumlah}× {d.nama} <span className="text-xs font-normal text-ad-redup">({d.jenis_item === 'paket' ? 'paket' : 'rangkai sendiri'})</span>
+                      {d.jumlah}× {d.nama}{' '}
+                      <span className="text-xs font-normal text-ad-redup">({d.jenis_item === 'paket' ? 'paket' : 'rangkai sendiri'})</span>
                     </p>
                     <p className="font-semibold tabular-nums">{formatRupiah(d.subtotal)}</p>
                   </div>
                   <ul className="mt-2 grid gap-1 text-sm sm:grid-cols-2">
                     {d.komposisi.map((k) => (
                       <li key={k.id_komposisi_pesanan} className="flex flex-wrap items-center gap-x-2">
-                        <span className="font-semibold tabular-nums">{k.jumlah_tangkai}×</span> {k.jenis.nama_bunga} <ChipWarna warna={k.warna} ukuran="kecil" />
-                        {k.is_pengganti && <span className="rounded bg-ad-peringatan-lembut px-1 text-xs font-bold text-ad-peringatan">pengganti</span>}
+                        <span className="font-semibold tabular-nums">{k.jumlah_tangkai}×</span> {k.jenis.nama_bunga}{' '}
+                        <ChipWarna warna={k.warna} ukuran="kecil" />
+                        {k.is_pengganti && (
+                          <span className="rounded bg-ad-peringatan-lembut px-1 text-xs font-bold text-ad-peringatan">pengganti</span>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -271,15 +306,27 @@ export function HalamanDetailPesananAdmin() {
             <Kartu>
               <h2 className="mb-3 text-lg font-bold">Foto hasil terakhir</h2>
               <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
-                <FotoBunga src={fotoTerbaru.foto_url} alt={`Foto hasil. ${fotoTerbaru.label_teks}`} className="aspect-square w-full rounded-xl" />
+                <FotoBunga
+                  src={fotoTerbaru.foto_url}
+                  alt={`Foto hasil. ${fotoTerbaru.label_teks}`}
+                  className="aspect-square w-full rounded-xl"
+                />
                 <div className="text-sm">
                   <p className="mb-2 font-semibold">Warna terbaca: {fotoTerbaru.label_teks}</p>
                   <p>
                     Persetujuan pelanggan:{' '}
-                    <strong>{fotoTerbaru.status_persetujuan === 'disetujui' ? 'Disetujui' : fotoTerbaru.status_persetujuan === 'revisi' ? 'Minta revisi' : 'Menunggu'}</strong>
+                    <strong>
+                      {fotoTerbaru.status_persetujuan === 'disetujui'
+                        ? 'Disetujui'
+                        : fotoTerbaru.status_persetujuan === 'revisi'
+                          ? 'Minta revisi'
+                          : 'Menunggu'}
+                    </strong>
                   </p>
                   {fotoTerbaru.catatan_revisi && <p className="mt-1 rounded-lg bg-ad-latar p-2">“{fotoTerbaru.catatan_revisi}”</p>}
-                  <p className="mt-1 text-ad-redup">Revisi: {p.jumlah_revisi} · sisa revisi gratis {p.revisi_gratis_tersisa}</p>
+                  <p className="mt-1 text-ad-redup">
+                    Revisi: {p.jumlah_revisi} · sisa revisi gratis {p.revisi_gratis_tersisa}
+                  </p>
                 </div>
               </div>
             </Kartu>
@@ -293,7 +340,12 @@ export function HalamanDetailPesananAdmin() {
             <p className="text-sm text-ad-redup">{p.pemesan.email}</p>
             {p.pemesan.no_hp && <p className="text-sm">{p.pemesan.no_hp}</p>}
             {wa && (
-              <a href={wa} target="_blank" rel="noopener noreferrer" className={cn(kelasTombol('admin-lembut', 'kecil'), 'mt-3 rounded-xl')}>
+              <a
+                href={wa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(kelasTombol('admin-lembut', 'kecil'), 'mt-3 rounded-xl')}
+              >
                 <MessageCircle aria-hidden className="size-4" /> Hubungi via WhatsApp
               </a>
             )}

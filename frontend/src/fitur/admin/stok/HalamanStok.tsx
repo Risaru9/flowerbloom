@@ -49,7 +49,12 @@ function DialogStokManual({ terbuka, tutup }: { terbuka: boolean; tutup: () => v
               setGalat(g)
               if (Object.keys(g).length) return
               simpan.mutate(
-                { id_jenis_bunga: Number(jenis), id_warna: Number(warna), jumlah_tangkai: Number(jumlah), harga_per_tangkai: Number(harga) },
+                {
+                  id_jenis_bunga: Number(jenis),
+                  id_warna: Number(warna),
+                  jumlah_tangkai: Number(jumlah),
+                  harga_per_tangkai: Number(harga),
+                },
                 {
                   onSuccess: (s) => {
                     tampilkanToast(`Stok ${s.jenis.nama_bunga} ${s.warna.nama_warna} kini ${s.jumlah_tersedia} tangkai.`)
@@ -67,14 +72,26 @@ function DialogStokManual({ terbuka, tutup }: { terbuka: boolean; tutup: () => v
       }
     >
       <div className="grid gap-4 sm:grid-cols-2">
-        {galat.umum && <p role="alert" className="rounded-xl bg-ad-bahaya-lembut p-3 text-sm text-ad-bahaya sm:col-span-2">{galat.umum}</p>}
+        {galat.umum && (
+          <p role="alert" className="rounded-xl bg-ad-bahaya-lembut p-3 text-sm text-ad-bahaya sm:col-span-2">
+            {galat.umum}
+          </p>
+        )}
         <PilihJenis nilai={jenis} ubah={setJenis} galat={galat.jenis} />
         <PilihWarna nilai={warna} ubah={setWarna} galat={galat.warna} />
         <Bidang label="Jumlah tangkai" gaya="admin" wajib galat={galat.jumlah}>
           <Masukan gaya="admin" type="number" inputMode="numeric" min={1} value={jumlah} onChange={(e) => setJumlah(e.target.value)} />
         </Bidang>
         <Bidang label="Harga per tangkai (Rp)" gaya="admin" wajib galat={galat.harga}>
-          <Masukan gaya="admin" type="number" inputMode="numeric" min={0} step={500} value={harga} onChange={(e) => setHarga(e.target.value)} />
+          <Masukan
+            gaya="admin"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            step={500}
+            value={harga}
+            onChange={(e) => setHarga(e.target.value)}
+          />
         </Bidang>
       </div>
     </Dialog>
@@ -148,7 +165,13 @@ function DialogKoreksi({ stok, tutup }: { stok: Skema['StokOut'] | null; tutup: 
           <Masukan gaya="admin" type="number" min={0} step={500} value={harga} onChange={(e) => setHarga(e.target.value)} />
         </Bidang>
         <Bidang label="Alasan koreksi" gaya="admin" wajib className="sm:col-span-2">
-          <AreaTeks gaya="admin" value={catatan} onChange={(e) => setCatatan(e.target.value)} placeholder="Layu 3 tangkai" maxLength={255} />
+          <AreaTeks
+            gaya="admin"
+            value={catatan}
+            onChange={(e) => setCatatan(e.target.value)}
+            placeholder="Layu 3 tangkai"
+            maxLength={255}
+          />
         </Bidang>
       </div>
     </Dialog>
@@ -176,7 +199,12 @@ export function HalamanStok() {
             <Link to="/admin/stok/pindai" className={cn(kelasTombol('admin'), 'rounded-xl')}>
               <ScanLine aria-hidden className="size-4" /> Pindai stok masuk
             </Link>
-            <Tombol varian="admin-garis" className="rounded-xl" ikon={<PackagePlus aria-hidden className="size-4" />} onClick={() => setManual(true)}>
+            <Tombol
+              varian="admin-garis"
+              className="rounded-xl"
+              ikon={<PackagePlus aria-hidden className="size-4" />}
+              onClick={() => setManual(true)}
+            >
               Input manual
             </Tombol>
           </>
@@ -195,7 +223,12 @@ export function HalamanStok() {
           className="h-11 min-w-0 flex-1 basis-56 rounded-xl border border-ad-garis bg-ad-permukaan px-3 text-sm focus:border-ad-aksen focus:outline-none"
         />
         <label className="flex h-11 items-center gap-2 rounded-xl border border-ad-garis bg-ad-permukaan px-3 text-sm font-semibold">
-          <input type="checkbox" checked={menipis} onChange={(e) => setQ(e.target.checked ? { menipis: '1' } : {})} className="size-4 accent-ad-aksen" />
+          <input
+            type="checkbox"
+            checked={menipis}
+            onChange={(e) => setQ(e.target.checked ? { menipis: '1' } : {})}
+            className="size-4 accent-ad-aksen"
+          />
           Menipis saja
         </label>
       </div>
@@ -204,7 +237,11 @@ export function HalamanStok() {
       ) : isError ? (
         <Galat galat={error} ulangi={() => void refetch()} />
       ) : daftar.length === 0 ? (
-        <Kosong ikon={<Boxes className="size-8" />} judul="Belum ada stok" pesan="Pindai bunga yang baru datang atau input secara manual." />
+        <Kosong
+          ikon={<Boxes className="size-8" />}
+          judul="Belum ada stok"
+          pesan="Pindai bunga yang baru datang atau input secara manual."
+        />
       ) : (
         <>
           <div className="hidden overflow-x-auto rounded-2xl border border-ad-garis bg-ad-permukaan md:block">
@@ -213,7 +250,14 @@ export function HalamanStok() {
               <thead className="bg-ad-latar text-xs text-ad-redup uppercase">
                 <tr>
                   {['Bunga', 'Warna', 'Masuk', 'Ditahan', 'Tersedia', 'Harga/tangkai', 'Terakhir masuk', ''].map((h) => (
-                    <th key={h} scope="col" className={cn('px-4 py-3 font-semibold', ['Masuk', 'Ditahan', 'Tersedia', 'Harga/tangkai'].includes(h) ? 'text-end' : 'text-start')}>
+                    <th
+                      key={h}
+                      scope="col"
+                      className={cn(
+                        'px-4 py-3 font-semibold',
+                        ['Masuk', 'Ditahan', 'Tersedia', 'Harga/tangkai'].includes(h) ? 'text-end' : 'text-start',
+                      )}
+                    >
                       {h || <span className="sr-only">Aksi</span>}
                     </th>
                   ))}
@@ -230,13 +274,25 @@ export function HalamanStok() {
                     <td className="px-4 py-3 text-end tabular-nums">{s.jumlah_ditahan}</td>
                     <td className="px-4 py-3 text-end font-bold tabular-nums">
                       {s.jumlah_tersedia}
-                      {s.menipis && <span className="ms-2 rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-xs text-ad-peringatan">Menipis</span>}
+                      {s.menipis && (
+                        <span className="ms-2 rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-xs text-ad-peringatan">Menipis</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-end tabular-nums">{formatRupiah(s.harga_per_tangkai)}</td>
                     <td className="px-4 py-3 text-ad-redup">{formatTanggal(s.tanggal_masuk)}</td>
                     <td className="px-4 py-3">
-                      <Tombol varian="admin-garis" ukuran="kecil" className="rounded-lg" ikon={<Pencil aria-hidden className="size-3.5" />} onClick={() => setKoreksi(s)}>
-                        Koreksi<span className="sr-only"> {s.jenis.nama_bunga} {s.warna.nama_warna}</span>
+                      <Tombol
+                        varian="admin-garis"
+                        ukuran="kecil"
+                        className="rounded-lg"
+                        ikon={<Pencil aria-hidden className="size-3.5" />}
+                        onClick={() => setKoreksi(s)}
+                      >
+                        Koreksi
+                        <span className="sr-only">
+                          {' '}
+                          {s.jenis.nama_bunga} {s.warna.nama_warna}
+                        </span>
                       </Tombol>
                     </td>
                   </tr>
@@ -261,7 +317,11 @@ export function HalamanStok() {
                   Masuk {s.jumlah_masuk} · ditahan {s.jumlah_ditahan} · {formatRupiah(s.harga_per_tangkai)}/tangkai
                 </p>
                 <div className="mt-2 flex items-center justify-between">
-                  {s.menipis ? <span className="rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-xs font-bold text-ad-peringatan">Menipis</span> : <span />}
+                  {s.menipis ? (
+                    <span className="rounded-md bg-ad-peringatan-lembut px-1.5 py-0.5 text-xs font-bold text-ad-peringatan">Menipis</span>
+                  ) : (
+                    <span />
+                  )}
                   <Tombol varian="admin-garis" ukuran="kecil" className="rounded-lg" onClick={() => setKoreksi(s)}>
                     Koreksi
                   </Tombol>

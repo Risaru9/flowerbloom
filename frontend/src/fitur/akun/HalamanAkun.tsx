@@ -90,13 +90,30 @@ export function HalamanProfil() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Bidang label="Nama">
-              <Masukan value={nilai.nama} onChange={(e) => setIsian({ ...nilai, nama: e.target.value })} autoComplete="name" maxLength={100} />
+              <Masukan
+                value={nilai.nama}
+                onChange={(e) => setIsian({ ...nilai, nama: e.target.value })}
+                autoComplete="name"
+                maxLength={100}
+              />
             </Bidang>
             <Bidang label="Email">
-              <Masukan type="email" value={nilai.email} onChange={(e) => setIsian({ ...nilai, email: e.target.value })} autoComplete="email" />
+              <Masukan
+                type="email"
+                value={nilai.email}
+                onChange={(e) => setIsian({ ...nilai, email: e.target.value })}
+                autoComplete="email"
+              />
             </Bidang>
             <Bidang label="Nomor WhatsApp" bantuan="Dipakai florist untuk menghubungi Anda bila perlu.">
-              <Masukan type="tel" inputMode="tel" value={nilai.no_hp} onChange={(e) => setIsian({ ...nilai, no_hp: e.target.value })} autoComplete="tel" maxLength={20} />
+              <Masukan
+                type="tel"
+                inputMode="tel"
+                value={nilai.no_hp}
+                onChange={(e) => setIsian({ ...nilai, no_hp: e.target.value })}
+                autoComplete="tel"
+                maxLength={20}
+              />
             </Bidang>
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -123,13 +140,28 @@ export function HalamanProfil() {
           )}
           <div className="grid gap-4 sm:grid-cols-3">
             <Bidang label="Kata sandi lama">
-              <Masukan type="password" autoComplete="current-password" value={sandi.lama} onChange={(e) => setSandi({ ...sandi, lama: e.target.value })} />
+              <Masukan
+                type="password"
+                autoComplete="current-password"
+                value={sandi.lama}
+                onChange={(e) => setSandi({ ...sandi, lama: e.target.value })}
+              />
             </Bidang>
             <Bidang label="Kata sandi baru">
-              <Masukan type="password" autoComplete="new-password" value={sandi.baru} onChange={(e) => setSandi({ ...sandi, baru: e.target.value })} />
+              <Masukan
+                type="password"
+                autoComplete="new-password"
+                value={sandi.baru}
+                onChange={(e) => setSandi({ ...sandi, baru: e.target.value })}
+              />
             </Bidang>
             <Bidang label="Ulangi kata sandi baru">
-              <Masukan type="password" autoComplete="new-password" value={sandi.ulang} onChange={(e) => setSandi({ ...sandi, ulang: e.target.value })} />
+              <Masukan
+                type="password"
+                autoComplete="new-password"
+                value={sandi.ulang}
+                onChange={(e) => setSandi({ ...sandi, ulang: e.target.value })}
+              />
             </Bidang>
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -275,7 +307,12 @@ function DialogAlamat({ awal, saatTutup }: { awal: Skema['AlamatOut'] | 'baru' |
           <Masukan value={isian.catatan ?? ''} onChange={ubah('catatan')} maxLength={255} placeholder="Pagar hijau, sebelah masjid" />
         </Bidang>
         <label className="flex items-center gap-2 text-sm text-olive-tua sm:col-span-2">
-          <input type="checkbox" checked={!!isian.utama} onChange={(e) => setIsian((s) => ({ ...s, utama: e.target.checked }))} className="size-4 accent-rose-teks" />
+          <input
+            type="checkbox"
+            checked={!!isian.utama}
+            onChange={(e) => setIsian((s) => ({ ...s, utama: e.target.checked }))}
+            className="size-4 accent-rose-teks"
+          />
           Jadikan alamat utama
         </label>
       </form>
@@ -307,7 +344,11 @@ export function HalamanAlamat() {
       ) : isError ? (
         <Galat galat={error} ulangi={() => void refetch()} />
       ) : data.length === 0 ? (
-        <Kosong ikon={<MapPin className="size-8" />} judul="Belum ada alamat" pesan="Simpan alamat agar checkout pengantaran lebih cepat." />
+        <Kosong
+          ikon={<MapPin className="size-8" />}
+          judul="Belum ada alamat"
+          pesan="Simpan alamat agar checkout pengantaran lebih cepat."
+        />
       ) : (
         <ul className="flex flex-col gap-3">
           {data.map((a) => (
@@ -418,7 +459,10 @@ export function HalamanNotifikasi() {
               <ul className="flex flex-col gap-2">
                 {perlu.map((p) => (
                   <li key={p.id_pesanan}>
-                    <Link to={`/akun/pesanan/${p.id_pesanan}`} className="flex items-start gap-3 rounded-3xl bg-blush p-4 ring-2 ring-magenta/60">
+                    <Link
+                      to={`/akun/pesanan/${p.id_pesanan}`}
+                      className="flex items-start gap-3 rounded-3xl bg-blush p-4 ring-2 ring-magenta/60"
+                    >
                       <IkonStatus nama={p.status.ikon} className="mt-0.5 size-5 shrink-0 text-rose-tua" />
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold text-olive-tua">
@@ -461,7 +505,10 @@ export function HalamanNotifikasi() {
               <ul className="flex flex-col gap-2">
                 {terbaru.map((p) => (
                   <li key={p.id_pesanan}>
-                    <Link to={`/akun/pesanan/${p.id_pesanan}`} className="flex flex-wrap items-center gap-3 rounded-3xl bg-permukaan p-4 ring-1 ring-garis/60 hover:bg-blush/40">
+                    <Link
+                      to={`/akun/pesanan/${p.id_pesanan}`}
+                      className="flex flex-wrap items-center gap-3 rounded-3xl bg-permukaan p-4 ring-1 ring-garis/60 hover:bg-blush/40"
+                    >
                       <CheckCircle2 aria-hidden className="size-5 text-rose-teks" />
                       <span className="min-w-0 flex-1 text-sm">
                         <span className="block font-semibold">{p.ringkasan_item}</span>

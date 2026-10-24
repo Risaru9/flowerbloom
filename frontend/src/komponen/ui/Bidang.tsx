@@ -76,7 +76,11 @@ export function Bidang({ label, children, bantuan, galat, wajib, gaya = 'pelangg
         </p>
       )}
       {galat && (
-        <p id={idGalat} role="alert" className={gaya === 'admin' ? 'text-xs font-medium text-ad-bahaya' : 'text-xs font-medium text-[#a01f1a]'}>
+        <p
+          id={idGalat}
+          role="alert"
+          className={gaya === 'admin' ? 'text-xs font-medium text-ad-bahaya' : 'text-xs font-medium text-[#a01f1a]'}
+        >
           {galat}
         </p>
       )}

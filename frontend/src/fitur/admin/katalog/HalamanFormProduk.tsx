@@ -54,13 +54,16 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
   const [tampil, setTampil] = useState(produk?.ditampilkan ?? true)
   const [komposisi, setKomposisi] = useState<Baris[]>(() =>
     produk?.komposisi.length
-      ? produk.komposisi.map((k) => barisBaru({ id_jenis_bunga: k.id_jenis_bunga, id_warna: k.warna.id_warna, jumlah_tangkai: k.jumlah_tangkai }))
+      ? produk.komposisi.map((k) =>
+          barisBaru({ id_jenis_bunga: k.id_jenis_bunga, id_warna: k.warna.id_warna, jumlah_tangkai: k.jumlah_tangkai }),
+        )
       : [barisBaru()],
   )
   const [foto, setFoto] = useState<File | null>(null)
   const [galat, setGalat] = useState<string | null>(null)
 
-  const ubahBaris = (kunci: number, sebagian: Partial<Baris>) => setKomposisi((ks) => ks.map((k) => (k.kunci === kunci ? { ...k, ...sebagian } : k)))
+  const ubahBaris = (kunci: number, sebagian: Partial<Baris>) =>
+    setKomposisi((ks) => ks.map((k) => (k.kunci === kunci ? { ...k, ...sebagian } : k)))
   const totalTangkai = komposisi.reduce((t, k) => t + (Number(k.jumlah_tangkai) || 0), 0)
 
   async function kirim(e: FormEvent) {
@@ -76,7 +79,11 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
       harga: Number(harga),
       deskripsi: deskripsi.trim() || null,
       ditampilkan: tampil,
-      komposisi: lengkap.map((k) => ({ id_jenis_bunga: Number(k.id_jenis_bunga), id_warna: Number(k.id_warna), jumlah_tangkai: Number(k.jumlah_tangkai) })),
+      komposisi: lengkap.map((k) => ({
+        id_jenis_bunga: Number(k.id_jenis_bunga),
+        id_warna: Number(k.id_warna),
+        jumlah_tangkai: Number(k.jumlah_tangkai),
+      })),
     }
     try {
       const hasil = produk ? await ubah.mutateAsync({ id: produk.id_produk, isian }) : await tambah.mutateAsync(isian)
@@ -128,7 +135,15 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
                 ))}
               </datalist>
               <Bidang label="Harga (Rp)" gaya="admin" wajib bantuan={harga ? formatRupiah(Number(harga)) : undefined}>
-                <Masukan gaya="admin" type="number" inputMode="numeric" min={0} step={1000} value={harga} onChange={(e) => setHarga(e.target.value)} />
+                <Masukan
+                  gaya="admin"
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  step={1000}
+                  value={harga}
+                  onChange={(e) => setHarga(e.target.value)}
+                />
               </Bidang>
               <Bidang label="Deskripsi" gaya="admin" className="sm:col-span-2">
                 <AreaTeks gaya="admin" value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} maxLength={2000} />
@@ -148,9 +163,16 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
               {komposisi.map((k, i) => {
                 const w = warna.data?.find((x) => x.id_warna === k.id_warna)
                 return (
-                  <li key={k.kunci} className="grid gap-2 rounded-xl border border-ad-garis p-3 sm:grid-cols-[1.3fr_1.3fr_6rem_auto] sm:items-end">
+                  <li
+                    key={k.kunci}
+                    className="grid gap-2 rounded-xl border border-ad-garis p-3 sm:grid-cols-[1.3fr_1.3fr_6rem_auto] sm:items-end"
+                  >
                     <Bidang label={`Jenis bunga ${i + 1}`} gaya="admin">
-                      <Pilihan gaya="admin" value={k.id_jenis_bunga} onChange={(e) => ubahBaris(k.kunci, { id_jenis_bunga: e.target.value ? Number(e.target.value) : '' })}>
+                      <Pilihan
+                        gaya="admin"
+                        value={k.id_jenis_bunga}
+                        onChange={(e) => ubahBaris(k.kunci, { id_jenis_bunga: e.target.value ? Number(e.target.value) : '' })}
+                      >
                         <option value="">Pilih jenis…</option>
                         {jenis.data?.map((j) => (
                           <option key={j.id_jenis_bunga} value={j.id_jenis_bunga}>
@@ -160,7 +182,12 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
                       </Pilihan>
                     </Bidang>
                     <Bidang label={`Warna ${i + 1}`} gaya="admin">
-                      <Pilihan gaya="admin" value={k.id_warna} onChange={(e) => ubahBaris(k.kunci, { id_warna: e.target.value ? Number(e.target.value) : '' })} style={w ? { borderInlineStartWidth: 8, borderInlineStartColor: w.kode_hex } : undefined}>
+                      <Pilihan
+                        gaya="admin"
+                        value={k.id_warna}
+                        onChange={(e) => ubahBaris(k.kunci, { id_warna: e.target.value ? Number(e.target.value) : '' })}
+                        style={w ? { borderInlineStartWidth: 8, borderInlineStartColor: w.kode_hex } : undefined}
+                      >
                         <option value="">Pilih warna…</option>
                         {warna.data?.map((x) => (
                           <option key={x.id_warna} value={x.id_warna}>
@@ -170,7 +197,14 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
                       </Pilihan>
                     </Bidang>
                     <Bidang label="Tangkai" gaya="admin">
-                      <Masukan gaya="admin" type="number" min={1} max={1000} value={k.jumlah_tangkai} onChange={(e) => ubahBaris(k.kunci, { jumlah_tangkai: Number(e.target.value) })} />
+                      <Masukan
+                        gaya="admin"
+                        type="number"
+                        min={1}
+                        max={1000}
+                        value={k.jumlah_tangkai}
+                        onChange={(e) => ubahBaris(k.kunci, { jumlah_tangkai: Number(e.target.value) })}
+                      />
                     </Bidang>
                     <Tombol
                       varian="admin-garis"
@@ -186,14 +220,22 @@ function FormProduk({ produk }: { produk?: Skema['ProdukOut'] }) {
                 )
               })}
             </ul>
-            <Tombol varian="admin-lembut" ukuran="kecil" className="mt-3 rounded-lg" ikon={<Plus aria-hidden className="size-4" />} onClick={() => setKomposisi((ks) => [...ks, barisBaru()])}>
+            <Tombol
+              varian="admin-lembut"
+              ukuran="kecil"
+              className="mt-3 rounded-lg"
+              ikon={<Plus aria-hidden className="size-4" />}
+              onClick={() => setKomposisi((ks) => [...ks, barisBaru()])}
+            >
               Tambah bunga
             </Tombol>
           </Kartu>
         </div>
         <Kartu className="self-start">
           <h2 className="mb-3 text-lg font-bold">Foto produk</h2>
-          {produk?.foto_url && !foto && <FotoBunga src={produk.foto_url} alt={`Foto ${produk.nama_produk} saat ini`} className="mb-3 aspect-square w-full rounded-xl" />}
+          {produk?.foto_url && !foto && (
+            <FotoBunga src={produk.foto_url} alt={`Foto ${produk.nama_produk} saat ini`} className="mb-3 aspect-square w-full rounded-xl" />
+          )}
           <UnggahFoto gaya="admin" label={produk?.foto_url ? 'Ganti foto' : 'Pilih foto produk'} berkas={foto} ubah={setFoto} />
           <p className="mt-2 text-xs text-ad-redup">Gunakan foto persegi dengan latar polos agar katalog tampak rapi.</p>
         </Kartu>

@@ -34,7 +34,10 @@ export function DialogAksesibilitas({ terbuka, saatTutup }: { terbuka: boolean; 
   }
 
   const ubah = (sebagian: Partial<PengaturanAksesibilitas>) => setDraf((d) => ({ ...d, ...sebagian }))
-  const idxTeks = Math.max(0, LANGKAH_TEKS.findIndex((n) => n >= draf.ukuran_teks))
+  const idxTeks = Math.max(
+    0,
+    LANGKAH_TEKS.findIndex((n) => n >= draf.ukuran_teks),
+  )
 
   async function terapkanPengaturan() {
     const hasil = aturAksesibilitas(draf)

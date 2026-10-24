@@ -34,8 +34,7 @@ function PanduanIos({ terbuka, saatTutup }: { terbuka: boolean; saatTutup: () =>
     <Dialog terbuka={terbuka} saatTutup={saatTutup} judul="Pasang FlowerBloom di iPhone" lebar="sm">
       <ol className="flex list-decimal flex-col gap-3 ps-5 text-olive-tua">
         <li>
-          Ketuk tombol <Share aria-label="Bagikan" className="inline size-5 align-text-bottom" /> <strong>Bagikan</strong> di bilah
-          Safari.
+          Ketuk tombol <Share aria-label="Bagikan" className="inline size-5 align-text-bottom" /> <strong>Bagikan</strong> di bilah Safari.
         </li>
         <li>
           Pilih <SquarePlus aria-hidden className="inline size-5 align-text-bottom" /> <strong>Tambahkan ke Layar Utama</strong>.
@@ -70,7 +69,12 @@ export function SpandukPasang() {
         <span className="block text-xs text-redup">Buka lebih cepat dari layar utama, seperti aplikasi.</span>
       </p>
       <TombolPasang />
-      <button type="button" onClick={tutup} aria-label="Tutup ajakan pasang" className="grid size-9 place-items-center rounded-full hover:bg-blush">
+      <button
+        type="button"
+        onClick={tutup}
+        aria-label="Tutup ajakan pasang"
+        className="grid size-9 place-items-center rounded-full hover:bg-blush"
+      >
         <X aria-hidden className="size-4" />
       </button>
     </aside>
@@ -98,7 +102,11 @@ export function PembaruanAplikasi() {
       <button type="button" className="rounded-full px-3 py-1.5 font-semibold underline" onClick={() => setPerluMuatUlang(false)}>
         Nanti
       </button>
-      <button type="button" className="rounded-full bg-latar px-3 py-1.5 font-semibold text-olive-tua" onClick={() => void updateServiceWorker(true)}>
+      <button
+        type="button"
+        className="rounded-full bg-latar px-3 py-1.5 font-semibold text-olive-tua"
+        onClick={() => void updateServiceWorker(true)}
+      >
         Muat ulang
       </button>
     </div>
@@ -115,14 +123,21 @@ function langganJaringan(cb: () => void) {
 }
 
 export function useDaring(): boolean {
-  return useSyncExternalStore(langganJaringan, () => navigator.onLine, () => true)
+  return useSyncExternalStore(
+    langganJaringan,
+    () => navigator.onLine,
+    () => true,
+  )
 }
 
 export function StatusJaringan() {
   const daring = useDaring()
   if (daring) return null
   return (
-    <div role="status" className="sticky top-0 z-50 flex items-center justify-center gap-2 bg-[#4f474b] px-4 py-2 text-center text-sm text-white">
+    <div
+      role="status"
+      className="sticky top-0 z-50 flex items-center justify-center gap-2 bg-[#4f474b] px-4 py-2 text-center text-sm text-white"
+    >
       <WifiOff aria-hidden className="size-4" />
       Anda sedang offline. Katalog yang pernah dibuka tetap bisa dilihat; memesan dan membayar butuh koneksi.
     </div>

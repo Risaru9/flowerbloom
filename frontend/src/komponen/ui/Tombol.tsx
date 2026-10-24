@@ -44,18 +44,7 @@ interface PropsTombol extends ButtonHTMLAttributes<HTMLButtonElement> {
   ikon?: ReactNode
 }
 
-export function Tombol({
-  varian,
-  ukuran,
-  penuh,
-  memuat,
-  ikon,
-  className,
-  children,
-  disabled,
-  type = 'button',
-  ...sisa
-}: PropsTombol) {
+export function Tombol({ varian, ukuran, penuh, memuat, ikon, className, children, disabled, type = 'button', ...sisa }: PropsTombol) {
   return (
     <button
       type={type}

@@ -6,7 +6,7 @@ menyetujui atau menolaknya; bagian C daftar keputusan yang **memang milik tim**;
 
 ## A. Perubahan skema terhadap proposal (bahan ERD final)
 
-Proposal: 13 tabel. Implementasi: **17 tabel**. Semua nama tabel/kolom proposal dipertahankan; yang berubah hanya berikut.
+Proposal: 13 tabel. Implementasi: **19 tabel**. Semua nama tabel/kolom proposal dipertahankan; yang berubah hanya berikut.
 
 | Tabel | Perubahan | Alasan |
 |---|---|---|
@@ -21,6 +21,9 @@ Proposal: 13 tabel. Implementasi: **17 tabel**. Semua nama tabel/kolom proposal 
 | **`komplain`** (baru) | | F-PL-16, AB-09 |
 | **`mutasi_stok`** (baru) | buku mutasi | Angka "jumlah masuk" F-AD-13 tidak tersimpan di mana pun; audit stok |
 | **`riwayat_status_pesanan`** (baru) | jejak transisi | Garis waktu F-PL-12; bukti bila sengketa |
+| **`favorit`** (baru, migrasi 0002) | `UNIQUE(id_pengguna, id_produk)` | Halaman Produk Favorit pada rancangan UI |
+| **`alamat`** (baru, migrasi 0002) | label, penerima, no HP, alamat, catatan, `utama` | Halaman Alamat Tersimpan; satu alamat utama per pelanggan, maks. 10 |
+| `pengguna` (migrasi 0002) | + `versi_sesi` | Ganti kata sandi / "keluar dari semua perangkat" mencabut semua token lama (klaim `ver` pada JWT) |
 
 Tidak ada tabel keranjang dan notifikasi: keranjang disimpan di klien (server memvalidasi lewat `POST /pesanan/pratinjau`),
 notifikasi diturunkan dari status (`perlu_tindakan_*`, angka pada dasbor).
@@ -76,6 +79,8 @@ notifikasi diturunkan dari status (`perlu_tindakan_*`, angka pada dasbor).
     (yang kalah menerima 500 dari jaring pengaman stok, bukan 409; stok tetap benar). Dua tes yang bergantung pada ini dilewati
     di SQLite dan lulus di MySQL. **Gunakan MySQL, bukan SQLite, untuk apa pun yang menyerupai produksi.**
 * **Model AI asli belum terpasang**; `AI_MODE=tiruan` mengembalikan jenis bunga acak-deterministik (warna tetap sungguhan).
-* **Belum ada:** pembatas laju (login/pindai), kunci idempotensi checkout (klik ganda membuat dua pesanan), notifikasi email/push
-  (frontend perlu polling), logout sisi server, saran perpaduan warna F-PL-06, pembersihan berkas lama.
+* **Sudah ditambahkan (2026-10-23):** pembatas percobaan masuk (per email+IP dan per IP, di memori proses: pindahkan ke
+  Redis bila memakai banyak worker), ganti kata sandi, keluar dari semua perangkat, Swagger mati di produksi.
+* **Belum ada:** pembatas laju pindai, kunci idempotensi checkout (klik ganda membuat dua pesanan), notifikasi email/push
+  (frontend perlu polling), saran perpaduan warna F-PL-06, pembersihan berkas lama.
 * **Metode warna belum diuji dengan foto asli toko.** Uji otomatis memakai gambar sintetis.

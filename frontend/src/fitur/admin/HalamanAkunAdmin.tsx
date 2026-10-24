@@ -62,8 +62,17 @@ export function HalamanAkunAdmin() {
           {data.map((u) => {
             const saya = u.id_pengguna === sesi?.pengguna.id_pengguna
             return (
-              <li key={u.id_pengguna} className={cn('flex items-center gap-3 rounded-2xl border bg-ad-permukaan p-4', u.aktif ? 'border-ad-garis' : 'border-dashed border-ad-redup/60 opacity-75')}>
-                <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full bg-ad-aksen-lembut font-bold text-ad-aksen">
+              <li
+                key={u.id_pengguna}
+                className={cn(
+                  'flex items-center gap-3 rounded-2xl border bg-ad-permukaan p-4',
+                  u.aktif ? 'border-ad-garis' : 'border-dashed border-ad-redup/60 opacity-75',
+                )}
+              >
+                <span
+                  aria-hidden
+                  className="grid size-11 shrink-0 place-items-center rounded-full bg-ad-aksen-lembut font-bold text-ad-aksen"
+                >
                   {u.nama.charAt(0).toUpperCase()}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -116,18 +125,41 @@ export function HalamanAkunAdmin() {
         }
       >
         <form id="form-admin" onSubmit={kirim} className="grid gap-4 sm:grid-cols-2">
-          {galat && <p role="alert" className="rounded-xl bg-ad-bahaya-lembut p-3 text-sm text-ad-bahaya sm:col-span-2">{galat}</p>}
+          {galat && (
+            <p role="alert" className="rounded-xl bg-ad-bahaya-lembut p-3 text-sm text-ad-bahaya sm:col-span-2">
+              {galat}
+            </p>
+          )}
           <Bidang label="Nama" gaya="admin" wajib>
-            <Masukan gaya="admin" value={isian.nama} onChange={(e) => setIsian({ ...isian, nama: e.target.value })} required minLength={2} />
+            <Masukan
+              gaya="admin"
+              value={isian.nama}
+              onChange={(e) => setIsian({ ...isian, nama: e.target.value })}
+              required
+              minLength={2}
+            />
           </Bidang>
           <Bidang label="Email" gaya="admin" wajib>
-            <Masukan gaya="admin" type="email" value={isian.email} onChange={(e) => setIsian({ ...isian, email: e.target.value })} required />
+            <Masukan
+              gaya="admin"
+              type="email"
+              value={isian.email}
+              onChange={(e) => setIsian({ ...isian, email: e.target.value })}
+              required
+            />
           </Bidang>
           <Bidang label="Nomor HP" gaya="admin">
             <Masukan gaya="admin" type="tel" value={isian.no_hp} onChange={(e) => setIsian({ ...isian, no_hp: e.target.value })} />
           </Bidang>
           <Bidang label="Kata sandi sementara" gaya="admin" wajib bantuan="Minimal 8 karakter.">
-            <Masukan gaya="admin" type="password" autoComplete="new-password" value={isian.kata_sandi} onChange={(e) => setIsian({ ...isian, kata_sandi: e.target.value })} required />
+            <Masukan
+              gaya="admin"
+              type="password"
+              autoComplete="new-password"
+              value={isian.kata_sandi}
+              onChange={(e) => setIsian({ ...isian, kata_sandi: e.target.value })}
+              required
+            />
           </Bidang>
         </form>
       </Dialog>
@@ -207,15 +239,37 @@ export function HalamanProfilAdmin() {
               }
             }}
           >
-            {galatSandi && <p role="alert" className="rounded-xl bg-ad-bahaya-lembut p-3 text-sm text-ad-bahaya">{galatSandi}</p>}
+            {galatSandi && (
+              <p role="alert" className="rounded-xl bg-ad-bahaya-lembut p-3 text-sm text-ad-bahaya">
+                {galatSandi}
+              </p>
+            )}
             <Bidang label="Kata sandi lama" gaya="admin">
-              <Masukan gaya="admin" type="password" autoComplete="current-password" value={sandi.lama} onChange={(e) => setSandi({ ...sandi, lama: e.target.value })} />
+              <Masukan
+                gaya="admin"
+                type="password"
+                autoComplete="current-password"
+                value={sandi.lama}
+                onChange={(e) => setSandi({ ...sandi, lama: e.target.value })}
+              />
             </Bidang>
             <Bidang label="Kata sandi baru" gaya="admin">
-              <Masukan gaya="admin" type="password" autoComplete="new-password" value={sandi.baru} onChange={(e) => setSandi({ ...sandi, baru: e.target.value })} />
+              <Masukan
+                gaya="admin"
+                type="password"
+                autoComplete="new-password"
+                value={sandi.baru}
+                onChange={(e) => setSandi({ ...sandi, baru: e.target.value })}
+              />
             </Bidang>
             <Bidang label="Ulangi kata sandi baru" gaya="admin">
-              <Masukan gaya="admin" type="password" autoComplete="new-password" value={sandi.ulang} onChange={(e) => setSandi({ ...sandi, ulang: e.target.value })} />
+              <Masukan
+                gaya="admin"
+                type="password"
+                autoComplete="new-password"
+                value={sandi.ulang}
+                onChange={(e) => setSandi({ ...sandi, ulang: e.target.value })}
+              />
             </Bidang>
             <div className="flex flex-wrap gap-2">
               <Tombol type="submit" varian="admin" className="rounded-xl" disabled={!sandi.lama || !sandi.baru} memuat={ganti.isPending}>

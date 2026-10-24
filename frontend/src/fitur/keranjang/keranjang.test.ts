@@ -2,7 +2,17 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import type { Skema } from '@/api/client'
 
-import { hapusItem, hargaItem, jumlahBarang, keItemApi, kosongkanKeranjang, tambahPaket, tambahRangkaian, tokoKeranjang, ubahJumlah } from './keranjang'
+import {
+  hapusItem,
+  hargaItem,
+  jumlahBarang,
+  keItemApi,
+  kosongkanKeranjang,
+  tambahPaket,
+  tambahRangkaian,
+  tokoKeranjang,
+  ubahJumlah,
+} from './keranjang'
 
 const merah = { id_warna: 1, nama_warna: 'Merah', kode_hex: '#FF0000' }
 const putih = { id_warna: 2, nama_warna: 'Putih', kode_hex: '#FFFFFF' }

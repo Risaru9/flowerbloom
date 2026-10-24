@@ -17,7 +17,11 @@ export function Linimasa({ tahap, gaya = 'pelanggan' }: { tahap: Skema['TahapOut
         const selesai = t.keadaan === 'selesai'
         const aktif = t.keadaan === 'aktif'
         return (
-          <li key={t.kode} aria-current={aktif ? 'step' : undefined} className="relative flex items-start gap-3 sm:flex-1 sm:flex-col sm:items-center sm:text-center">
+          <li
+            key={t.kode}
+            aria-current={aktif ? 'step' : undefined}
+            className="relative flex items-start gap-3 sm:flex-1 sm:flex-col sm:items-center sm:text-center"
+          >
             {i < tahap.length - 1 && (
               <span
                 aria-hidden

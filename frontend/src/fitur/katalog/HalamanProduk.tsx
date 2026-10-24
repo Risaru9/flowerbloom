@@ -67,7 +67,10 @@ export function HalamanProduk() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-10">
-      <Link to="/katalog" className="mb-4 inline-flex min-h-10 items-center gap-1 rounded-full pe-3 text-sm font-semibold text-rose-teks hover:underline">
+      <Link
+        to="/katalog"
+        className="mb-4 inline-flex min-h-10 items-center gap-1 rounded-full pe-3 text-sm font-semibold text-rose-teks hover:underline"
+      >
         <ChevronLeft aria-hidden className="size-4" /> Kembali ke katalog
       </Link>
 
@@ -75,11 +78,13 @@ export function HalamanProduk() {
         {/* Foto */}
         <div className="lg:sticky lg:top-28 lg:self-start">
           <div className="overflow-hidden rounded-[2rem] border-2 border-rose/60 bg-blush p-2">
-            <div
-              data-pratinjau={modeAktif}
-              className="overflow-hidden rounded-[1.6rem]"
-            >
-              <FotoBunga src={produk.foto_url} alt={`Foto ${produk.nama_produk}. ${produk.narasi}`} loading="eager" className="aspect-square w-full" />
+            <div data-pratinjau={modeAktif} className="overflow-hidden rounded-[1.6rem]">
+              <FotoBunga
+                src={produk.foto_url}
+                alt={`Foto ${produk.nama_produk}. ${produk.narasi}`}
+                loading="eager"
+                className="aspect-square w-full"
+              />
             </div>
           </div>
           <fieldset className="mt-4 rounded-3xl bg-blush/60 p-4">
@@ -97,12 +102,20 @@ export function HalamanProduk() {
                     modeAktif === m.nilai ? 'border-olive bg-olive text-latar' : 'border-garis bg-permukaan text-olive-tua',
                   )}
                 >
-                  <input type="radio" name="pratinjau" className="sr-only" checked={modeAktif === m.nilai} onChange={() => setMode(m.nilai)} />
+                  <input
+                    type="radio"
+                    name="pratinjau"
+                    className="sr-only"
+                    checked={modeAktif === m.nilai}
+                    onChange={() => setMode(m.nilai)}
+                  />
                   {m.label}
                 </label>
               ))}
             </div>
-            <p className="mt-2 text-xs text-redup">Hanya mengubah tampilan foto ini. Atur untuk semua halaman lewat ikon aksesibilitas di atas.</p>
+            <p className="mt-2 text-xs text-redup">
+              Hanya mengubah tampilan foto ini. Atur untuk semua halaman lewat ikon aksesibilitas di atas.
+            </p>
           </fieldset>
         </div>
 
@@ -205,14 +218,19 @@ export function HalamanProduk() {
               {tab === 'Isi rangkaian' && (
                 <ul className="flex flex-col gap-3">
                   {produk.komposisi.map((k) => (
-                    <li key={`${k.id_jenis_bunga}-${k.warna.id_warna}`} className="flex items-start justify-between gap-3 rounded-2xl bg-permukaan p-3 ring-1 ring-garis/50">
+                    <li
+                      key={`${k.id_jenis_bunga}-${k.warna.id_warna}`}
+                      className="flex items-start justify-between gap-3 rounded-2xl bg-permukaan p-3 ring-1 ring-garis/50"
+                    >
                       <span>
                         <span className="block font-semibold text-olive-tua">
                           {k.jenis.nama_bunga} · <ChipWarna warna={k.warna} ukuran="kecil" />
                         </span>
                         <span className="block text-xs text-redup">{k.deskripsi}</span>
                       </span>
-                      <span className="shrink-0 rounded-full bg-blush px-3 py-1 text-xs font-bold text-rose-tua">{k.jumlah_tangkai} tangkai</span>
+                      <span className="shrink-0 rounded-full bg-blush px-3 py-1 text-xs font-bold text-rose-tua">
+                        {k.jumlah_tangkai} tangkai
+                      </span>
                     </li>
                   ))}
                 </ul>

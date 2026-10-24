@@ -67,9 +67,25 @@ export function HalamanPindaiStok() {
           <h2 className="mb-3 flex items-center gap-2 text-lg font-bold">
             <ScanLine aria-hidden className="size-5 text-ad-aksen" /> 1. Ambil foto
           </h2>
-          <UnggahFoto gaya="admin" kamera label="Foto bunga (satu jenis per foto)" berkas={foto} ubah={(f) => { setFoto(f); setHasil(null) }} />
+          <UnggahFoto
+            gaya="admin"
+            kamera
+            label="Foto bunga (satu jenis per foto)"
+            berkas={foto}
+            ubah={(f) => {
+              setFoto(f)
+              setHasil(null)
+            }}
+          />
           <p className="mt-2 text-xs text-ad-redup">Tips: latar polos, cahaya cukup, bunga memenuhi sebagian besar bingkai.</p>
-          <Tombol varian="admin" className="mt-3 w-full rounded-xl" disabled={!foto} memuat={pindai.isPending} onClick={mulaiPindai} ikon={<Sparkles aria-hidden className="size-4" />}>
+          <Tombol
+            varian="admin"
+            className="mt-3 w-full rounded-xl"
+            disabled={!foto}
+            memuat={pindai.isPending}
+            onClick={mulaiPindai}
+            ikon={<Sparkles aria-hidden className="size-4" />}
+          >
             Kenali dengan AI
           </Tombol>
         </Kartu>
@@ -84,8 +100,18 @@ export function HalamanPindaiStok() {
                 <p className="text-sm font-semibold">{hasil.dikenali ? 'Bunga dikenali' : 'Keyakinan rendah — periksa jenisnya'}</p>
                 <p className="mt-1 text-xl font-bold">{hasil.jenis?.nama_bunga ?? 'Jenis tidak dikenali'}</p>
                 <div className="mt-2 flex items-center gap-3">
-                  <div role="meter" aria-label="Tingkat keyakinan" aria-valuemin={0} aria-valuemax={100} aria-valuenow={persen} className="h-2 flex-1 overflow-hidden rounded-full bg-ad-permukaan">
-                    <div className={cn('h-full rounded-full', hasil.dikenali ? 'bg-ad-sukses' : 'bg-ad-peringatan')} style={{ width: `${persen}%` }} />
+                  <div
+                    role="meter"
+                    aria-label="Tingkat keyakinan"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={persen}
+                    className="h-2 flex-1 overflow-hidden rounded-full bg-ad-permukaan"
+                  >
+                    <div
+                      className={cn('h-full rounded-full', hasil.dikenali ? 'bg-ad-sukses' : 'bg-ad-peringatan')}
+                      style={{ width: `${persen}%` }}
+                    />
                   </div>
                   <span className="text-sm font-bold tabular-nums">{persen}% yakin</span>
                 </div>
@@ -95,7 +121,8 @@ export function HalamanPindaiStok() {
                 {hasil.deskripsi && <p className="mt-1 text-sm text-ad-redup">{hasil.deskripsi}</p>}
                 {hasil.tiruan && (
                   <p className="mt-2 flex items-start gap-1.5 text-xs font-semibold text-ad-peringatan">
-                    <CircleAlert aria-hidden className="size-4 shrink-0" /> Mode uji: jenis bunga dari AI tiruan karena model asli belum dipasang. Warna dibaca sungguhan.
+                    <CircleAlert aria-hidden className="size-4 shrink-0" /> Mode uji: jenis bunga dari AI tiruan karena model asli belum
+                    dipasang. Warna dibaca sungguhan.
                   </p>
                 )}
                 {hasil.peringatan.map((p) => (
@@ -108,10 +135,25 @@ export function HalamanPindaiStok() {
                 <PilihJenis nilai={jenis} ubah={setJenis} />
                 <PilihWarna nilai={warna} ubah={setWarna} />
                 <Bidang label="Jumlah tangkai" gaya="admin" wajib>
-                  <Masukan gaya="admin" type="number" inputMode="numeric" min={1} value={jumlah} onChange={(e) => setJumlah(e.target.value)} />
+                  <Masukan
+                    gaya="admin"
+                    type="number"
+                    inputMode="numeric"
+                    min={1}
+                    value={jumlah}
+                    onChange={(e) => setJumlah(e.target.value)}
+                  />
                 </Bidang>
                 <Bidang label="Harga per tangkai (Rp)" gaya="admin" wajib>
-                  <Masukan gaya="admin" type="number" inputMode="numeric" min={0} step={500} value={harga} onChange={(e) => setHarga(e.target.value)} />
+                  <Masukan
+                    gaya="admin"
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    step={500}
+                    value={harga}
+                    onChange={(e) => setHarga(e.target.value)}
+                  />
                 </Bidang>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -122,7 +164,13 @@ export function HalamanPindaiStok() {
                   memuat={simpan.isPending}
                   onClick={() =>
                     simpan.mutate(
-                      { id_pindai: hasil.id_pindai, id_jenis_bunga: Number(jenis), id_warna: Number(warna), jumlah_tangkai: Number(jumlah), harga_per_tangkai: Number(harga) },
+                      {
+                        id_pindai: hasil.id_pindai,
+                        id_jenis_bunga: Number(jenis),
+                        id_warna: Number(warna),
+                        jumlah_tangkai: Number(jumlah),
+                        harga_per_tangkai: Number(harga),
+                      },
                       {
                         onSuccess: (s) => {
                           tampilkanToast(`Tersimpan: ${s.jenis.nama_bunga} ${s.warna.nama_warna}, tersedia ${s.jumlah_tersedia} tangkai.`)

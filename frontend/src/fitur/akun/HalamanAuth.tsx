@@ -53,7 +53,11 @@ export function IsianAuth({
         )}
       </div>
       {(galat || bantuan) && (
-        <p id={idKet} role={galat ? 'alert' : undefined} className={galat ? 'mt-1 text-xs font-medium text-[#a01f1a]' : 'mt-1 text-xs text-redup'}>
+        <p
+          id={idKet}
+          role={galat ? 'alert' : undefined}
+          className={galat ? 'mt-1 text-xs font-medium text-[#a01f1a]' : 'mt-1 text-xs text-redup'}
+        >
           {galat ?? bantuan}
         </p>
       )}
@@ -99,8 +103,26 @@ export function HalamanMasuk() {
             {galat}
           </p>
         )}
-        <IsianAuth label="Email" ikon={<Mail className="size-5" />} type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nama@email.com" required />
-        <IsianAuth label="Kata sandi" ikon={<Lock className="size-5" />} sandi autoComplete="current-password" value={sandi} onChange={(e) => setSandi(e.target.value)} required />
+        <IsianAuth
+          label="Email"
+          ikon={<Mail className="size-5" />}
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="nama@email.com"
+          required
+        />
+        <IsianAuth
+          label="Kata sandi"
+          ikon={<Lock className="size-5" />}
+          sandi
+          autoComplete="current-password"
+          value={sandi}
+          onChange={(e) => setSandi(e.target.value)}
+          required
+        />
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <label className="flex min-h-10 cursor-pointer items-center gap-2 text-olive-tua">
             <input type="checkbox" checked={ingat} onChange={(e) => setIngat(e.target.checked)} className="size-4 accent-rose-teks" />
@@ -115,7 +137,10 @@ export function HalamanMasuk() {
         </Tombol>
         <p className="text-center text-olive">
           Belum memiliki akun?{' '}
-          <Link to={`/daftar${q.get('kembali') ? `?kembali=${encodeURIComponent(kembali)}` : ''}`} className="font-display font-semibold text-rose-teks italic underline">
+          <Link
+            to={`/daftar${q.get('kembali') ? `?kembali=${encodeURIComponent(kembali)}` : ''}`}
+            className="font-display font-semibold text-rose-teks italic underline"
+          >
             Daftar sekarang
           </Link>
         </p>
@@ -171,9 +196,36 @@ export function HalamanDaftar() {
             {galat.umum}
           </p>
         )}
-        <IsianAuth label="Nama lengkap" ikon={<UserRound className="size-5" />} autoComplete="name" value={isian.nama} onChange={ubah('nama')} galat={galat.nama} required />
-        <IsianAuth label="Email" ikon={<Mail className="size-5" />} type="email" inputMode="email" autoComplete="email" value={isian.email} onChange={ubah('email')} galat={galat.email} required />
-        <IsianAuth label="Nomor HP (opsional)" ikon={<Phone className="size-5" />} type="tel" inputMode="tel" autoComplete="tel" value={isian.no_hp} onChange={ubah('no_hp')} galat={galat.no_hp} />
+        <IsianAuth
+          label="Nama lengkap"
+          ikon={<UserRound className="size-5" />}
+          autoComplete="name"
+          value={isian.nama}
+          onChange={ubah('nama')}
+          galat={galat.nama}
+          required
+        />
+        <IsianAuth
+          label="Email"
+          ikon={<Mail className="size-5" />}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          value={isian.email}
+          onChange={ubah('email')}
+          galat={galat.email}
+          required
+        />
+        <IsianAuth
+          label="Nomor HP (opsional)"
+          ikon={<Phone className="size-5" />}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          value={isian.no_hp}
+          onChange={ubah('no_hp')}
+          galat={galat.no_hp}
+        />
         <IsianAuth
           label="Kata sandi"
           ikon={<Lock className="size-5" />}
@@ -190,7 +242,10 @@ export function HalamanDaftar() {
         </Tombol>
         <p className="text-center text-olive">
           Sudah punya akun?{' '}
-          <Link to={`/masuk${q.get('kembali') ? `?kembali=${encodeURIComponent(kembali)}` : ''}`} className="font-display font-semibold text-rose-teks italic underline">
+          <Link
+            to={`/masuk${q.get('kembali') ? `?kembali=${encodeURIComponent(kembali)}` : ''}`}
+            className="font-display font-semibold text-rose-teks italic underline"
+          >
             Masuk
           </Link>
         </p>

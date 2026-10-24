@@ -32,7 +32,9 @@ function DialogPengganti({ id, asal, saatTutup }: { id: number; asal: Komposisi 
       terbuka={!!asal}
       saatTutup={saatTutup}
       judul="Catat bunga pengganti"
-      deskripsi={asal ? `Mengganti ${asal.jenis.nama_bunga} ${asal.warna.nama_warna}. Pengganti berwarna lain wajib disetujui pelanggan.` : undefined}
+      deskripsi={
+        asal ? `Mengganti ${asal.jenis.nama_bunga} ${asal.warna.nama_warna}. Pengganti berwarna lain wajib disetujui pelanggan.` : undefined
+      }
       kaki={
         <>
           <Tombol varian="admin-garis" className="rounded-xl" onClick={saatTutup}>
@@ -81,10 +83,23 @@ function DialogPengganti({ id, asal, saatTutup }: { id: number; asal: Komposisi 
           </p>
         )}
         <Bidang label="Jumlah tangkai" gaya="admin" bantuan={`Sisa yang belum terpenuhi: ${sisa}`}>
-          <Masukan gaya="admin" type="number" min={1} max={Math.max(1, sisa)} value={jumlah} onChange={(e) => setJumlah(Number(e.target.value))} />
+          <Masukan
+            gaya="admin"
+            type="number"
+            min={1}
+            max={Math.max(1, sisa)}
+            value={jumlah}
+            onChange={(e) => setJumlah(Number(e.target.value))}
+          />
         </Bidang>
         <Bidang label="Alasan" gaya="admin" wajib>
-          <AreaTeks gaya="admin" value={alasan} onChange={(e) => setAlasan(e.target.value)} placeholder="Mawar merah habis / tangkai rusak" maxLength={255} />
+          <AreaTeks
+            gaya="admin"
+            value={alasan}
+            onChange={(e) => setAlasan(e.target.value)}
+            placeholder="Mawar merah habis / tangkai rusak"
+            maxLength={255}
+          />
         </Bidang>
       </div>
     </Dialog>
@@ -140,7 +155,14 @@ export function HalamanMerangkai() {
             <strong>{data.terpindai}</strong> / {data.target} tangkai
           </p>
         </div>
-        <div role="progressbar" aria-valuemin={0} aria-valuemax={data.target} aria-valuenow={data.terpindai} aria-label="Tangkai yang sudah cocok" className="h-3 overflow-hidden rounded-full bg-ad-latar">
+        <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={data.target}
+          aria-valuenow={data.terpindai}
+          aria-label="Tangkai yang sudah cocok"
+          className="h-3 overflow-hidden rounded-full bg-ad-latar"
+        >
           <div className="h-full rounded-full bg-ad-aksen transition-all" style={{ width: `${persen}%` }} />
         </div>
       </Kartu>
@@ -150,7 +172,9 @@ export function HalamanMerangkai() {
           <h2 className="mb-1 flex items-center gap-2 text-lg font-bold">
             <Camera aria-hidden className="size-5 text-ad-aksen" /> Pindai bunga yang diambil
           </h2>
-          <p className="mb-3 text-sm text-ad-redup">Foto satu jenis bunga; AI mengenali jenis dan membaca warnanya lalu mencocokkan dengan pesanan.</p>
+          <p className="mb-3 text-sm text-ad-redup">
+            Foto satu jenis bunga; AI mengenali jenis dan membaca warnanya lalu mencocokkan dengan pesanan.
+          </p>
           <form
             className="flex flex-col gap-3"
             onSubmit={(e) => {
@@ -170,7 +194,14 @@ export function HalamanMerangkai() {
           >
             <UnggahFoto gaya="admin" kamera label="Ambil foto bunga" berkas={foto} ubah={setFoto} />
             <Bidang label="Jumlah tangkai sejenis dalam foto" gaya="admin">
-              <Masukan gaya="admin" type="number" min={1} max={100} value={jumlah} onChange={(e) => setJumlah(Math.max(1, Number(e.target.value)))} />
+              <Masukan
+                gaya="admin"
+                type="number"
+                min={1}
+                max={100}
+                value={jumlah}
+                onChange={(e) => setJumlah(Math.max(1, Number(e.target.value)))}
+              />
             </Bidang>
             <Tombol type="submit" varian="admin" className="rounded-xl" disabled={!foto} memuat={pindai.isPending}>
               Pindai & cocokkan
@@ -179,7 +210,10 @@ export function HalamanMerangkai() {
           {hasil && (
             <div
               role="status"
-              className={cn('mt-4 rounded-xl p-4 text-sm', hasil.cocok ? 'bg-ad-sukses-lembut text-ad-sukses' : 'bg-ad-bahaya-lembut text-ad-bahaya')}
+              className={cn(
+                'mt-4 rounded-xl p-4 text-sm',
+                hasil.cocok ? 'bg-ad-sukses-lembut text-ad-sukses' : 'bg-ad-bahaya-lembut text-ad-bahaya',
+              )}
             >
               <p className="flex items-center gap-2 font-bold">
                 {hasil.cocok ? <CheckCircle2 aria-hidden className="size-5" /> : <XCircle aria-hidden className="size-5" />}
@@ -207,18 +241,29 @@ export function HalamanMerangkai() {
               return (
                 <li
                   key={k.id_komposisi_pesanan}
-                  className={cn('rounded-xl border p-3', selesai ? 'border-ad-sukses/40 bg-ad-sukses-lembut/40' : 'border-ad-garis', hasil?.id_komposisi_cocok === k.id_komposisi_pesanan && 'ring-2 ring-ad-aksen')}
+                  className={cn(
+                    'rounded-xl border p-3',
+                    selesai ? 'border-ad-sukses/40 bg-ad-sukses-lembut/40' : 'border-ad-garis',
+                    hasil?.id_komposisi_cocok === k.id_komposisi_pesanan && 'ring-2 ring-ad-aksen',
+                  )}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <p className="font-semibold">
                         {k.jenis.nama_bunga}
-                        {k.is_pengganti && <span className="ms-2 rounded bg-ad-peringatan-lembut px-1 text-xs font-bold text-ad-peringatan">pengganti</span>}
+                        {k.is_pengganti && (
+                          <span className="ms-2 rounded bg-ad-peringatan-lembut px-1 text-xs font-bold text-ad-peringatan">pengganti</span>
+                        )}
                       </p>
                       <ChipWarna warna={k.warna} ukuran="kecil" />
                       <p className="text-xs text-ad-redup">{k.nama}</p>
                     </div>
-                    <p className={cn('rounded-lg px-2 py-1 text-sm font-bold tabular-nums', selesai ? 'bg-ad-sukses text-white' : 'bg-ad-latar')}>
+                    <p
+                      className={cn(
+                        'rounded-lg px-2 py-1 text-sm font-bold tabular-nums',
+                        selesai ? 'bg-ad-sukses text-white' : 'bg-ad-latar',
+                      )}
+                    >
                       {k.jumlah_terpindai}/{k.jumlah_tangkai}
                       <span className="sr-only">{selesai ? ' lengkap' : ' tangkai cocok'}</span>
                     </p>
@@ -240,7 +285,13 @@ export function HalamanMerangkai() {
                       >
                         Tandai 1 cocok manual
                       </Tombol>
-                      <Tombol varian="admin-garis" ukuran="kecil" className="rounded-lg" ikon={<Replace aria-hidden className="size-4" />} onClick={() => setPengganti(k)}>
+                      <Tombol
+                        varian="admin-garis"
+                        ukuran="kecil"
+                        className="rounded-lg"
+                        ikon={<Replace aria-hidden className="size-4" />}
+                        onClick={() => setPengganti(k)}
+                      >
                         Ganti bunga
                       </Tombol>
                     </div>
@@ -255,7 +306,9 @@ export function HalamanMerangkai() {
       <Kartu className={cn('mt-4', !data.siap_foto && 'opacity-70')}>
         <h2 className="mb-1 text-lg font-bold">Foto hasil rangkaian</h2>
         <p className="mb-3 text-sm text-ad-redup">
-          {data.siap_foto ? 'Semua bunga sudah cocok. Foto rangkaian jadi agar warna dibaca otomatis dan dikirim ke pelanggan.' : 'Tersedia setelah semua bunga dipindai atau ditandai cocok.'}
+          {data.siap_foto
+            ? 'Semua bunga sudah cocok. Foto rangkaian jadi agar warna dibaca otomatis dan dikirim ke pelanggan.'
+            : 'Tersedia setelah semua bunga dipindai atau ditandai cocok.'}
         </p>
         {data.siap_foto && (
           <div className="flex flex-col gap-3 sm:max-w-md">

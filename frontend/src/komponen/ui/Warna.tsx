@@ -46,7 +46,11 @@ export function DeretTitikWarna({ daftar, className }: { daftar: WarnaRingkas[];
   return (
     <span aria-hidden className={cn('inline-flex -space-x-1', className)}>
       {unik.slice(0, 5).map((w) => (
-        <span key={w.kode_hex} className="size-4 rounded-full border border-white/80 ring-1 ring-black/10" style={{ backgroundColor: w.kode_hex }} />
+        <span
+          key={w.kode_hex}
+          className="size-4 rounded-full border border-white/80 ring-1 ring-black/10"
+          style={{ backgroundColor: w.kode_hex }}
+        />
       ))}
     </span>
   )

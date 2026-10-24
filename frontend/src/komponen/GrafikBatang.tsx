@@ -114,9 +114,25 @@ export function GrafikBatang({
                       className={cn('fill-ad-grafik transition-opacity', aktif !== null && aktif !== i && 'opacity-45')}
                     />
                   )}
-                  {aktif === i && <rect x={x - 2} y={yy - 2} width={lebarBatang + 4} height={h + 4} rx={6} fill="none" className="stroke-ad-teks" strokeWidth={1.5} />}
+                  {aktif === i && (
+                    <rect
+                      x={x - 2}
+                      y={yy - 2}
+                      width={lebarBatang + 4}
+                      height={h + 4}
+                      rx={6}
+                      fill="none"
+                      className="stroke-ad-teks"
+                      strokeWidth={1.5}
+                    />
+                  )}
                   {i === iMaks && d.nilai > 0 && aktif === null && (
-                    <text x={x + lebarBatang / 2} y={yy - 6} textAnchor="middle" className="fill-ad-teks text-[11px] font-semibold tabular-nums">
+                    <text
+                      x={x + lebarBatang / 2}
+                      y={yy - 6}
+                      textAnchor="middle"
+                      className="fill-ad-teks text-[11px] font-semibold tabular-nums"
+                    >
                       {format(d.nilai)}
                     </text>
                   )}

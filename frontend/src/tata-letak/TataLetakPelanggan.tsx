@@ -1,4 +1,17 @@
-import { Accessibility, Flower2, House, LayoutGrid, Mail, MapPin, MessageCircle, Package, Phone, Search, ShoppingBag, UserRound } from 'lucide-react'
+import {
+  Accessibility,
+  Flower2,
+  House,
+  LayoutGrid,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Package,
+  Phone,
+  Search,
+  ShoppingBag,
+  UserRound,
+} from 'lucide-react'
 import { Suspense } from 'react'
 import { Link, NavLink, Outlet, ScrollRestoration } from 'react-router'
 
@@ -40,7 +53,7 @@ function LencanaJumlah({ n }: { n: number }) {
   return (
     <span
       aria-hidden
-      className="absolute -end-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-magenta px-1 text-[0.65rem] font-bold leading-5 text-white"
+      className="absolute -end-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-magenta px-1 text-[0.65rem] leading-5 font-bold text-white"
     >
       {n > 99 ? '99+' : n}
     </span>
@@ -51,7 +64,7 @@ export function KepalaSitus() {
   const sesi = useSesi()
   const n = jumlahBarang(useKeranjang())
   return (
-    <header className="sticky top-0 z-40 border-b border-garis/50 bg-latar/90 backdrop-blur supports-[backdrop-filter]:bg-latar/75 pt-[env(safe-area-inset-top)]">
+    <header className="sticky top-0 z-40 border-b border-garis/50 bg-latar/90 pt-[env(safe-area-inset-top)] backdrop-blur supports-[backdrop-filter]:bg-latar/75">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 md:h-20 md:px-6">
         <Link to="/" className="shrink-0 rounded-lg" aria-label="FlowerBloom, ke beranda">
           <img src={logo} alt="" width={176} height={30} className="h-7 w-auto md:h-9" />
@@ -77,7 +90,11 @@ export function KepalaSitus() {
           </ul>
         </nav>
         <div className="ms-auto flex items-center gap-0.5 md:ms-0">
-          <Link to="/katalog?cari=" aria-label="Cari bunga" className="hidden size-11 place-items-center rounded-full text-rose-teks hover:bg-blush sm:grid">
+          <Link
+            to="/katalog?cari="
+            aria-label="Cari bunga"
+            className="hidden size-11 place-items-center rounded-full text-rose-teks hover:bg-blush sm:grid"
+          >
             <Search aria-hidden className="size-6" />
           </Link>
           <TombolIkon label="Pengaturan aksesibilitas" onClick={bukaDialogAksesibilitas}>
@@ -222,10 +239,7 @@ function KakiSitus() {
 
 export function TautanLewati() {
   return (
-    <a
-      href="#konten"
-      className="sr-only-fokus fixed start-3 top-3 z-[80] rounded-full bg-olive-tua px-4 py-2 font-semibold text-latar"
-    >
+    <a href="#konten" className="sr-only-fokus fixed start-3 top-3 z-[80] rounded-full bg-olive-tua px-4 py-2 font-semibold text-latar">
       Lewati ke konten utama
     </a>
   )

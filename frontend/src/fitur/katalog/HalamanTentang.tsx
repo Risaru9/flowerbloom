@@ -14,7 +14,8 @@ import { formatRupiah } from '@/lib/format'
 const NILAI = {
   Visi: 'Menjadi layanan rangkaian bunga yang inklusif dan tepercaya: membantu setiap orang menyampaikan perasaan melalui bunga, dengan pengalaman memilih warna yang mudah, informatif, dan nyaman bagi semua pengguna.',
   Misi: 'Menyajikan setiap warna dengan nama, kode, dan maknanya; menyediakan deskripsi suara dan tampilan yang menyesuaikan jenis buta warna; serta mengirimkan foto hasil rangkaian sebelum bunga diserahkan.',
-  Tujuan: 'Membuat penyandang buta warna dapat memilih dan memastikan warna bunga pesanannya secara mandiri, tanpa harus bertanya kepada orang lain.',
+  Tujuan:
+    'Membuat penyandang buta warna dapat memilih dan memastikan warna bunga pesanannya secara mandiri, tanpa harus bertanya kepada orang lain.',
 } as const
 
 export function HalamanTentang() {
@@ -44,14 +45,21 @@ export function HalamanTentang() {
       <div className="mx-auto flex max-w-7xl flex-col gap-16 px-4 py-12 md:px-6">
         <section className="grid items-center gap-8 md:grid-cols-2">
           <div className="relative">
-            <img src={floristMerangkai} alt="Florist FlowerBloom merangkai buket mawar" loading="lazy" className="w-4/5 rounded-[2rem] object-cover" />
+            <img
+              src={floristMerangkai}
+              alt="Florist FlowerBloom merangkai buket mawar"
+              loading="lazy"
+              className="w-4/5 rounded-[2rem] object-cover"
+            />
             <img
               src={tokoLorong}
               alt="Lorong toko FlowerBloom dengan rak bunga segar"
               loading="lazy"
-              className="absolute -bottom-6 end-0 w-1/2 rounded-[1.6rem] border-4 border-latar object-cover shadow-xl"
+              className="absolute end-0 -bottom-6 w-1/2 rounded-[1.6rem] border-4 border-latar object-cover shadow-xl"
             />
-            <span className="absolute start-4 top-4 rounded-2xl bg-rose-teks px-4 py-2 font-display text-sm text-white shadow">Cerita kami</span>
+            <span className="absolute start-4 top-4 rounded-2xl bg-rose-teks px-4 py-2 font-display text-sm text-white shadow">
+              Cerita kami
+            </span>
           </div>
           <div className="pt-6 md:pt-0">
             <h2 className="font-display text-4xl text-olive-tua">Bunga untuk Setiap Cerita</h2>
@@ -120,8 +128,14 @@ export function HalamanTentang() {
             <ol className="mt-4 flex flex-col gap-4">
               {[
                 ['Pilih rangkaian', 'Dari katalog, atau rangkai sendiri bunga dan warnanya.'],
-                ['Atur pengiriman', `Pilih tanggal dan slot jam. Ambil di toko atau diantar${info.data ? ` (ongkos ${formatRupiah(info.data.ongkos_antar)})` : ''}.`],
-                ['Bayar & unggah bukti', `Transfer${info.data ? ` dalam ${info.data.batas_bayar_menit} menit` : ''}, lalu unggah bukti agar diverifikasi admin.`],
+                [
+                  'Atur pengiriman',
+                  `Pilih tanggal dan slot jam. Ambil di toko atau diantar${info.data ? ` (ongkos ${formatRupiah(info.data.ongkos_antar)})` : ''}.`,
+                ],
+                [
+                  'Bayar & unggah bukti',
+                  `Transfer${info.data ? ` dalam ${info.data.batas_bayar_menit} menit` : ''}, lalu unggah bukti agar diverifikasi admin.`,
+                ],
                 ['Setujui foto hasil', 'Kami mengirim foto rangkaian beserta label warnanya. Setujui atau minta revisi.'],
               ].map(([judul, ket], i) => (
                 <li key={judul} className="flex gap-3">
@@ -175,11 +189,26 @@ export function HalamanTentang() {
           </h2>
           <div className="flex flex-col gap-3">
             {[
-              ['Bagaimana saya tahu warna bunga yang saya terima sesuai?', 'Sebelum dikirim, kami mengunggah foto hasil rangkaian. Sistem membaca warna dominannya dan menampilkan nama serta persentasenya. Anda bisa menyetujui atau meminta revisi.'],
-              ['Apa yang terjadi bila bunga pilihan saya habis?', 'Florist dapat mengganti dengan bunga setara. Penggantian warna yang berbeda selalu meminta persetujuan Anda terlebih dahulu.'],
-              ['Kapan paling lambat saya memesan?', `Pemesanan paling lambat ${info.data?.minimal_hari_pemesanan ?? 1} hari sebelum tanggal kirim.`],
-              ['Bisakah aplikasi ini dipasang di ponsel?', 'Bisa. Di Android/Chrome pilih "Pasang aplikasi"; di iPhone buka menu Bagikan lalu "Tambahkan ke Layar Utama".'],
-              ['Bagaimana bila pesanan bermasalah?', 'Anda dapat mengajukan komplain dari halaman detail pesanan paling lambat 1×24 jam setelah pesanan diterima.'],
+              [
+                'Bagaimana saya tahu warna bunga yang saya terima sesuai?',
+                'Sebelum dikirim, kami mengunggah foto hasil rangkaian. Sistem membaca warna dominannya dan menampilkan nama serta persentasenya. Anda bisa menyetujui atau meminta revisi.',
+              ],
+              [
+                'Apa yang terjadi bila bunga pilihan saya habis?',
+                'Florist dapat mengganti dengan bunga setara. Penggantian warna yang berbeda selalu meminta persetujuan Anda terlebih dahulu.',
+              ],
+              [
+                'Kapan paling lambat saya memesan?',
+                `Pemesanan paling lambat ${info.data?.minimal_hari_pemesanan ?? 1} hari sebelum tanggal kirim.`,
+              ],
+              [
+                'Bisakah aplikasi ini dipasang di ponsel?',
+                'Bisa. Di Android/Chrome pilih "Pasang aplikasi"; di iPhone buka menu Bagikan lalu "Tambahkan ke Layar Utama".',
+              ],
+              [
+                'Bagaimana bila pesanan bermasalah?',
+                'Anda dapat mengajukan komplain dari halaman detail pesanan paling lambat 1×24 jam setelah pesanan diterima.',
+              ],
             ].map(([t, j]) => (
               <details key={t} className="group rounded-2xl bg-permukaan p-4 ring-1 ring-garis/60 open:bg-blush/50">
                 <summary className="cursor-pointer list-none font-semibold text-olive-tua marker:hidden">

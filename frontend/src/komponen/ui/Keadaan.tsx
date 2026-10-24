@@ -42,7 +42,10 @@ export function Kosong({
 
 export function Galat({ galat, ulangi, className }: { galat: unknown; ulangi?: () => void; className?: string }) {
   return (
-    <div role="alert" className={cn('flex flex-col items-center gap-3 rounded-3xl bg-[#fce8e7] px-6 py-10 text-center text-[#7a1814]', className)}>
+    <div
+      role="alert"
+      className={cn('flex flex-col items-center gap-3 rounded-3xl bg-[#fce8e7] px-6 py-10 text-center text-[#7a1814]', className)}
+    >
       <CircleAlert aria-hidden className="size-8" />
       <p className="font-medium">{pesanGalat(galat)}</p>
       {ulangi && (

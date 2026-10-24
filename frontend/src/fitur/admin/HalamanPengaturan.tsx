@@ -35,8 +35,14 @@ const PILIHAN: Record<string, [string, string][]> = {
 
 const KELOMPOK: [string, string[]][] = [
   ['Toko & pembayaran', ['nama_toko', 'rekening_tujuan', 'batas_bayar_menit']],
-  ['Harga & pengiriman', ['ongkos_antar', 'jasa_merangkai', 'minimal_tangkai_rangkai_sendiri', 'minimal_hari_pemesanan', 'slot_pengiriman']],
-  ['Aturan pesanan', ['jumlah_revisi_gratis', 'kebijakan_pengganti', 'batas_tanggapan_foto_jam', 'batas_komplain_jam', 'ambang_stok_menipis']],
+  [
+    'Harga & pengiriman',
+    ['ongkos_antar', 'jasa_merangkai', 'minimal_tangkai_rangkai_sendiri', 'minimal_hari_pemesanan', 'slot_pengiriman'],
+  ],
+  [
+    'Aturan pesanan',
+    ['jumlah_revisi_gratis', 'kebijakan_pengganti', 'batas_tanggapan_foto_jam', 'batas_komplain_jam', 'ambang_stok_menipis'],
+  ],
 ]
 
 export function HalamanPengaturan() {
@@ -72,7 +78,14 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
     if (d.tipe === 'int') {
       return (
         <Bidang key={kunci} label={label} gaya="admin" bantuan={d.keterangan}>
-          <Masukan gaya="admin" type="number" inputMode="numeric" min={0} value={String(nilai[kunci] ?? '')} onChange={(e) => setNilai((n) => ({ ...n, [kunci]: e.target.value === '' ? '' : Math.trunc(Number(e.target.value)) }))} />
+          <Masukan
+            gaya="admin"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={String(nilai[kunci] ?? '')}
+            onChange={(e) => setNilai((n) => ({ ...n, [kunci]: e.target.value === '' ? '' : Math.trunc(Number(e.target.value)) }))}
+          />
         </Bidang>
       )
     }
@@ -98,7 +111,10 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
           <p className="text-xs text-ad-redup">{d.keterangan}</p>
           <ul className="flex flex-wrap gap-2">
             {slot.map((s) => (
-              <li key={s} className="flex items-center gap-1 rounded-lg border border-ad-garis bg-ad-latar py-1 ps-3 pe-1 text-sm font-semibold tabular-nums">
+              <li
+                key={s}
+                className="flex items-center gap-1 rounded-lg border border-ad-garis bg-ad-latar py-1 ps-3 pe-1 text-sm font-semibold tabular-nums"
+              >
                 {s}
                 <button
                   type="button"
@@ -113,7 +129,13 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
           </ul>
           <div className="flex flex-wrap items-end gap-2">
             <Bidang label="Slot baru" gaya="admin" bantuan="Format HH:MM-HH:MM, mis. 17:00-19:00">
-              <Masukan gaya="admin" value={slotBaru} onChange={(e) => setSlotBaru(e.target.value.trim())} placeholder="17:00-19:00" className="w-40" />
+              <Masukan
+                gaya="admin"
+                value={slotBaru}
+                onChange={(e) => setSlotBaru(e.target.value.trim())}
+                placeholder="17:00-19:00"
+                className="w-40"
+              />
             </Bidang>
             <Tombol
               varian="admin-lembut"
@@ -132,7 +154,13 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
       )
     }
     return (
-      <Bidang key={kunci} label={label} gaya="admin" bantuan={d.keterangan} className={kunci === 'rekening_tujuan' ? 'sm:col-span-2' : undefined}>
+      <Bidang
+        key={kunci}
+        label={label}
+        gaya="admin"
+        bantuan={d.keterangan}
+        className={kunci === 'rekening_tujuan' ? 'sm:col-span-2' : undefined}
+      >
         <Masukan gaya="admin" value={String(nilai[kunci] ?? '')} onChange={(e) => setNilai((n) => ({ ...n, [kunci]: e.target.value }))} />
       </Bidang>
     )
@@ -162,7 +190,12 @@ function FormPengaturan({ data }: { data: Skema['PengaturanItemOut'][] }) {
         <div className="sticky bottom-3 mt-4 flex items-center justify-between gap-3 rounded-2xl border border-ad-garis bg-ad-permukaan p-3 shadow-lg">
           <p className="text-sm">{berubah.length} perubahan belum disimpan.</p>
           <div className="flex gap-2">
-            <Tombol varian="admin-garis" ukuran="kecil" className="rounded-lg" onClick={() => setNilai(Object.fromEntries(data.map((d) => [d.kunci, d.nilai])))}>
+            <Tombol
+              varian="admin-garis"
+              ukuran="kecil"
+              className="rounded-lg"
+              onClick={() => setNilai(Object.fromEntries(data.map((d) => [d.kunci, d.nilai])))}
+            >
               Batalkan
             </Tombol>
             <Tombol varian="admin" ukuran="kecil" className="rounded-lg" memuat={ubah.isPending} onClick={simpan}>

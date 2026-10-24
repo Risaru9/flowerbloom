@@ -26,7 +26,9 @@ Prefiks endpoint: `/api/v1`. Kontrak lengkap: `docs/openapi.json` atau `/docs` s
 | F-PL-16 | Komplain | `POST /pesanan/{id}/komplain`, `GET /komplain/saya` | Selesai |
 | F-PL-17 | Riwayat pesanan | `GET /pesanan` (berhalaman, filter `status`) | Selesai |
 | F-PL-18 | Pengaturan aksesibilitas | `GET/PATCH /aksesibilitas/saya` (disimpan); penerapan penajaman warna/ukuran teks/tema di frontend | Selesai + Klien |
-| F-PL-19 | Profil | `GET/PATCH /auth/saya` | Selesai |
+| F-PL-19 | Profil | `GET/PATCH /auth/saya`, `PATCH /auth/kata-sandi`, `POST /auth/keluar-semua` | Selesai |
+| (UI) | Produk favorit | `GET /favorit`, `PUT/DELETE /favorit/{id_produk}` | Selesai |
+| (UI) | Alamat tersimpan | `GET/POST /alamat`, `PATCH/DELETE /alamat/{id_alamat}` | Selesai |
 
 ## Admin (F-AD)
 
@@ -75,7 +77,7 @@ Prefiks endpoint: `/api/v1`. Kontrak lengkap: `docs/openapi.json` atau `/docs` s
 | F-AK-09 | Penggantian warna disetujui | `perlu_konfirmasi_pengganti` (AB-07) |
 | F-NF-02 | Pemindaian ≤ 3 detik | Bagian warna diuji <1 detik pada gambar 12 MP; total bergantung pada model |
 | F-NF-03 | Pemindaian tanpa internet | **Tidak berlaku** pada arsitektur web + model di server (lihat keputusan C.6) |
-| F-NF-04 | Keamanan akun | bcrypt (SHA-256 pra-hash), JWT, pembatasan peran diuji |
+| F-NF-04 | Keamanan akun | bcrypt (SHA-256 pra-hash), JWT dengan versi sesi (pencabutan), pembatas percobaan masuk, pembatasan peran diuji |
 | F-NF-05 | Stok akurat | `UPDATE` bersyarat atomik + CHECK constraint; uji 12 permintaan serentak |
 | F-NF-06 | Bahasa Indonesia | Pesan galat dan validasi berbahasa Indonesia |
 | F-NF-07 | Kerahasiaan bukti bayar | Berkas privat hanya lewat tautan bertanda tangan berumur pendek |

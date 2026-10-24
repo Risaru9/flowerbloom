@@ -46,7 +46,11 @@ export function HalamanDaftarPesanan() {
 
   return (
     <>
-      <JudulAdmin judul="Daftar Pesanan" keterangan="Pantau seluruh pesanan pelanggan dan tahap pengerjaannya." jejak={[{ ke: '/admin', label: 'Dasbor' }]} />
+      <JudulAdmin
+        judul="Daftar Pesanan"
+        keterangan="Pantau seluruh pesanan pelanggan dan tahap pengerjaannya."
+        jejak={[{ ke: '/admin', label: 'Dasbor' }]}
+      />
       <div className="mb-4 flex flex-wrap items-end gap-3 rounded-2xl border border-ad-garis bg-ad-permukaan p-3">
         <form
           role="search"
@@ -88,7 +92,12 @@ export function HalamanDaftarPesanan() {
           </select>
         </div>
         <label className="flex h-11 items-center gap-2 rounded-xl border border-ad-garis px-3 text-sm font-semibold">
-          <input type="checkbox" checked={perlu} onChange={(e) => atur('perlu', e.target.checked ? '1' : null)} className="size-4 accent-ad-aksen" />
+          <input
+            type="checkbox"
+            checked={perlu}
+            onChange={(e) => atur('perlu', e.target.checked ? '1' : null)}
+            className="size-4 accent-ad-aksen"
+          />
           Perlu tindakan saja
         </label>
       </div>
@@ -147,7 +156,10 @@ export function HalamanDaftarPesanan() {
                       <LencanaStatus status={p.status} />
                     </td>
                     <td className="px-4 py-3">
-                      <Link to={`/admin/pesanan/${p.id_pesanan}`} className="inline-flex min-h-9 items-center gap-1 rounded-lg px-2 font-semibold text-ad-aksen hover:bg-ad-aksen-lembut">
+                      <Link
+                        to={`/admin/pesanan/${p.id_pesanan}`}
+                        className="inline-flex min-h-9 items-center gap-1 rounded-lg px-2 font-semibold text-ad-aksen hover:bg-ad-aksen-lembut"
+                      >
                         Detail <ChevronRight aria-hidden className="size-4" />
                         <span className="sr-only">pesanan {p.kode_pesanan}</span>
                       </Link>

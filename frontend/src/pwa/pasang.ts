@@ -19,13 +19,10 @@ let tertunda: BeforeInstallPromptEvent | null = null
 
 const modeMandiri = () =>
   typeof window !== 'undefined' &&
-  (window.matchMedia?.('(display-mode: standalone)').matches ||
-    (navigator as Navigator & { standalone?: boolean }).standalone === true)
+  (window.matchMedia?.('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true)
 
 const iosSafari = () =>
-  typeof navigator !== 'undefined' &&
-  /iphone|ipad|ipod/i.test(navigator.userAgent) &&
-  !/crios|fxios|edgios/i.test(navigator.userAgent)
+  typeof navigator !== 'undefined' && /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios|edgios/i.test(navigator.userAgent)
 
 export const tokoPasang = buatToko<KeadaanPasang>({
   bisaDipasang: false,

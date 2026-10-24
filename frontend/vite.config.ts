@@ -73,8 +73,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: ({ url, sameOrigin, request }) =>
-              sameOrigin && request.method === 'GET' && API_PUBLIK.test(url.pathname),
+            urlPattern: ({ url, sameOrigin, request }) => sameOrigin && request.method === 'GET' && API_PUBLIK.test(url.pathname),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'fb-katalog',

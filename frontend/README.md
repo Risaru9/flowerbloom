@@ -1,32 +1,36 @@
-# React + TypeScript + Vite
+# FlowerBloom — Frontend (PWA)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19 + Vite 8 + TypeScript (strict) + Tailwind CSS 4, React Router, TanStack Query, klien API bertipe dari OpenAPI backend.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+corepack enable
+pnpm install
+pnpm dev            # http://localhost:5173 — /api & /media diteruskan ke backend :8000 (ubah lewat VITE_BACKEND_URL)
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+| Perintah                            | Fungsi                                                            |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `pnpm build` / `pnpm preview`       | Build produksi (+ service worker) dan menjalankannya secara lokal |
+| `pnpm lint`                         | oxlint (react, react-hooks, jsx-a11y, import, unicorn)            |
+| `pnpm typecheck`                    | TypeScript strict                                                 |
+| `pnpm test` / `pnpm test:coverage`  | Vitest + Testing Library (jsdom)                                  |
+| `pnpm format` / `pnpm format:check` | Prettier (+ urutan kelas Tailwind)                                |
+| `pnpm api:types`                    | Membuat `src/api/schema.d.ts` dari `../backend/docs/openapi.json` |
+| `pnpm ikon`                         | Membuat ulang ikon PWA dari `public/ikon-aplikasi.svg`            |
+
+## Struktur
+
+```
+src/
+  app/            router (code splitting per halaman), provider, halaman galat
+  api/            klien openapi-fetch bertipe + hook React Query (pelanggan, admin)
+  auth/           sesi (token di session/localStorage), penjaga rute
+  aksesibilitas/  pengaturan, dialog, filter penajaman warna, suara (Web Speech API)
+  pwa/            ajakan pasang (termasuk panduan iOS), pembaruan versi, status offline
+  komponen/       UI dasar (Tombol, Bidang, Dialog, Toast, ChipWarna, GrafikBatang, ...)
+  tata-letak/     pelanggan (navigasi bawah di ponsel), akun, admin (laci di ponsel), auth
+  fitur/          halaman per domain: katalog, rangkai, keranjang, pesanan, akun, admin/*
+  styles/         token desain (warna merek + varian lolos kontras WCAG), mode gelap & kontras tinggi
+```
+
+Keputusan aksesibilitas dan perbedaan dengan Figma: [../docs/aksesibilitas.md](../docs/aksesibilitas.md).
