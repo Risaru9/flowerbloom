@@ -11,13 +11,16 @@ FROM dasar AS pembangun
 WORKDIR /bangun
 COPY requirements.txt .
 RUN python -m venv /opt/venv \
- && /opt/venv/bin/pip install --require-hashes --only-binary=:all: -r requirements.txt
+ && /opt/venv/bin/pip install --require-hashes --only-binary=:all: -r requirements.txt \
+ && /opt/venv/bin/pip uninstall --yes pip
 
 FROM dasar AS jalan
 LABEL org.opencontainers.image.title="flowerbloom-backend" \
       org.opencontainers.image.description="REST API FlowerBloom (FastAPI)" \
       org.opencontainers.image.source="https://github.com/Risaru9/flowerbloom"
-RUN groupadd --system --gid 10001 aplikasi \
+# pip tidak dipakai saat berjalan; paket yang dibawanya (urllib3, msgpack, setuptools) ikut terdeteksi pemindai kerentanan.
+RUN python -m pip uninstall --yes pip \
+ && groupadd --system --gid 10001 aplikasi \
  && useradd --system --uid 10001 --gid aplikasi --home-dir /app --shell /usr/sbin/nologin aplikasi
 COPY --from=pembangun /opt/venv /opt/venv
 ENV PATH=/opt/venv/bin:$PATH \

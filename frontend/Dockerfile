@@ -14,6 +14,10 @@ FROM nginxinc/nginx-unprivileged:1.31-alpine AS jalan
 LABEL org.opencontainers.image.title="flowerbloom-frontend" \
       org.opencontainers.image.description="PWA FlowerBloom (React + Vite) disajikan Nginx" \
       org.opencontainers.image.source="https://github.com/Risaru9/flowerbloom"
+# Ambil perbaikan keamanan paket Alpine yang sudah rilis tetapi belum masuk image dasar (mis. brotli-libs).
+USER root
+RUN apk upgrade --no-cache
+USER 101
 ENV API_UPSTREAM=http://api:8000
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=bangun /app/dist /usr/share/nginx/html
