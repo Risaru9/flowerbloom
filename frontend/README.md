@@ -18,6 +18,12 @@ pnpm dev            # http://localhost:5173 — /api & /media diteruskan ke back
 | `pnpm api:types`                    | Membuat `src/api/schema.d.ts` dari `../backend/docs/openapi.json` |
 | `pnpm ikon`                         | Membuat ulang ikon PWA dari `public/ikon-aplikasi.svg`            |
 
+## Deploy ke Vercel
+
+`vercel.ts` menyajikan build Vite dan meneruskan `/api` serta `/media` ke backend (satu origin, tanpa CORS). Di proyek Vercel:
+Root Directory `frontend`, lalu Environment Variables `BACKEND_URL` (URL publik backend, tanpa `/` di akhir) dan
+`ENABLE_EXPERIMENTAL_COREPACK=1` (agar memakai pnpm sesuai `packageManager`). Mengganti `BACKEND_URL` cukup diikuti Redeploy.
+
 ## Struktur
 
 ```
