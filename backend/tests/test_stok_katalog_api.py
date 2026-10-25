@@ -28,10 +28,12 @@ def test_alur_pindai_stok_lengkap(client, db):
     assert r.status_code == 200, r.text
     hasil = r.json()
     assert hasil["warna"]["nama_warna"] == "Merah tua" and hasil["warna"]["kode_hex"] == "#8B0000"
-    assert hasil["tiruan"] is True
+    # bawaan AI_MODE=nonaktif: warna dibaca, jenis TIDAK ditebak (bukan "tidak dikenali")
+    assert (hasil["jenis_otomatis"], hasil["jenis"], hasil["tingkat_keyakinan"], hasil["dikenali"]) == (False, None, None, False)
+    assert hasil["tiruan"] is False and hasil["peringatan"] == []
     id_pindai = hasil["id_pindai"]
 
-    # admin memeriksa lalu mengoreksi jenis (model tiruan menjawab acak) -> Mawar
+    # admin memilih jenis (Mawar) dan menerima warna terbaca
     r = client.post(
         API + "/admin/stok/simpan-pindai",
         headers=h,
@@ -56,9 +58,30 @@ def test_alur_pindai_stok_lengkap(client, db):
     riwayat = client.get(API + "/admin/riwayat-pindai", headers=h).json()
     assert riwayat["total"] == 1 and riwayat["data"][0]["id_stok"] == stok["id_stok"]
     assert riwayat["data"][0]["foto_url"].startswith("/api/v1/berkas/")
+    assert riwayat["data"][0]["dikoreksi"] is False  # memilih jenis sendiri bukan koreksi; warnanya diterima
 
     ringkas = client.get(API + "/admin/riwayat-pindai/ringkasan", headers=h).json()
-    assert ringkas["total_disimpan"] == 1
+    assert (ringkas["total_disimpan"], ringkas["total_jenis_ditebak"]) == (1, 0)
+    assert ringkas["akurasi_jenis"] is None and ringkas["akurasi_warna"] == 1.0
+
+
+def test_pindai_dengan_klasifikator_menebak_jenis_dan_akurasinya_dihitung(client, db, klasifikator):
+    warna, jenis = siapkan_referensi(db)
+    h = _admin(client, db)
+    klasifikator.kelas = 74  # Mawar
+    simpan = []
+    for id_jenis_akhir in (jenis["Mawar"].id_jenis_bunga, jenis["Anyelir"].id_jenis_bunga):
+        r = client.post(API + "/admin/stok/pindai", headers=h, files={"foto": ("b.jpg", gambar_bytes((139, 10, 10)), "image/jpeg")})
+        hasil = r.json()
+        assert hasil["jenis_otomatis"] is True and hasil["dikenali"] is True and hasil["jenis"]["nama_bunga"] == "Mawar"
+        assert hasil["tingkat_keyakinan"] == 0.95
+        simpan.append(client.post(API + "/admin/stok/simpan-pindai", headers=h, json={
+            "id_pindai": hasil["id_pindai"], "id_jenis_bunga": id_jenis_akhir, "id_warna": warna["Merah tua"].id_warna,
+            "jumlah_tangkai": 5, "harga_per_tangkai": 5000}).status_code)
+    assert simpan == [201, 201]
+    assert [r["dikoreksi"] for r in client.get(API + "/admin/riwayat-pindai", headers=h).json()["data"]] == [True, False]
+    ringkas = client.get(API + "/admin/riwayat-pindai/ringkasan", headers=h).json()
+    assert (ringkas["total_jenis_ditebak"], ringkas["jenis_benar"], ringkas["akurasi_jenis"]) == (2, 1, 0.5)
 
 
 def test_foto_pindai_privat_dibuka_lewat_tautan_bertanda_tangan(client, db):

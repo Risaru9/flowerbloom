@@ -128,7 +128,7 @@ function useMutasiMerangkai<V, H extends { progres?: Skema['ProgresMerangkaiOut'
 }
 
 export const usePindaiMerangkai = (id: number) =>
-  useMutasiMerangkai(id, (v: { foto: File; jumlah: number }) =>
+  useMutasiMerangkai(id, (v: { foto: File; jumlah: number; id_jenis_bunga?: number }) =>
     ambil(
       api.POST('/api/v1/admin/pesanan/{id_pesanan}/merangkai/pindai', {
         ...jalur(id),

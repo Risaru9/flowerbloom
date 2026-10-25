@@ -282,12 +282,15 @@ class ProgresMerangkaiOut(BaseModel):
 
 
 class HasilMerangkaiOut(BaseModel):
-    dikenali: bool
+    dikenali: bool = Field(description="Jenis dikenali klasifikator otomatis; selalu False bila AI_MODE=nonaktif")
     cocok: bool
     alasan: str | None
-    jenis: JenisRingkas | None
+    jenis: JenisRingkas | None = Field(description="Jenis yang dipakai untuk mencocokkan (pilihan admin, tebakan, atau dari warna)")
     warna: WarnaRingkas | None
     id_komposisi_cocok: int | None
+    id_komposisi_kandidat: list[int] = Field(
+        description="Baris yang warnanya cocok tetapi berlainan jenis: admin perlu memilih jenis bunganya lalu memindai lagi",
+    )
     progres: ProgresMerangkaiOut
 
 

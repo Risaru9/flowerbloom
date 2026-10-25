@@ -82,6 +82,7 @@ def produk_ke_out(produk: Produk, peta_stok: dict[tuple[int, int], Stok]) -> Pro
 def hasil_pindai_ke_out(hasil: HasilPindai) -> HasilPindaiOut:
     return HasilPindaiOut(
         id_pindai=hasil.riwayat.id_pindai,
+        jenis_otomatis=hasil.keyakinan is not None,
         dikenali=hasil.dikenali,
         jenis=JenisRingkas.model_validate(hasil.jenis) if hasil.jenis else None,
         warna=WarnaRingkas.model_validate(hasil.warna),

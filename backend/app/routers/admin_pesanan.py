@@ -119,15 +119,25 @@ def lihat_merangkai(id_pesanan: int, db: DB, _: Admin):
     return _progres(db, id_pesanan)
 
 
-@router.post("/pesanan/{id_pesanan}/merangkai/pindai", response_model=HasilMerangkaiOut, summary="Pindai bunga yang diambil lalu cocokkan dengan pesanan")
+@router.post(
+    "/pesanan/{id_pesanan}/merangkai/pindai",
+    response_model=HasilMerangkaiOut,
+    summary="Pindai bunga yang diambil; warnanya dicocokkan otomatis dengan pesanan",
+)
 def pindai_merangkai(
     id_pesanan: int,
     db: DB,
     admin: Admin,
     foto: Annotated[UploadFile, File()],
     jumlah: Annotated[int, Form(ge=1, le=500, description="Jumlah tangkai sejenis dalam foto")] = 1,
+    id_jenis_bunga: Annotated[
+        int | None,
+        Form(description="Jenis bunga yang diambil (dipilih admin). Kosongkan agar jenis ditentukan dari warna bila tidak ambigu"),
+    ] = None,
 ):
-    hasil = merangkai.pindai_bunga(db, id_pesanan=id_pesanan, admin=admin, data=baca_unggahan(foto), jumlah=jumlah)
+    hasil = merangkai.pindai_bunga(
+        db, id_pesanan=id_pesanan, admin=admin, data=baca_unggahan(foto), jumlah=jumlah, id_jenis_bunga=id_jenis_bunga
+    )
     db.commit()
     return HasilMerangkaiOut(
         dikenali=hasil.dikenali,
@@ -136,6 +146,7 @@ def pindai_merangkai(
         jenis=JenisRingkas.model_validate(hasil.jenis) if hasil.jenis else None,
         warna=WarnaRingkas.model_validate(hasil.warna) if hasil.warna else None,
         id_komposisi_cocok=hasil.id_komposisi_cocok,
+        id_komposisi_kandidat=hasil.id_komposisi_kandidat,
         progres=_progres(db, id_pesanan),
     )
 

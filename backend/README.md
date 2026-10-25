@@ -8,7 +8,7 @@ REST API untuk FlowerBloom: toko bunga dengan aksesibilitas warna bagi pelanggan
 | [docs/alur-kerja.md](docs/alur-kerja.md) | **Alur kerja**: diagram status, tabel transisi, siklus stok, alur pindai/merangkai/foto |
 | [docs/pemetaan-fitur.md](docs/pemetaan-fitur.md) | Setiap fitur F-xx dan aturan AB-xx → endpoint dan modul |
 | [docs/keputusan-desain.md](docs/keputusan-desain.md) | Perubahan skema vs proposal, asumsi, pertanyaan untuk tim, batasan |
-| [docs/kontrak-model-ai.md](docs/kontrak-model-ai.md) | Yang dibutuhkan dari model AI agar bisa dipasang |
+| [docs/kontrak-model-ai.md](docs/kontrak-model-ai.md) | Proyek berjalan tanpa model; syarat bila kelak memasang model pengenal jenis |
 | [docs/openapi.json](docs/openapi.json) | Kontrak API untuk frontend (atau `/docs` saat server berjalan) |
 
 ## Menjalankan (Windows PowerShell)
@@ -80,7 +80,7 @@ app/
     merangkai.py     Mode Merangkai + bunga pengganti
     foto_konfirmasi.py  foto hasil, persetujuan, revisi
   routers/           lapisan HTTP tipis: validasi → layanan → commit → skema
-  ai/                klasifikator (tiruan/model), warna k-means, deskripsi (tanpa DB)
+  ai/                warna k-means, deskripsi, antarmuka klasifikator (nonaktif/tiruan) (tanpa DB)
   core/              galat, keamanan, penyimpanan berkas, tipe kolom, waktu
   data/              seed: 102 jenis bunga, daftar warna (DRAF)
 migrations/          Alembic
@@ -102,6 +102,6 @@ galat = batal seluruhnya); status pesanan hanya diubah lewat `alur_pesanan.pinda
 ## Konfigurasi penting
 
 Lihat `.env.example`. Yang paling sering dipakai: `DATABASE_URL`, `JWT_RAHASIA` (wajib ≥ 32 karakter di produksi),
-`CORS_ORIGINS` (alamat frontend), `AI_MODE` (`tiruan` sampai model terpasang), `AI_TIRUAN_KELAS=74` (paksa AI tiruan selalu
-menjawab mawar agar frontend mudah diuji). Aturan toko (batas bayar, ongkos, slot, revisi gratis, kebijakan pengganti, dsb.)
+`CORS_ORIGINS` (alamat frontend), `AI_MODE` (`nonaktif` = admin memilih jenis, warna tetap otomatis; `tiruan` = jenis acak untuk
+pengembangan, ditolak di produksi), `AI_TIRUAN_KELAS=74` (paksa AI tiruan selalu menjawab mawar agar frontend mudah diuji). Aturan toko (batas bayar, ongkos, slot, revisi gratis, kebijakan pengganti, dsb.)
 diubah admin lewat `PATCH /api/v1/admin/pengaturan-toko`, bukan lewat `.env`.

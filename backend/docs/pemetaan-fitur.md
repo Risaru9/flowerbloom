@@ -44,7 +44,7 @@ Prefiks endpoint: `/api/v1`. Kontrak lengkap: `docs/openapi.json` atau `/docs` s
 | F-AD-08 | Catat bunga pengganti | `POST .../merangkai/pengganti` | Selesai |
 | F-AD-09 | Unggah foto hasil | `POST .../foto-hasil` | Selesai |
 | F-AD-10 | Perbarui status | Otomatis mengikuti alur; manual hanya `POST .../selesai` (lihat keputusan #8) | Selesai |
-| F-AD-11 | Pindai stok masuk | `POST /admin/stok/pindai`, `POST /admin/stok/simpan-pindai` | Selesai (AI tiruan) |
+| F-AD-11 | Pindai stok masuk | `POST /admin/stok/pindai`, `POST /admin/stok/simpan-pindai` | Selesai (warna otomatis, jenis dipilih admin) |
 | F-AD-12 | Input stok manual | `POST /admin/stok/manual` | Selesai |
 | F-AD-13 | Kelola stok | `GET /admin/stok`, `PATCH /admin/stok/{id}` | Selesai |
 | F-AD-14 | Kelola katalog | `GET/POST /admin/produk`, `PATCH /admin/produk/{id}`, `PUT .../foto` | Selesai |
@@ -57,8 +57,8 @@ Prefiks endpoint: `/api/v1`. Kontrak lengkap: `docs/openapi.json` atau `/docs` s
 
 | Kode | Fitur | Modul | Status |
 |---|---|---|---|
-| F-AI-01 | Pengenalan jenis bunga | `app/ai/klasifikator.py` | **Tiruan** — menunggu model (lihat `kontrak-model-ai.md`) |
-| F-AI-02 | Ambang keyakinan | `AMBANG_KEYAKINAN` → `dikenali` | Selesai |
+| F-AI-01 | Pengenalan jenis bunga | `app/ai/klasifikator.py` | **Tidak dipakai** (keputusan B.19): admin memilih jenis; antarmuka disiapkan bila kelak ada model (`kontrak-model-ai.md`) |
+| F-AI-02 | Ambang keyakinan | `AMBANG_KEYAKINAN` → `dikenali` | Siap, hanya berlaku bila ada klasifikator |
 | F-AI-03 | Pemeriksaan admin | Pindai dan simpan dipisah dua langkah | Selesai |
 | F-AI-04 | Warna dominan (k-means) | `app/ai/warna.py` | Selesai (heuristik, belum diuji foto asli) |
 | F-AI-05 | Penamaan warna | Warna terdekat pada tabel `warna` (CIELAB) | Selesai |
@@ -75,7 +75,7 @@ Prefiks endpoint: `/api/v1`. Kontrak lengkap: `docs/openapi.json` atau `/docs` s
 | F-AK-02 | Status tidak hanya warna | `status.label`, `status.ikon`, `status.keterangan` |
 | F-AK-03..08 | Suara, penajaman, ukuran teks, tema, papan ketik, responsif | Frontend; pengaturan pengguna disimpan (`/aksesibilitas/saya`) |
 | F-AK-09 | Penggantian warna disetujui | `perlu_konfirmasi_pengganti` (AB-07) |
-| F-NF-02 | Pemindaian ≤ 3 detik | Bagian warna diuji <1 detik pada gambar 12 MP; total bergantung pada model |
+| F-NF-02 | Pemindaian ≤ 3 detik | Bagian warna diuji <1 detik pada gambar 12 MP; tanpa model, itulah seluruh pemindaian |
 | F-NF-03 | Pemindaian tanpa internet | **Tidak berlaku** pada arsitektur web + model di server (lihat keputusan C.6) |
 | F-NF-04 | Keamanan akun | bcrypt (SHA-256 pra-hash), JWT dengan versi sesi (pencabutan), pembatas percobaan masuk, pembatasan peran diuji |
 | F-NF-05 | Stok akurat | `UPDATE` bersyarat atomik + CHECK constraint; uji 12 permintaan serentak |

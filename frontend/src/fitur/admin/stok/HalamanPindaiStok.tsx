@@ -1,4 +1,4 @@
-import { CircleAlert, ScanLine, Sparkles } from 'lucide-react'
+import { CircleAlert, ScanLine } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 
@@ -15,7 +15,10 @@ import { JudulAdmin, Kartu } from '@/tata-letak/TataLetakAdmin'
 
 import { PilihJenis, PilihWarna } from './PilihBunga'
 
-/** Pindai stok masuk (F-AD-11): AI mengenali jenis dan warna, admin memeriksa/mengoreksi sebelum disimpan (F-AI-03). */
+/**
+ * Pindai stok masuk (F-AD-11): warna dibaca otomatis, admin memilih jenis lalu memeriksa/mengoreksi sebelum disimpan (F-AI-03).
+ * Jenis hanya ditebak bila backend memakai klasifikator (`jenis_otomatis`); bawaannya tidak.
+ */
 export function HalamanPindaiStok() {
   useJudul('Pindai Stok Masuk')
   const pindai = usePindaiStok()
@@ -47,7 +50,7 @@ export function HalamanPindaiStok() {
     setJumlah('')
   }
 
-  const persen = hasil ? Math.round(hasil.tingkat_keyakinan * 100) : 0
+  const persen = hasil && hasil.tingkat_keyakinan !== null ? Math.round(hasil.tingkat_keyakinan * 100) : 0
   // Jenis + warna yang sudah ada di stok: harga bawaan diambil dari stok itu sampai admin mengetik sendiri.
   const stokSama = stok.data?.find((s) => s.jenis.id_jenis_bunga === jenis && s.warna.id_warna === warna)
   const harga = hargaKetik ?? (stokSama ? String(stokSama.harga_per_tangkai) : '')
@@ -56,7 +59,7 @@ export function HalamanPindaiStok() {
     <>
       <JudulAdmin
         judul="Pindai Stok Masuk"
-        keterangan="Foto satu jenis bunga yang baru datang. Periksa hasil AI, koreksi bila perlu, lalu simpan sebagai stok."
+        keterangan="Foto satu jenis bunga yang baru datang. Warnanya dibaca otomatis; pilih jenisnya, periksa, lalu simpan sebagai stok."
         jejak={[
           { ke: '/admin', label: 'Dasbor' },
           { ke: '/admin/stok', label: 'Stok' },
@@ -89,45 +92,57 @@ export function HalamanPindaiStok() {
             disabled={!foto}
             memuat={pindai.isPending}
             onClick={mulaiPindai}
-            ikon={<Sparkles aria-hidden className="size-4" />}
+            ikon={<ScanLine aria-hidden className="size-4" />}
           >
-            Kenali dengan AI
+            Baca warna
           </Tombol>
         </Kartu>
 
         <Kartu className={cn(!hasil && 'opacity-60')}>
           <h2 className="mb-3 text-lg font-bold">2. Periksa & simpan</h2>
           {!hasil ? (
-            <p className="text-sm text-ad-redup">Hasil pengenalan akan muncul di sini.</p>
+            <p className="text-sm text-ad-redup">Hasil pembacaan akan muncul di sini.</p>
           ) : (
             <div className="flex flex-col gap-4">
-              <div role="status" className={cn('rounded-xl p-4', hasil.dikenali ? 'bg-ad-sukses-lembut' : 'bg-ad-peringatan-lembut')}>
-                <p className="text-sm font-semibold">{hasil.dikenali ? 'Bunga dikenali' : 'Keyakinan rendah — periksa jenisnya'}</p>
-                <p className="mt-1 text-xl font-bold">{hasil.jenis?.nama_bunga ?? 'Jenis tidak dikenali'}</p>
-                <div className="mt-2 flex items-center gap-3">
-                  <div
-                    role="meter"
-                    aria-label="Tingkat keyakinan"
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={persen}
-                    className="h-2 flex-1 overflow-hidden rounded-full bg-ad-permukaan"
-                  >
-                    <div
-                      className={cn('h-full rounded-full', hasil.dikenali ? 'bg-ad-sukses' : 'bg-ad-peringatan')}
-                      style={{ width: `${persen}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-bold tabular-nums">{persen}% yakin</span>
-                </div>
+              <div
+                role="status"
+                className={cn(
+                  'rounded-xl p-4',
+                  !hasil.jenis_otomatis || hasil.dikenali ? 'bg-ad-sukses-lembut' : 'bg-ad-peringatan-lembut',
+                )}
+              >
+                {hasil.jenis_otomatis ? (
+                  <>
+                    <p className="text-sm font-semibold">{hasil.dikenali ? 'Bunga dikenali' : 'Keyakinan rendah — periksa jenisnya'}</p>
+                    <p className="mt-1 text-xl font-bold">{hasil.jenis?.nama_bunga ?? 'Jenis tidak dikenali'}</p>
+                    <div className="mt-2 flex items-center gap-3">
+                      <div
+                        role="meter"
+                        aria-label="Tingkat keyakinan"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={persen}
+                        className="h-2 flex-1 overflow-hidden rounded-full bg-ad-permukaan"
+                      >
+                        <div
+                          className={cn('h-full rounded-full', hasil.dikenali ? 'bg-ad-sukses' : 'bg-ad-peringatan')}
+                          style={{ width: `${persen}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-bold tabular-nums">{persen}% yakin</span>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-sm font-semibold">Warna terbaca. Pilih jenis bunganya di bawah.</p>
+                )}
                 <p className="mt-2 text-sm">
                   Warna dominan: <ChipWarna warna={hasil.warna} ukuran="kecil" />
                 </p>
                 {hasil.deskripsi && <p className="mt-1 text-sm text-ad-redup">{hasil.deskripsi}</p>}
                 {hasil.tiruan && (
                   <p className="mt-2 flex items-start gap-1.5 text-xs font-semibold text-ad-peringatan">
-                    <CircleAlert aria-hidden className="size-4 shrink-0" /> Mode uji: jenis bunga dari AI tiruan karena model asli belum
-                    dipasang. Warna dibaca sungguhan.
+                    <CircleAlert aria-hidden className="size-4 shrink-0" /> Mode uji: jenis bunga ditebak acak oleh AI tiruan (hanya untuk
+                    pengembangan). Warna dibaca sungguhan.
                   </p>
                 )}
                 {hasil.peringatan.map((p) => (

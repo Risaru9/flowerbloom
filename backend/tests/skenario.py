@@ -117,12 +117,15 @@ class Toko:
             f"{API}/admin/pesanan/{id_pesanan}/pembayaran/{id_pembayaran}/tolak", headers=self.admin, json={"catatan": catatan}
         )
 
-    def pindai_rangkai(self, id_pesanan: int, warna=MERAH_TUA, jumlah=1, latar=(30, 120, 40)):
+    def pindai_rangkai(self, id_pesanan: int, warna=MERAH_TUA, jumlah=1, latar=(30, 120, 40), id_jenis_bunga=None):
+        data = {"jumlah": str(jumlah)}
+        if id_jenis_bunga is not None:
+            data["id_jenis_bunga"] = str(id_jenis_bunga)
         return self.client.post(
             f"{API}/admin/pesanan/{id_pesanan}/merangkai/pindai",
             headers=self.admin,
             files={"foto": ("bunga.jpg", gambar_bytes(warna, latar), "image/jpeg")},
-            data={"jumlah": str(jumlah)},
+            data=data,
         )
 
     def foto_hasil(self, id_pesanan: int):

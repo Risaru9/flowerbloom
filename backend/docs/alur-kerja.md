@@ -119,20 +119,23 @@ sequenceDiagram
     participant AI as Modul AI
     participant DB
     A->>API: POST /admin/stok/pindai (foto satu jenis bunga)
-    API->>AI: klasifikasi jenis + warna dominan (k-means) + nama warna
-    AI-->>API: jenis, keyakinan, warna terdekat
+    API->>AI: warna dominan (k-means CIELAB) + nama warna terdekat
+    AI-->>API: warna terdekat (jenis tidak ditebak: AI_MODE=nonaktif)
     API->>DB: simpan foto (privat) + riwayat_pindai (belum tertaut stok)
-    API-->>A: jenis, warna (nama+hex), keyakinan, dikenali?, peringatan
-    Note over A: Admin memeriksa; bila keliru, mengoreksi lewat pilihan manual (AB-11)
+    API-->>A: warna (nama+hex), jenis_otomatis=false, peringatan
+    Note over A: Admin memilih jenis dan memeriksa warna; bila keliru, mengoreksi lewat pilihan manual (AB-11)
     A->>API: POST /admin/stok/simpan-pindai (jenis & warna akhir, jumlah, harga)
     API->>DB: stok bertambah, mutasi dicatat, riwayat ditautkan + penanda dikoreksi
     API-->>A: stok terbaru (langsung tampil di katalog & Rangkai Sendiri)
 ```
 
-* Keyakinan di bawah `AMBANG_KEYAKINAN` (bawaan 0,60) atau kelas yang belum ada di `jenis_bunga` → `dikenali=false`; admin memilih
-  jenis dan warna manual. Warna tetap disarankan karena k-means tidak bergantung pada klasifikasi.
-* Bunga yang tidak ada di 102 kelas: gunakan `POST /admin/stok/manual` (F-AD-12).
-* `GET /admin/riwayat-pindai/ringkasan` menghitung akurasi jenis dan warna di pemakaian nyata dari pindai yang sudah dikoreksi/disimpan.
+* Proyek berjalan **tanpa model pengenal jenis** (keputusan B.19): admin memilih jenis, warna dibaca otomatis. `dikoreksi` hanya
+  menilai warna, karena jenis memang dipilih admin.
+* Bila kelak ada klasifikator (lihat `kontrak-model-ai.md`): keyakinan di bawah `AMBANG_KEYAKINAN` (bawaan 0,60) atau kelas yang
+  belum ada di `jenis_bunga` → `dikenali=false`, dan admin memilih jenis manual.
+* Input tanpa foto tetap tersedia: `POST /admin/stok/manual` (F-AD-12).
+* `GET /admin/riwayat-pindai/ringkasan` menghitung akurasi warna (dan jenis, hanya atas pindai yang jenisnya ditebak otomatis) di
+  pemakaian nyata dari pindai yang sudah disimpan.
 
 ## 6. Mode Merangkai, bunga pengganti, foto hasil
 
@@ -143,8 +146,9 @@ sequenceDiagram
     participant API
     Note over A,API: Status: sedang_dirangkai
     loop tiap bunga diambil
-        A->>API: POST .../merangkai/pindai (foto, jumlah tangkai)
+        A->>API: POST .../merangkai/pindai (foto, jumlah tangkai, jenis pilihan admin opsional)
         API-->>A: cocok? (jenis sama + warna dalam toleransi) + progres
+        Note over A,API: tanpa jenis pilihan: jenis ditentukan dari warna; bila warnanya cocok untuk beberapa jenis,<br/>id_komposisi_kandidat terisi dan admin memilih jenis lalu memindai lagi
     end
     opt bunga habis / rusak
         A->>API: POST .../merangkai/pengganti (asal, pengganti, jumlah, alasan)

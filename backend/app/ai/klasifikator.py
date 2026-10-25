@@ -1,12 +1,13 @@
-"""Klasifikasi jenis bunga (F-AI-01).
+"""Klasifikasi jenis bunga (F-AI-01): antarmuka cadangan, bawaannya TIDAK aktif.
 
-Backend hanya bergantung pada antarmuka ``Klasifikator``. Model hasil pelatihan (Oxford Flowers 102) dipasang
-dengan menambahkan implementasi baru dan menyalakannya lewat ``AI_MODE=model``. Sampai model teruji, dipakai
-``KlasifikatorTiruan`` sehingga seluruh alur (pindai stok, Mode Merangkai) tetap dapat dikembangkan dan diuji.
+Keputusan proyek (docs/keputusan-desain.md, B.19): website berjalan TANPA model pengenal jenis. Model yang ada di tim
+adalah model image captioning untuk penelitian, bukan klasifikasi, dan tidak dirancang untuk produksi. Dengan
+``AI_MODE=nonaktif`` admin memilih jenis bunga (hal yang mudah bagi manusia, termasuk penyandang buta warna), sedangkan
+warna (hal yang sulit bagi mereka) tetap dibaca otomatis oleh ``app.ai.warna``.
 
-Yang harus dipenuhi implementasi model (rinciannya di docs/kontrak-model-ai.md):
-* mengembalikan ``kelas_dataset`` = nomor kelas Oxford Flowers 102 (1..102), BUKAN indeks keluaran mentah model
-  (pemetaan indeks -> nomor kelas menjadi tanggung jawab implementasi);
+Antarmuka ``Klasifikator`` dipertahankan agar model dapat dipasang kelak tanpa mengubah alur lain. Syarat implementasinya
+(rincian di docs/kontrak-model-ai.md):
+* mengembalikan ``kelas_dataset`` = nomor kelas di tabel ``jenis_bunga``, BUKAN indeks keluaran mentah model;
 * keyakinan berupa probabilitas 0..1 dari softmax;
 * dimuat sekali saat aplikasi mulai, bukan per permintaan (target F-NF-02: <= 3 detik).
 """
@@ -36,10 +37,9 @@ class Klasifikator(Protocol):
 
 
 class KlasifikatorTiruan:
-    """Pengganti sementara: memilih kelas secara deterministik dari isi gambar (gambar sama -> jawaban sama).
+    """Pengganti untuk pengembangan: memilih kelas secara deterministik dari isi gambar (gambar sama -> jawaban sama).
 
-    Jenis bunga hasilnya TIDAK bermakna. Hanya untuk mengembangkan alur; jangan dipakai untuk menilai akurasi.
-    Warna yang dihitung modul warna tetap nyata.
+    Jenis bunga hasilnya TIDAK bermakna dan ditolak di produksi (lihat ``Pengaturan``). Warna tetap dihitung nyata.
     """
 
     def __init__(self, kelas_tetap: int | None = None):
@@ -53,12 +53,10 @@ class KlasifikatorTiruan:
 
 
 @lru_cache
-def ambil_klasifikator() -> Klasifikator:
+def ambil_klasifikator() -> Klasifikator | None:
+    """``None`` berarti jenis tidak ditebak otomatis: admin memilihnya, warna tetap dibaca otomatis."""
     p = ambil_pengaturan()
     if p.ai_mode == "tiruan":
-        log.warning("AI_MODE=tiruan: jenis bunga hasil pindai adalah TIRUAN (bukan model asli).")
+        log.warning("AI_MODE=tiruan: jenis bunga hasil pindai adalah TIRUAN (acak), hanya untuk pengembangan.")
         return KlasifikatorTiruan(kelas_tetap=p.ai_tiruan_kelas)
-    raise RuntimeError(
-        "AI_MODE=model belum diimplementasikan. Menunggu format model dan pemetaan label dari anggota tim yang "
-        "melatihnya (lihat docs/kontrak-model-ai.md)."
-    )
+    return None

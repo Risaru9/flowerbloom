@@ -42,7 +42,7 @@ notifikasi diturunkan dari status (`perlu_tindakan_*`, angka pada dasbor).
 | 8 | F-AD-10 "mulai dirangkai" tidak berupa tombol: status berubah **otomatis** saat pembayaran disahkan; `siap_diambil`/`diantar` otomatis saat pelanggan setuju; admin hanya menandai `selesai` | Diagram aktivitas (Gambar 4.4) demikian | Tambah endpoint manual bila ingin |
 | 9 | Kebijakan pengganti bawaan `hanya_warna_berbeda` (AB-07) | "Warna pengganti wajib disetujui" | Ganti ke `semua_pengganti` di pengaturan |
 | 10 | Bunga pengganti tidak mengubah total harga dan tidak mengembalikan stok bunga asal | Pelanggan membeli rangkaian, bukan tangkai satuan; bunga asal habis/rusak | Perlu aturan selisih harga |
-| 11 | Pencocokan Mode Merangkai: jenis persis, warna toleransi CIELAB ≤ 20 | Hasil k-means dibulatkan ke nama, mudah meleset satu nama | Ubah `AMBANG_KECOCOKAN_WARNA` |
+| 11 | Pencocokan Mode Merangkai: jenis persis, warna toleransi CIELAB ≤ 20. Jenis dari pilihan admin, atau dari warna bila warnanya hanya cocok dengan satu jenis di sisa pesanan | Hasil k-means dibulatkan ke nama, mudah meleset satu nama | Ubah `AMBANG_KECOCOKAN_WARNA` |
 | 12 | Komplain diizinkan sejak pesanan `siap_diambil`/`diantar` | "Setelah diterima" tidak selalu bertepatan dengan admin menandai selesai | Batasi ke `selesai` |
 | 13 | Jasa merangkai Rp10.000, ongkos antar Rp15.000, minimal 5 tangkai, slot 4 × 2 jam, stok menipis ≤ 10 | **Angka sementara** agar sistem berjalan | Ubah lewat `PATCH /admin/pengaturan-toko` |
 | 14 | Uang: `DECIMAL(10,2)` di basis data, angka JSON di API; harga pesanan dibekukan di `detail_pesanan.subtotal` | Perubahan harga stok/paket tidak memengaruhi pesanan lama | — |
@@ -50,6 +50,7 @@ notifikasi diturunkan dari status (`perlu_tindakan_*`, angka pada dasbor).
 | 16 | JWT akses 8 jam tanpa refresh token; akun dinonaktifkan langsung berhenti berlaku | Sederhana untuk skala capstone | Tambah refresh token |
 | 17 | Kode pesanan `FB-YYMMDD-XXXX` (tanpa 0/O/1/I) | Mudah dieja lewat telepon | — |
 | 18 | Penamaan Indonesia untuk tabel, kolom, dan endpoint | Satu lawan satu dengan dokumen (permintaan Anda) | — |
+| 19 | **Tanpa model pengenal jenis bunga** (`AI_MODE=nonaktif`, bawaan): admin memilih jenis; warna tetap dibaca otomatis (k-means CIELAB) dan dicocokkan otomatis di Mode Merangkai. `AI_MODE=tiruan` hanya untuk pengembangan dan ditolak di produksi | Model yang tersedia di tim (ViT-GPT2, CNN-GRU, CNN-LSTM) adalah model *image captioning* untuk penelitian jurnal: keluarannya kalimat, bukan jenis + keyakinan; dinilai dengan BLEU/METEOR (kemiripan kata), bukan ketepatan jenis atau warna; berukuran ±900 MB. Membedakan jenis mudah bagi manusia termasuk penyandang buta warna, sedangkan warna justru yang sulit, dan bagian itu deterministik tanpa model | Pasang klasifikator sesuai `kontrak-model-ai.md`; alur lain tidak berubah |
 
 ## C. Pertanyaan terbuka untuk tim
 
@@ -78,7 +79,8 @@ notifikasi diturunkan dari status (`perlu_tindakan_*`, angka pada dasbor).
   * SQLite mengabaikan `SELECT ... FOR UPDATE`, sehingga dua permintaan serentak pada pesanan yang sama tidak diserialkan
     (yang kalah menerima 500 dari jaring pengaman stok, bukan 409; stok tetap benar). Dua tes yang bergantung pada ini dilewati
     di SQLite dan lulus di MySQL. **Gunakan MySQL, bukan SQLite, untuk apa pun yang menyerupai produksi.**
-* **Model AI asli belum terpasang**; `AI_MODE=tiruan` mengembalikan jenis bunga acak-deterministik (warna tetap sungguhan).
+* **Tidak ada model pengenal jenis** (keputusan B.19). Proposal menyebut pengenalan jenis dengan AI; perubahan ini perlu
+  disampaikan ke dosen pembimbing.
 * **Sudah ditambahkan (2026-10-23):** pembatas percobaan masuk (per email+IP dan per IP, di memori proses: pindahkan ke
   Redis bila memakai banyak worker), ganti kata sandi, keluar dari semua perangkat, Swagger mati di produksi.
 * **Belum ada:** pembatas laju pindai, kunci idempotensi checkout (klik ganda membuat dua pesanan), notifikasi email/push

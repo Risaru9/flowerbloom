@@ -33,8 +33,8 @@ diantar, alamat tersimpan, kartu ucapan, slot jam) · pembayaran transfer + ungg
 pesanan · setujui/minta revisi foto hasil · komplain · favorit · notifikasi · pengaturan aksesibilitas · keamanan akun.
 
 **Admin** — dasbor & notifikasi tindakan · verifikasi pembayaran · **Mode Merangkai** (pindai bunga dengan kamera, cocokkan dengan
-pesanan, catat bunga pengganti) · unggah foto hasil · stok (pindai stok masuk dengan AI, input manual, koreksi, riwayat & akurasi
-pindai) · katalog produk · laporan penjualan (grafik, CSV) · pengaturan toko · kelola akun admin.
+pesanan, catat bunga pengganti) · unggah foto hasil · stok (pindai stok masuk: warna dibaca otomatis, input manual, koreksi, riwayat
+& akurasi pindai) · katalog produk · laporan penjualan (grafik, CSV) · pengaturan toko · kelola akun admin.
 
 **Aksesibilitas** (WCAG 2.2 AA sebagai target) — warna tidak pernah satu-satunya penyampai informasi, kontras teks ≥ 4.5:1, navigasi
 papan ketik dengan fokus terlihat, label & pesan galat terhubung ARIA, target sentuh ≥ 44 px, mode kontras tinggi, ukuran teks,
@@ -77,8 +77,8 @@ pnpm install
 pnpm dev                                        # http://localhost:5173 (/api diteruskan ke :8000)
 ```
 
-> **Data contoh** (`--demo`): nama, harga, dan foto paket diambil dari rancangan Figma tim; komposisinya disusun dari jenis bunga yang
-> dikenali model. Akun pelanggan contoh: lihat `backend/scripts/seed.py`. Jangan dipakai di produksi (perintah ini menolak berjalan bila
+> **Data contoh** (`--demo`): nama, harga, dan foto paket diambil dari rancangan Figma tim; komposisinya disusun dari daftar jenis bunga
+> di data acuan. Akun pelanggan contoh: lihat `backend/scripts/seed.py`. Jangan dipakai di produksi (perintah ini menolak berjalan bila
 > `LINGKUNGAN=produksi`).
 
 ## Kualitas & pengujian

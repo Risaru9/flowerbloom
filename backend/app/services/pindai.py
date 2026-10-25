@@ -1,8 +1,9 @@
-"""Pemindaian gambar oleh admin: jenis + warna bunga (F-AD-11, F-AI-01..07, F-AI-09).
+"""Pemindaian gambar oleh admin: warna (+ jenis bila klasifikator aktif) bunga (F-AD-11, F-AI-01..07, F-AI-09).
 
 Alur pindai stok masuk (Gambar 4.3 proposal):
-1. ``analisis_bunga``       : simpan foto, klasifikasi jenis, hitung warna dominan, catat ``riwayat_pindai``.
-2. admin memeriksa/mengoreksi hasil (F-AI-03) di antarmuka.
+1. ``analisis_bunga``       : simpan foto, hitung warna dominan, tebak jenis bila klasifikator aktif, catat ``riwayat_pindai``.
+   Bawaannya klasifikator TIDAK aktif (``AI_MODE=nonaktif``): admin memilih jenis, warna tetap otomatis.
+2. admin memilih jenis dan memeriksa/mengoreksi hasil (F-AI-03) di antarmuka.
 3. ``simpan_pindai_ke_stok``: stok bertambah, riwayat ditautkan ke stok beserta nilai akhirnya.
 """
 from dataclasses import dataclass
@@ -29,7 +30,7 @@ class HasilPindai:
     riwayat: RiwayatPindai
     jenis: JenisBunga | None
     warna: Warna
-    keyakinan: float
+    keyakinan: float | None  # None bila jenis tidak ditebak otomatis (klasifikator tidak aktif)
     jarak_warna: float
     rgb_terbaca: tuple[int, int, int]
     dikenali: bool
@@ -49,20 +50,26 @@ def analisis_bunga(
     pengaturan = ambil_pengaturan()
     katalog = referensi.katalog_warna_rgb(db)
 
-    klasifikasi = ambil_klasifikator().klasifikasi(gambar)
-    jenis = db.scalar(select(JenisBunga).where(JenisBunga.kelas_dataset == klasifikasi.kelas_dataset))
     label = label_warna_bunga(gambar, katalog)
     warna = db.get(Warna, label.id_warna)
 
+    jenis: JenisBunga | None = None
+    keyakinan: float | None = None
+    dikenali = False
     peringatan: list[str] = []
-    dikenali = klasifikasi.keyakinan >= pengaturan.ambang_keyakinan
-    if jenis is None:
-        dikenali = False
-        peringatan.append(
-            f"Kelas {klasifikasi.kelas_dataset} belum ada di tabel jenis_bunga; pilih jenis secara manual."
-        )
-    elif not dikenali:
-        peringatan.append("Bunga tidak dikenali (keyakinan di bawah ambang). Pilih jenis dan warna secara manual.")
+    klasifikator = ambil_klasifikator()
+    if klasifikator is not None:
+        klasifikasi = klasifikator.klasifikasi(gambar)
+        keyakinan = klasifikasi.keyakinan
+        jenis = db.scalar(select(JenisBunga).where(JenisBunga.kelas_dataset == klasifikasi.kelas_dataset))
+        dikenali = keyakinan >= pengaturan.ambang_keyakinan
+        if jenis is None:
+            dikenali = False
+            peringatan.append(
+                f"Kelas {klasifikasi.kelas_dataset} belum ada di tabel jenis_bunga; pilih jenis secara manual."
+            )
+        elif not dikenali:
+            peringatan.append("Bunga tidak dikenali (keyakinan di bawah ambang). Pilih jenis dan warna secara manual.")
 
     foto = ambil_penyimpanan().simpan_gambar(gambar, area="privat", kategori="pindai")
     riwayat = RiwayatPindai(
@@ -74,7 +81,7 @@ def analisis_bunga(
         warna_prediksi=warna.nama_warna,
         id_jenis_bunga_prediksi=jenis.id_jenis_bunga if jenis else None,
         id_warna_prediksi=warna.id_warna,
-        tingkat_keyakinan=klasifikasi.keyakinan,
+        tingkat_keyakinan=keyakinan,
         dikenali=dikenali,
     )
     db.add(riwayat)
@@ -84,7 +91,7 @@ def analisis_bunga(
         riwayat=riwayat,
         jenis=jenis,
         warna=warna,
-        keyakinan=klasifikasi.keyakinan,
+        keyakinan=keyakinan,
         jarak_warna=label.jarak,
         rgb_terbaca=label.rgb,
         dikenali=dikenali,
@@ -129,9 +136,9 @@ def simpan_pindai_ke_stok(
     riwayat.id_stok = stok.id_stok
     riwayat.id_jenis_bunga_final = id_jenis_bunga
     riwayat.id_warna_final = id_warna
-    riwayat.dikoreksi = (
-        riwayat.id_jenis_bunga_prediksi != id_jenis_bunga or riwayat.id_warna_prediksi != id_warna
-    )
+    # Jenis hanya dinilai bila memang ditebak otomatis (ada keyakinan); tanpa klasifikator admin memilihnya sendiri.
+    jenis_dikoreksi = riwayat.tingkat_keyakinan is not None and riwayat.id_jenis_bunga_prediksi != id_jenis_bunga
+    riwayat.dikoreksi = jenis_dikoreksi or riwayat.id_warna_prediksi != id_warna
     db.flush()
     return stok
 
@@ -153,7 +160,10 @@ def daftar_riwayat(
 
 
 def ringkasan_akurasi(db: Session) -> dict:
-    """Akurasi model di pemakaian nyata: hanya pindai stok yang sudah disimpan (ada nilai akhir dari admin)."""
+    """Akurasi pembacaan di pemakaian nyata: hanya pindai stok yang sudah disimpan (ada nilai akhir dari admin).
+
+    Akurasi jenis hanya dihitung atas pindai yang jenisnya memang ditebak otomatis (``tingkat_keyakinan`` terisi).
+    """
     baris = list(
         db.scalars(
             select(RiwayatPindai).where(
@@ -162,14 +172,14 @@ def ringkasan_akurasi(db: Session) -> dict:
         )
     )
     total = len(baris)
-    if not total:
-        return {"total_disimpan": 0, "jenis_benar": 0, "warna_benar": 0, "akurasi_jenis": None, "akurasi_warna": None}
-    jenis_benar = sum(1 for b in baris if b.id_jenis_bunga_prediksi == b.id_jenis_bunga_final)
+    ditebak = [b for b in baris if b.tingkat_keyakinan is not None]
+    jenis_benar = sum(1 for b in ditebak if b.id_jenis_bunga_prediksi == b.id_jenis_bunga_final)
     warna_benar = sum(1 for b in baris if b.id_warna_prediksi == b.id_warna_final)
     return {
         "total_disimpan": total,
+        "total_jenis_ditebak": len(ditebak),
         "jenis_benar": jenis_benar,
         "warna_benar": warna_benar,
-        "akurasi_jenis": round(jenis_benar / total, 4),
-        "akurasi_warna": round(warna_benar / total, 4),
+        "akurasi_jenis": round(jenis_benar / len(ditebak), 4) if ditebak else None,
+        "akurasi_warna": round(warna_benar / total, 4) if total else None,
     }
