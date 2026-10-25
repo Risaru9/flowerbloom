@@ -1,9 +1,11 @@
-# Kontrak Model AI (untuk anggota tim yang melatih model)
+# Kontrak Model AI (bila kelak ada model pengenal jenis)
 
-Status: model jenis bunga (Oxford Flowers 102) sudah dilatih tetapi **belum pernah dipakai dan belum diketahui bisa dipakai
-maksimal atau tidak**. Backend sengaja dibangun di atas antarmuka `Klasifikator` (`app/ai/klasifikator.py`) dengan AI tiruan
-sementara, sehingga seluruh alur berjalan tanpa menunggu model. Dokumen ini menjelaskan apa yang diperlukan agar model asli dapat
-dipasang, dan cara memeriksa bahwa ia layak.
+**Status (2026-10-25): proyek berjalan TANPA model** (`AI_MODE=nonaktif`, keputusan B.19 di `keputusan-desain.md`). Admin memilih
+jenis bunga; warna tetap dibaca dan dicocokkan otomatis. Model yang ada di tim (ViT-GPT2, CNN-GRU, CNN-LSTM) adalah model *image
+captioning* untuk penelitian jurnal: keluarannya kalimat, bukan jenis + keyakinan, jadi tidak cocok dengan antarmuka di bawah.
+
+Antarmuka `Klasifikator` (`app/ai/klasifikator.py`) dipertahankan. Dokumen ini menjelaskan apa yang diperlukan bila kelak tim ingin
+memasang model **klasifikasi** jenis bunga, dan cara memeriksa bahwa ia layak.
 
 ## 1. Yang perlu diserahkan
 
@@ -27,7 +29,7 @@ label 0–101 (kelas dataset − 1); periksa milik Anda. Salah pemetaan **tidak 
 
 1. Tambahkan `app/ai/klasifikator_model.py` berisi kelas yang memuat model **sekali** di `__init__` dan memenuhi
    `klasifikasi(gambar: PIL.Image) -> HasilKlasifikasi(kelas_dataset, keyakinan)`.
-2. Di `ambil_klasifikator()` kembalikan kelas itu bila `AI_MODE=model`.
+2. Tambahkan nilai `"model"` ke `ai_mode` di `app/config.py`, lalu di `ambil_klasifikator()` kembalikan kelas itu bila `AI_MODE=model`.
 3. Jalankan `pytest`, lalu uji manual lewat `POST /admin/stok/pindai`.
 
 Tidak ada bagian lain yang perlu diubah: pemetaan ke `jenis_bunga`, ambang keyakinan, riwayat pindai, dan Mode Merangkai
@@ -43,7 +45,8 @@ Lakukan sebelum model dipakai untuk mengisi stok sungguhan:
 4. **Waktu:** ukur end-to-end `POST /admin/stok/pindai` di mesin target; bagian warna sudah <1 detik.
 5. **Bunga di luar 102 kelas:** foto bunga yang tidak ada di dataset; model akan tetap menjawab. Ambang keyakinan yang menolaknya harus terlihat di hasil ini.
 
-Riwayat pindai (`GET /admin/riwayat-pindai/ringkasan`) menghitung akurasi jenis dan warna di pemakaian nyata sejak model dipasang.
+Riwayat pindai (`GET /admin/riwayat-pindai/ringkasan`) menghitung akurasi jenis (hanya atas pindai yang jenisnya ditebak) dan warna
+di pemakaian nyata sejak model dipasang.
 
 ## 4. Cakupan kelas
 

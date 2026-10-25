@@ -4,6 +4,7 @@ Nilai dibaca dari variabel lingkungan atau berkas ``.env`` (lihat ``.env.example
 """
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -36,10 +37,11 @@ class Pengaturan(BaseSettings):
     # CORS untuk frontend
     cors_origins: list[str] = ["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5500"]
 
-    # Layanan AI (F-AI-*)
-    ai_mode: str = "tiruan"  # tiruan | model
+    # Pengenalan jenis bunga otomatis (F-AI-01). Proyek memutuskan TANPA model (docs/keputusan-desain.md, B.19):
+    # "nonaktif" = admin memilih jenis, warna tetap dibaca otomatis. "tiruan" menebak jenis ACAK, hanya untuk pengembangan.
+    ai_mode: Literal["nonaktif", "tiruan"] = "nonaktif"
     ai_tiruan_kelas: int | None = None  # paksa AI tiruan selalu menjawab kelas ini (untuk uji frontend)
-    ambang_keyakinan: float = 0.60  # F-AI-02
+    ambang_keyakinan: float = 0.60  # F-AI-02; hanya berlaku bila ada klasifikator
     ambang_kecocokan_warna: float = 20.0  # batas jarak warna (CIELAB) agar dianggap "cocok" di Mode Merangkai
 
     # Penjadwal pesanan kedaluwarsa (AB-02)
@@ -55,6 +57,12 @@ class Pengaturan(BaseSettings):
     def _tolak_rahasia_lemah_di_produksi(self) -> "Pengaturan":
         if self.lingkungan == "produksi" and (self.jwt_rahasia == RAHASIA_BAWAAN or len(self.jwt_rahasia) < 32):
             raise ValueError("JWT_RAHASIA harus diganti dan minimal 32 karakter pada lingkungan produksi.")
+        return self
+
+    @model_validator(mode="after")
+    def _tolak_ai_tiruan_di_produksi(self) -> "Pengaturan":
+        if self.lingkungan == "produksi" and self.ai_mode == "tiruan":
+            raise ValueError("AI_MODE=tiruan menebak jenis bunga secara acak; gunakan AI_MODE=nonaktif di produksi.")
         return self
 
     @property

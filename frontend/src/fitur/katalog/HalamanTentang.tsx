@@ -27,7 +27,7 @@ export function HalamanTentang() {
   const FAKTA = [
     { Ikon: Palette, angka: warna.data ? String(warna.data.length) : '—', label: 'Nama warna dengan kode & makna' },
     { Ikon: Eye, angka: '4', label: 'Mode tampilan warna' },
-    { Ikon: ScanLine, angka: 'AI', label: 'Pengenalan jenis & warna bunga' },
+    { Ikon: ScanLine, angka: 'Foto', label: 'Warna bunga dibaca otomatis' },
     { Ikon: Flower2, angka: info.data ? `H-${info.data.minimal_hari_pemesanan}` : 'H-1', label: 'Pesan paling lambat' },
   ]
 

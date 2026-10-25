@@ -1,9 +1,11 @@
 """Mode Merangkai (F-AD-07) dan pencatatan bunga pengganti (F-AD-08).
 
 Setiap bunga yang diambil dipindai lalu dicocokkan dengan baris ``komposisi_pesanan`` yang belum penuh:
-* jenis harus sama persis;
-* warna dicocokkan dengan TOLERANSI memakai warna terukur (bukan nama terdekat), karena hasil k-means yang
-  dibulatkan ke nama bisa meleset satu nama dari yang tercatat di stok. Ambangnya ``AMBANG_KECOCOKAN_WARNA``;
+* jenis harus sama persis. Sumbernya, berurutan: pilihan admin -> tebakan klasifikator (bila aktif dan yakin) ->
+  warna saja, asalkan warna itu hanya cocok dengan SATU jenis di sisa pesanan (bila lebih, admin diminta memilih).
+  Membedakan jenis mudah bagi manusia, termasuk penyandang buta warna; yang sulit adalah warnanya;
+* warna SELALU dicocokkan otomatis dengan TOLERANSI memakai warna terukur (bukan nama terdekat), karena hasil
+  k-means yang dibulatkan ke nama bisa meleset satu nama dari yang tercatat di stok. Ambangnya ``AMBANG_KECOCOKAN_WARNA``;
 * bila pemindaian gagal/meleset, admin dapat "Tandai cocok" manual per baris.
 
 Foto hasil baru boleh diunggah setelah semua baris cocok (lihat ``siap_foto``).
@@ -33,6 +35,7 @@ class HasilMerangkai:
     jenis: JenisBunga | None
     warna: Warna | None
     id_komposisi_cocok: int | None
+    id_komposisi_kandidat: list[int]
 
 
 def baris_aktif(pesanan: Pesanan) -> list[KomposisiPesanan]:
@@ -64,27 +67,58 @@ def _nama(k: KomposisiPesanan) -> str:
     return f"{k.stok.jenis_bunga.nama_bunga} {k.stok.warna.nama_warna.lower()}"
 
 
-def pindai_bunga(db: Session, *, id_pesanan: int, admin: Pengguna, data: bytes, jumlah: int = 1) -> HasilMerangkai:
+def pindai_bunga(
+    db: Session,
+    *,
+    id_pesanan: int,
+    admin: Pengguna,
+    data: bytes,
+    jumlah: int = 1,
+    id_jenis_bunga: int | None = None,
+) -> HasilMerangkai:
     pesanan = _kunci_dirangkai(db, id_pesanan)
+    dipilih = None
+    if id_jenis_bunga is not None:
+        dipilih = db.get(JenisBunga, id_jenis_bunga)
+        if dipilih is None:
+            raise TidakDitemukan("Jenis bunga tidak ditemukan.")
     hasil = pindai.analisis_bunga(db, data=data, admin=admin, konteks=KonteksPindai.mode_rangkai, id_pesanan=id_pesanan)
+    jenis = dipilih or (hasil.jenis if hasil.dikenali else None)
 
-    def keluaran(cocok: bool, alasan: str | None, id_baris: int | None = None) -> HasilMerangkai:
-        return HasilMerangkai(pesanan, hasil.dikenali, cocok, alasan, hasil.jenis, hasil.warna, id_baris)
+    def keluaran(
+        cocok: bool, alasan: str | None, id_baris: int | None = None, kandidat_warna: list[KomposisiPesanan] | None = None
+    ) -> HasilMerangkai:
+        id_kandidat = [k.id_komposisi_pesanan for k in kandidat_warna or []]
+        return HasilMerangkai(pesanan, hasil.dikenali, cocok, alasan, jenis, hasil.warna, id_baris, id_kandidat)
 
     kandidat = [k for k in baris_aktif(pesanan) if k.jumlah_terpindai < k.jumlah_tangkai]
     if not kandidat:
         return keluaran(False, "Semua bunga pada pesanan ini sudah cocok.")
-    if not hasil.dikenali or hasil.jenis is None:
-        return keluaran(False, "Bunga tidak dikenali. Gunakan 'Tandai cocok' bila Anda yakin bunganya sesuai.")
-
-    sejenis = [k for k in kandidat if k.stok.id_jenis_bunga == hasil.jenis.id_jenis_bunga]
-    if not sejenis:
-        sisa = ", ".join(sorted({_nama(k) for k in kandidat}))
-        return keluaran(False, f"{hasil.jenis.nama_bunga} tidak ada dalam sisa pesanan. Sisa yang dicari: {sisa}.")
 
     # Hitung jarak sekali; tangkai dibagikan ke baris terdekat dulu, lalu ke baris sejenis lain yang warnanya masih cocok.
     ambang = ambil_pengaturan().ambang_kecocokan_warna
-    berjarak = sorted(((jarak_warna(hasil.rgb_terbaca, hex_ke_rgb(k.stok.warna.kode_hex)), k) for k in sejenis), key=lambda x: x[0])
+    berjarak = sorted(((jarak_warna(hasil.rgb_terbaca, hex_ke_rgb(k.stok.warna.kode_hex)), k) for k in kandidat), key=lambda x: x[0])
+    sisa_dicari = ", ".join(sorted({_nama(k) for k in kandidat}))
+
+    if jenis is None:
+        # Tanpa jenis dari admin maupun klasifikator: tentukan dari warna, asalkan hanya satu jenis yang warnanya cocok.
+        cocok_warna = [k for j, k in berjarak if j <= ambang]
+        if not cocok_warna:
+            return keluaran(
+                False, f"Warna terbaca '{hasil.warna.nama_warna}' tidak cocok dengan sisa pesanan. Sisa yang dicari: {sisa_dicari}."
+            )
+        if len({k.stok.id_jenis_bunga for k in cocok_warna}) > 1:
+            pilihan = ", ".join(sorted({_nama(k) for k in cocok_warna}))
+            return keluaran(
+                False,
+                f"Warna '{hasil.warna.nama_warna}' cocok untuk lebih dari satu bunga: {pilihan}. Pilih jenis bunganya lalu pindai lagi.",
+                kandidat_warna=cocok_warna,
+            )
+        jenis = cocok_warna[0].stok.jenis_bunga
+
+    berjarak = [(j, k) for j, k in berjarak if k.stok.id_jenis_bunga == jenis.id_jenis_bunga]
+    if not berjarak:
+        return keluaran(False, f"{jenis.nama_bunga} tidak ada dalam sisa pesanan. Sisa yang dicari: {sisa_dicari}.")
     jarak, terdekat = berjarak[0]
     if jarak > ambang:
         return keluaran(

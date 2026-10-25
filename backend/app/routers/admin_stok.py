@@ -51,7 +51,7 @@ def stok_manual(data: StokManualIn, db: DB, admin: Admin):
     return _keluaran(db, stok)
 
 
-@router.post("/stok/pindai", response_model=HasilPindaiOut, summary="Pindai satu bunga: jenis, warna, keyakinan (F-AD-11)")
+@router.post("/stok/pindai", response_model=HasilPindaiOut, summary="Pindai satu bunga: warna dibaca otomatis, jenis dipilih admin (F-AD-11)")
 def pindai_stok(foto: Annotated[UploadFile, File(description="Satu foto untuk satu jenis bunga")], db: DB, admin: Admin):
     hasil = pindai.analisis_bunga(db, data=baca_unggahan(foto), admin=admin, konteks=KonteksPindai.stok_masuk)
     db.commit()
@@ -107,6 +107,6 @@ def riwayat_pindai(
     )
 
 
-@router.get("/riwayat-pindai/ringkasan", response_model=RingkasanAkurasiOut, summary="Akurasi model di pemakaian nyata")
+@router.get("/riwayat-pindai/ringkasan", response_model=RingkasanAkurasiOut, summary="Akurasi pembacaan warna (dan jenis bila ditebak otomatis) di pemakaian nyata")
 def ringkasan_akurasi(db: DB, _: Admin):
     return pindai.ringkasan_akurasi(db)

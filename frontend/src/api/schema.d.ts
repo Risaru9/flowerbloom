@@ -462,7 +462,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Pindai satu bunga: jenis, warna, keyakinan (F-AD-11) */
+        /** Pindai satu bunga: warna dibaca otomatis, jenis dipilih admin (F-AD-11) */
         post: operations["pindai_stok_api_v1_admin_stok_pindai_post"];
         delete?: never;
         options?: never;
@@ -528,7 +528,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Akurasi model di pemakaian nyata */
+        /** Akurasi pembacaan warna (dan jenis bila ditebak otomatis) di pemakaian nyata */
         get: operations["ringkasan_akurasi_api_v1_admin_riwayat_pindai_ringkasan_get"];
         put?: never;
         post?: never;
@@ -803,7 +803,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Pindai bunga yang diambil lalu cocokkan dengan pesanan */
+        /** Pindai bunga yang diambil; warnanya dicocokkan otomatis dengan pesanan */
         post: operations["pindai_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_pindai_post"];
         delete?: never;
         options?: never;
@@ -1135,6 +1135,11 @@ export interface components {
              * @default 1
              */
             jumlah: number;
+            /**
+             * Id Jenis Bunga
+             * @description Jenis bunga yang diambil (dipilih admin). Kosongkan agar jenis ditentukan dari warna bila tidak ambigu
+             */
+            id_jenis_bunga?: number | null;
         };
         /** Body_pindai_stok_api_v1_admin_stok_pindai_post */
         Body_pindai_stok_api_v1_admin_stok_pindai_post: {
@@ -1312,28 +1317,48 @@ export interface components {
         };
         /** HasilMerangkaiOut */
         HasilMerangkaiOut: {
-            /** Dikenali */
+            /**
+             * Dikenali
+             * @description Jenis dikenali klasifikator otomatis; selalu False bila AI_MODE=nonaktif
+             */
             dikenali: boolean;
             /** Cocok */
             cocok: boolean;
             /** Alasan */
             alasan: string | null;
+            /** @description Jenis yang dipakai untuk mencocokkan (pilihan admin, tebakan, atau dari warna) */
             jenis: components["schemas"]["JenisRingkas"] | null;
             warna: components["schemas"]["WarnaRingkas"] | null;
             /** Id Komposisi Cocok */
             id_komposisi_cocok: number | null;
+            /**
+             * Id Komposisi Kandidat
+             * @description Baris yang warnanya cocok tetapi berlainan jenis: admin perlu memilih jenis bunganya lalu memindai lagi
+             */
+            id_komposisi_kandidat: number[];
             progres: components["schemas"]["ProgresMerangkaiOut"];
         };
         /** HasilPindaiOut */
         HasilPindaiOut: {
             /** Id Pindai */
             id_pindai: number;
-            /** Dikenali */
+            /**
+             * Jenis Otomatis
+             * @description True bila jenis ditebak otomatis. False (AI_MODE=nonaktif, bawaan): admin memilih jenis; warna tetap otomatis
+             */
+            jenis_otomatis: boolean;
+            /**
+             * Dikenali
+             * @description Jenis ditebak dengan keyakinan di atas ambang; selalu False bila jenis_otomatis False
+             */
             dikenali: boolean;
             jenis: components["schemas"]["JenisRingkas"] | null;
             warna: components["schemas"]["WarnaRingkas"];
-            /** Tingkat Keyakinan */
-            tingkat_keyakinan: number;
+            /**
+             * Tingkat Keyakinan
+             * @description Kosong bila jenis tidak ditebak otomatis
+             */
+            tingkat_keyakinan: number | null;
             /** Jarak Warna */
             jarak_warna: number;
             /** Deskripsi */
@@ -1342,7 +1367,7 @@ export interface components {
             peringatan: string[];
             /**
              * Tiruan
-             * @description True bila jenis bunga berasal dari AI tiruan (model asli belum terpasang)
+             * @description True bila jenis bunga berasal dari AI tiruan (acak, hanya untuk pengembangan)
              */
             tiruan: boolean;
         };
@@ -2101,6 +2126,11 @@ export interface components {
         RingkasanAkurasiOut: {
             /** Total Disimpan */
             total_disimpan: number;
+            /**
+             * Total Jenis Ditebak
+             * @description Pindai yang jenisnya ditebak otomatis; dasar akurasi_jenis
+             */
+            total_jenis_ditebak: number;
             /** Jenis Benar */
             jenis_benar: number;
             /** Warna Benar */

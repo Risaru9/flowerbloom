@@ -116,6 +116,7 @@ export function HalamanMerangkai() {
   const [foto, setFoto] = useState<File | null>(null)
   const [jumlah, setJumlah] = useState(1)
   const [hasil, setHasil] = useState<Skema['HasilMerangkaiOut'] | null>(null)
+  const [jenisDipilih, setJenisDipilih] = useState('')
   const [fotoHasil, setFotoHasil] = useState<File | null>(null)
   const [pengganti, setPengganti] = useState<Komposisi | null>(null)
   useJudul('Mode Merangkai')
@@ -125,6 +126,11 @@ export function HalamanMerangkai() {
   const p = data.pesanan
   const komposisi = p.detail.flatMap((d) => d.komposisi.map((k) => ({ ...k, nama: d.nama })))
   const persen = data.target ? Math.round((data.terpindai / data.target) * 100) : 0
+  // Jenis yang masih dicari: admin memilih jenis (mudah dikenali dari bentuk), warnanya dicocokkan otomatis.
+  const jenisTersisa = [
+    ...new Map(komposisi.filter((k) => k.jumlah_terpindai < k.jumlah_tangkai).map((k) => [k.jenis.id_jenis_bunga, k.jenis.nama_bunga])),
+  ]
+  const kandidat = hasil?.id_komposisi_kandidat ?? []
   const fotoTerakhir = p.foto.at(-1)
   const tandaiCocok = (k: Komposisi, n: number) =>
     tandai.mutate({ id_komposisi_pesanan: k.id_komposisi_pesanan, jumlah: n }, { onError: (e) => tampilkanToast(pesanGalat(e), 'galat') })
@@ -184,21 +190,24 @@ export function HalamanMerangkai() {
           <h2 className="mb-1 flex items-center gap-2 text-lg font-bold">
             <Camera aria-hidden className="size-5 text-ad-aksen" /> Pindai bunga yang diambil
           </h2>
-          <p className="mb-3 text-sm text-ad-redup">
-            Foto satu jenis bunga; AI mengenali jenis dan membaca warnanya lalu mencocokkan dengan pesanan.
-          </p>
+          <p className="mb-3 text-sm text-ad-redup">Foto satu jenis bunga; warnanya dibaca lalu dicocokkan otomatis dengan pesanan.</p>
           <form
             className="flex flex-col gap-3"
             onSubmit={(e) => {
               e.preventDefault()
               if (!foto) return
               pindai.mutate(
-                { foto, jumlah },
+                { foto, jumlah, id_jenis_bunga: jenisDipilih ? Number(jenisDipilih) : undefined },
                 {
                   onSuccess: (h) => {
-                    setHasil(h as Skema['HasilMerangkaiOut'])
-                    setFoto(null)
-                    setJumlah(1)
+                    const r = h as Skema['HasilMerangkaiOut']
+                    setHasil(r)
+                    // Warna cocok untuk beberapa jenis: foto dipertahankan agar admin cukup memilih jenis lalu memindai lagi.
+                    if (r.id_komposisi_kandidat.length === 0) {
+                      setFoto(null)
+                      setJumlah(1)
+                      setJenisDipilih('')
+                    }
                   },
                   onError: (er) => tampilkanToast(pesanGalat(er), 'galat'),
                 },
@@ -206,6 +215,20 @@ export function HalamanMerangkai() {
             }}
           >
             <UnggahFoto gaya="admin" kamera label="Ambil foto bunga" berkas={foto} ubah={setFoto} />
+            <Bidang
+              label="Jenis bunga yang diambil"
+              gaya="admin"
+              bantuan="Warna selalu dicocokkan otomatis. Pilih jenis bila diminta, yaitu saat beberapa bunga di pesanan berwarna sama."
+            >
+              <Pilihan gaya="admin" value={jenisDipilih} onChange={(e) => setJenisDipilih(e.target.value)}>
+                <option value="">Tentukan dari warna</option>
+                {jenisTersisa.map(([idJenis, nama]) => (
+                  <option key={idJenis} value={idJenis}>
+                    {nama}
+                  </option>
+                ))}
+              </Pilihan>
+            </Bidang>
             <Bidang label="Jumlah tangkai sejenis dalam foto" gaya="admin">
               <Masukan
                 gaya="admin"
@@ -225,21 +248,20 @@ export function HalamanMerangkai() {
               role="status"
               className={cn(
                 'mt-4 rounded-xl p-4 text-sm',
-                hasil.cocok ? 'bg-ad-sukses-lembut text-ad-sukses' : 'bg-ad-bahaya-lembut text-ad-bahaya',
+                hasil.cocok
+                  ? 'bg-ad-sukses-lembut text-ad-sukses'
+                  : kandidat.length
+                    ? 'bg-ad-peringatan-lembut text-ad-peringatan'
+                    : 'bg-ad-bahaya-lembut text-ad-bahaya',
               )}
             >
               <p className="flex items-center gap-2 font-bold">
                 {hasil.cocok ? <CheckCircle2 aria-hidden className="size-5" /> : <XCircle aria-hidden className="size-5" />}
-                {hasil.cocok ? 'Cocok dengan pesanan' : hasil.dikenali ? 'Tidak cocok' : 'Bunga tidak dikenali'}
+                {hasil.cocok ? 'Cocok dengan pesanan' : kandidat.length ? 'Pilih jenis bunganya' : 'Tidak cocok'}
               </p>
               <p className="mt-1 text-ad-teks">
-                Terdeteksi: {hasil.jenis?.nama_bunga ?? 'jenis tidak dikenali'}
-                {hasil.warna && (
-                  <>
-                    {' · '}
-                    <ChipWarna warna={hasil.warna} ukuran="kecil" />
-                  </>
-                )}
+                {hasil.jenis && `${hasil.jenis.nama_bunga} · `}
+                Warna terbaca: {hasil.warna ? <ChipWarna warna={hasil.warna} ukuran="kecil" /> : '—'}
               </p>
               {hasil.alasan && <p className="mt-1 text-ad-teks">{hasil.alasan}</p>}
             </div>
@@ -258,7 +280,8 @@ export function HalamanMerangkai() {
                   className={cn(
                     'rounded-xl border p-3',
                     selesai ? 'border-ad-sukses/40 bg-ad-sukses-lembut/40' : 'border-ad-garis',
-                    hasil?.id_komposisi_cocok === k.id_komposisi_pesanan && 'ring-2 ring-ad-aksen',
+                    (hasil?.id_komposisi_cocok === k.id_komposisi_pesanan || kandidat.includes(k.id_komposisi_pesanan)) &&
+                      'ring-2 ring-ad-aksen',
                   )}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">

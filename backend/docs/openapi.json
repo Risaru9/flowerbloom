@@ -1347,7 +1347,7 @@
         "tags": [
           "Admin - Stok & Pindai"
         ],
-        "summary": "Pindai satu bunga: jenis, warna, keyakinan (F-AD-11)",
+        "summary": "Pindai satu bunga: warna dibaca otomatis, jenis dipilih admin (F-AD-11)",
         "operationId": "pindai_stok_api_v1_admin_stok_pindai_post",
         "requestBody": {
           "content": {
@@ -1567,7 +1567,7 @@
         "tags": [
           "Admin - Stok & Pindai"
         ],
-        "summary": "Akurasi model di pemakaian nyata",
+        "summary": "Akurasi pembacaan warna (dan jenis bila ditebak otomatis) di pemakaian nyata",
         "operationId": "ringkasan_akurasi_api_v1_admin_riwayat_pindai_ringkasan_get",
         "responses": {
           "200": {
@@ -2474,7 +2474,7 @@
         "tags": [
           "Admin - Pesanan"
         ],
-        "summary": "Pindai bunga yang diambil lalu cocokkan dengan pesanan",
+        "summary": "Pindai bunga yang diambil; warnanya dicocokkan otomatis dengan pesanan",
         "operationId": "pindai_merangkai_api_v1_admin_pesanan__id_pesanan__merangkai_pindai_post",
         "security": [
           {
@@ -3528,6 +3528,18 @@
             "title": "Jumlah",
             "description": "Jumlah tangkai sejenis dalam foto",
             "default": 1
+          },
+          "id_jenis_bunga": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Jenis Bunga",
+            "description": "Jenis bunga yang diambil (dipilih admin). Kosongkan agar jenis ditentukan dari warna bila tidak ambigu"
           }
         },
         "type": "object",
@@ -4047,7 +4059,8 @@
         "properties": {
           "dikenali": {
             "type": "boolean",
-            "title": "Dikenali"
+            "title": "Dikenali",
+            "description": "Jenis dikenali klasifikator otomatis; selalu False bila AI_MODE=nonaktif"
           },
           "cocok": {
             "type": "boolean",
@@ -4072,7 +4085,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "Jenis yang dipakai untuk mencocokkan (pilihan admin, tebakan, atau dari warna)"
           },
           "warna": {
             "anyOf": [
@@ -4095,6 +4109,14 @@
             ],
             "title": "Id Komposisi Cocok"
           },
+          "id_komposisi_kandidat": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Id Komposisi Kandidat",
+            "description": "Baris yang warnanya cocok tetapi berlainan jenis: admin perlu memilih jenis bunganya lalu memindai lagi"
+          },
           "progres": {
             "$ref": "#/components/schemas/ProgresMerangkaiOut"
           }
@@ -4107,6 +4129,7 @@
           "jenis",
           "warna",
           "id_komposisi_cocok",
+          "id_komposisi_kandidat",
           "progres"
         ],
         "title": "HasilMerangkaiOut"
@@ -4117,9 +4140,15 @@
             "type": "integer",
             "title": "Id Pindai"
           },
+          "jenis_otomatis": {
+            "type": "boolean",
+            "title": "Jenis Otomatis",
+            "description": "True bila jenis ditebak otomatis. False (AI_MODE=nonaktif, bawaan): admin memilih jenis; warna tetap otomatis"
+          },
           "dikenali": {
             "type": "boolean",
-            "title": "Dikenali"
+            "title": "Dikenali",
+            "description": "Jenis ditebak dengan keyakinan di atas ambang; selalu False bila jenis_otomatis False"
           },
           "jenis": {
             "anyOf": [
@@ -4135,8 +4164,16 @@
             "$ref": "#/components/schemas/WarnaRingkas"
           },
           "tingkat_keyakinan": {
-            "type": "number",
-            "title": "Tingkat Keyakinan"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tingkat Keyakinan",
+            "description": "Kosong bila jenis tidak ditebak otomatis"
           },
           "jarak_warna": {
             "type": "number",
@@ -4163,12 +4200,13 @@
           "tiruan": {
             "type": "boolean",
             "title": "Tiruan",
-            "description": "True bila jenis bunga berasal dari AI tiruan (model asli belum terpasang)"
+            "description": "True bila jenis bunga berasal dari AI tiruan (acak, hanya untuk pengembangan)"
           }
         },
         "type": "object",
         "required": [
           "id_pindai",
+          "jenis_otomatis",
           "dikenali",
           "jenis",
           "warna",
@@ -6348,6 +6386,11 @@
             "type": "integer",
             "title": "Total Disimpan"
           },
+          "total_jenis_ditebak": {
+            "type": "integer",
+            "title": "Total Jenis Ditebak",
+            "description": "Pindai yang jenisnya ditebak otomatis; dasar akurasi_jenis"
+          },
           "jenis_benar": {
             "type": "integer",
             "title": "Jenis Benar"
@@ -6382,6 +6425,7 @@
         "type": "object",
         "required": [
           "total_disimpan",
+          "total_jenis_ditebak",
           "jenis_benar",
           "warna_benar",
           "akurasi_jenis",

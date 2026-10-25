@@ -55,15 +55,63 @@ def test_pindai_warna_atau_jenis_salah_tidak_menaikkan_progres(client, db, klasi
     assert toko.merangkai(id_)["terpindai"] == 0
 
 
-def test_bunga_tidak_dikenali_tidak_mencocokkan(client, db, klasifikator):
+def test_tebakan_tidak_yakin_jatuh_ke_pencocokan_warna(client, db, klasifikator):
     toko, id_ = _dirangkai(client, db)
-    klasifikator.keyakinan = 0.3  # di bawah ambang (F-AI-02)
+    klasifikator.keyakinan = 0.3  # di bawah ambang (F-AI-02): tebakan diabaikan, jenis ditentukan dari warna
     r = toko.pindai_rangkai(id_, MERAH_TUA).json()
-    assert r["dikenali"] is False and r["cocok"] is False and "tidak dikenali" in r["alasan"].lower()
+    assert r["dikenali"] is False and r["cocok"] is True and r["jenis"]["nama_bunga"] == "Mawar"
     klasifikator.keyakinan, klasifikator.kelas = 0.95, 99  # kelas yang belum ada di tabel jenis_bunga
-    r = toko.pindai_rangkai(id_, MERAH_TUA).json()
-    assert r["dikenali"] is False and r["jenis"] is None
+    r = toko.pindai_rangkai(id_, PUTIH).json()
+    assert r["dikenali"] is False and r["cocok"] is True and r["jenis"]["nama_bunga"] == "Anyelir"
+    assert toko.merangkai(id_)["terpindai"] == 2
+
+
+# --- Tanpa klasifikator (AI_MODE=nonaktif, bawaan) ---------------------------------------------------------------
+
+
+def test_tanpa_klasifikator_jenis_ditentukan_dari_warna(client, db):
+    toko, id_ = _dirangkai(client, db)
+    r = toko.pindai_rangkai(id_, MERAH_TUA, jumlah=6).json()
+    assert r["dikenali"] is False and r["cocok"] is True and r["jenis"]["nama_bunga"] == "Mawar"
+    assert r["id_komposisi_cocok"] == _baris(toko, id_, "Mawar/Merah tua")["id_komposisi_pesanan"]
+
+    r = toko.pindai_rangkai(id_, MERAH_MUDA).json()  # pesanan tidak memuat bunga merah muda
+    assert r["cocok"] is False and r["jenis"] is None and "tidak cocok dengan sisa pesanan" in r["alasan"]
+    assert r["progres"]["terpindai"] == 6
+
+    r = toko.pindai_rangkai(id_, PUTIH, jumlah=6).json()
+    assert r["cocok"] is True and r["jenis"]["nama_bunga"] == "Anyelir" and r["progres"]["siap_foto"] is True
+
+
+def test_warna_sama_beda_jenis_meminta_admin_memilih_jenis(client, db):
+    toko = Toko(client, db).stok_standar()
+    toko.isi_stok("Anyelir", "Merah tua", 10, 5000)
+    pesanan = toko.pesan(items=[{"jenis_item": "rangkai_sendiri", "bunga": [
+        {"id_stok": toko.id_stok["Mawar/Merah tua"], "jumlah_tangkai": 3},
+        {"id_stok": toko.id_stok["Anyelir/Merah tua"], "jumlah_tangkai": 3}]}])
+    id_ = pesanan["id_pesanan"]
+    toko.bayar(id_, nominal=str(pesanan["total_harga"]))
+    assert toko.sahkan(id_).status_code == 200
+
+    r = toko.pindai_rangkai(id_, MERAH_TUA).json()  # merah tua: bisa mawar atau anyelir
+    assert r["cocok"] is False and r["jenis"] is None and "Pilih jenis bunganya" in r["alasan"]
+    assert len(r["id_komposisi_kandidat"]) == 2 and r["progres"]["terpindai"] == 0
+
+    r = toko.pindai_rangkai(id_, MERAH_TUA, jumlah=3, id_jenis_bunga=toko.jenis["Anyelir"].id_jenis_bunga).json()
+    assert r["cocok"] is True and r["jenis"]["nama_bunga"] == "Anyelir" and r["id_komposisi_kandidat"] == []
+
+    r = toko.pindai_rangkai(id_, MERAH_TUA, jumlah=3).json()  # sisa tinggal mawar: tidak ambigu lagi
+    assert r["cocok"] is True and r["jenis"]["nama_bunga"] == "Mawar" and r["progres"]["siap_foto"] is True
+
+
+def test_jenis_pilihan_admin_tetap_diperiksa_warnanya(client, db):
+    toko, id_ = _dirangkai(client, db)
+    r = toko.pindai_rangkai(id_, MERAH_MUDA, id_jenis_bunga=toko.jenis["Mawar"].id_jenis_bunga).json()
+    assert r["cocok"] is False and "Merah tua" in r["alasan"]  # mawar benar, warnanya salah
+    r = toko.pindai_rangkai(id_, MERAH_TUA, id_jenis_bunga=toko.jenis["Anyelir"].id_jenis_bunga).json()
+    assert r["cocok"] is False and "Putih" in r["alasan"]  # anyelir di pesanan berwarna putih
     assert toko.merangkai(id_)["terpindai"] == 0
+    assert toko.pindai_rangkai(id_, MERAH_TUA, id_jenis_bunga=99999).status_code == 404
 
 
 def test_tandai_cocok_manual_dan_foto_baru_boleh_setelah_semua_cocok(client, db, klasifikator):

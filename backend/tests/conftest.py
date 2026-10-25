@@ -1,5 +1,6 @@
 """Fixture uji. Lingkungan diatur SEBELUM aplikasi diimpor: basis data SQLite di memori, folder berkas sementara,
-penjadwal mati, AI tiruan."""
+penjadwal mati, pengenalan jenis otomatis nonaktif (seperti produksi; tes yang butuh klasifikator memakai fixture
+``klasifikator``)."""
 import os
 import tempfile
 
@@ -10,7 +11,7 @@ os.environ.update(
         "DIREKTORI_BERKAS": _FOLDER_UJI,
         "PENJADWAL_AKTIF": "false",
         "JWT_RAHASIA": "rahasia-khusus-uji-yang-cukup-panjang-32-byte",
-        "AI_MODE": "tiruan",
+        "AI_MODE": "nonaktif",
         "LINGKUNGAN": "pengembangan",
         "BCRYPT_RONDE": "4",  # minimum bcrypt; mempercepat pengujian
     }

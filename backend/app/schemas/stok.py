@@ -58,14 +58,17 @@ class KoreksiStokIn(BaseModel):
 
 class HasilPindaiOut(BaseModel):
     id_pindai: int
-    dikenali: bool
+    jenis_otomatis: bool = Field(
+        description="True bila jenis ditebak otomatis. False (AI_MODE=nonaktif, bawaan): admin memilih jenis; warna tetap otomatis"
+    )
+    dikenali: bool = Field(description="Jenis ditebak dengan keyakinan di atas ambang; selalu False bila jenis_otomatis False")
     jenis: JenisRingkas | None
     warna: WarnaRingkas
-    tingkat_keyakinan: float
+    tingkat_keyakinan: float | None = Field(description="Kosong bila jenis tidak ditebak otomatis")
     jarak_warna: float
     deskripsi: str | None
     peringatan: list[str]
-    tiruan: bool = Field(description="True bila jenis bunga berasal dari AI tiruan (model asli belum terpasang)")
+    tiruan: bool = Field(description="True bila jenis bunga berasal dari AI tiruan (acak, hanya untuk pengembangan)")
 
 
 class RiwayatPindaiOut(SkemaDasar):
@@ -86,6 +89,7 @@ class RiwayatPindaiOut(SkemaDasar):
 
 class RingkasanAkurasiOut(BaseModel):
     total_disimpan: int
+    total_jenis_ditebak: int = Field(description="Pindai yang jenisnya ditebak otomatis; dasar akurasi_jenis")
     jenis_benar: int
     warna_benar: int
     akurasi_jenis: float | None

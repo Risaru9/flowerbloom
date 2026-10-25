@@ -24,17 +24,23 @@ export function HalamanRiwayatPindai() {
     <>
       <JudulAdmin
         judul="Riwayat Pindai"
-        keterangan="Setiap pemindaian dan koreksi admin; dipakai untuk menilai akurasi model di pemakaian nyata."
+        keterangan="Setiap pemindaian dan koreksi admin; dipakai untuk menilai ketepatan pembacaan warna di pemakaian nyata."
         jejak={[
           { ke: '/admin', label: 'Dasbor' },
           { ke: '/admin/stok', label: 'Stok' },
         ]}
       />
-      <section aria-label="Akurasi model" className="mb-4 grid gap-3 sm:grid-cols-3">
+      <section aria-label="Akurasi pembacaan" className="mb-4 grid gap-3 sm:grid-cols-3">
         {[
           ['Pindai disimpan', ringkas.data ? String(ringkas.data.total_disimpan) : '—', 'hasil yang diperiksa admin'],
-          ['Akurasi jenis', persen(ringkas.data?.akurasi_jenis ?? null), `${ringkas.data?.jenis_benar ?? 0} benar tanpa koreksi`],
           ['Akurasi warna', persen(ringkas.data?.akurasi_warna ?? null), `${ringkas.data?.warna_benar ?? 0} benar tanpa koreksi`],
+          [
+            'Akurasi jenis',
+            persen(ringkas.data?.akurasi_jenis ?? null),
+            ringkas.data?.total_jenis_ditebak
+              ? `${ringkas.data.jenis_benar} dari ${ringkas.data.total_jenis_ditebak} tebakan benar`
+              : 'jenis dipilih admin, tidak ditebak otomatis',
+          ],
         ].map(([judul, nilai, ket]) => (
           <Kartu key={judul}>
             <p className="text-sm font-semibold text-ad-redup">{judul}</p>
@@ -68,7 +74,11 @@ export function HalamanRiwayatPindai() {
               <li key={r.id_pindai} className="flex gap-3 rounded-2xl border border-ad-garis bg-ad-permukaan p-3">
                 <FotoBunga src={r.foto_url} alt="Foto pindai" className="size-20 shrink-0 rounded-xl" />
                 <div className="min-w-0 text-sm">
-                  <p className="font-semibold">{r.jenis_prediksi ?? 'Tidak dikenali'}</p>
+                  <p className="font-semibold">
+                    {r.tingkat_keyakinan !== null
+                      ? (r.jenis_prediksi ?? 'Tidak dikenali')
+                      : (namaJenis.get(r.id_jenis_bunga_final ?? 0) ?? 'Jenis tidak ditebak')}
+                  </p>
                   <p className="text-ad-redup">Warna: {r.warna_prediksi ?? '—'}</p>
                   {r.dikoreksi && (
                     <p className="font-semibold text-ad-peringatan">
@@ -90,7 +100,7 @@ export function HalamanRiwayatPindai() {
                         r.dikoreksi ? 'bg-ad-peringatan-lembut text-ad-peringatan' : 'bg-ad-sukses-lembut text-ad-sukses',
                       )}
                     >
-                      {r.dikoreksi ? 'Dikoreksi admin' : 'Sesuai AI'}
+                      {r.dikoreksi ? 'Dikoreksi admin' : 'Sesuai hasil baca'}
                     </span>
                   </p>
                 </div>
