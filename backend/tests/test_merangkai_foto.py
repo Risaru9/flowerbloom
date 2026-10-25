@@ -38,6 +38,7 @@ def test_pindai_cocok_menaikkan_progres_dan_dibatasi_sisa(client, db, klasifikat
 
     r = toko.pindai_rangkai(id_, MERAH_TUA, jumlah=50).json()  # melebihi sisa: dibatasi 4 (6 - 2)
     assert r["cocok"] is True and r["progres"]["terpindai"] == 6
+    assert r["alasan"] == "46 tangkai melebihi kebutuhan pesanan dan tidak dihitung."
     r = toko.pindai_rangkai(id_, MERAH_TUA).json()  # baris mawar sudah penuh
     assert r["cocok"] is False and "sudah" in r["alasan"].lower() or "tidak ada" in r["alasan"].lower()
 
@@ -236,6 +237,8 @@ def test_komplain_dalam_batas_waktu_dengan_foto(client, db, klasifikator):
                     files={"foto": ("k.jpg", gambar_bytes(), "image/jpeg")})
     assert r.status_code == 201, r.text
     assert r.json()["status"] == "baru" and r.json()["foto_url"].startswith("/api/v1/berkas/")
+    ulang = client.post(f"{API}/pesanan/{id_}/komplain", headers=toko.pel, data={"isi": "Komplain kedua untuk pesanan sama"})
+    assert ulang.status_code == 409 and ulang.json()["kode"] == "komplain_sudah_ada"
 
     saya = client.get(f"{API}/komplain/saya", headers=toko.pel).json()
     assert len(saya) == 1 and saya[0]["kode_pesanan"]
@@ -309,6 +312,8 @@ def test_admin_menambah_dan_menonaktifkan_akun(client, db):
     # token yang sudah terbit pun berhenti berlaku setelah akun dinonaktifkan
     token = {"Authorization": f"Bearer {masuk.json()['access_token']}"}
     assert client.get(f"{API}/admin/dasbor", headers=token).status_code == 401
+    assert client.patch(f"{API}/admin/pengguna/{id_staf}/aktif", headers=toko.admin, json={"aktif": True}).status_code == 200
+    assert client.get(f"{API}/admin/dasbor", headers=token).status_code == 401  # diaktifkan lagi: token lama tetap mati
 
     id_admin = client.get(f"{API}/auth/saya", headers=toko.admin).json()["id_pengguna"]
     r = client.patch(f"{API}/admin/pengguna/{id_admin}/aktif", headers=toko.admin, json={"aktif": False})

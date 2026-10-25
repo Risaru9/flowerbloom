@@ -108,13 +108,14 @@ def _foto_out(f: FotoKonfirmasi) -> FotoKonfirmasiOut:
     )
 
 
-def _riwayat_out(r: RiwayatStatusPesanan) -> RiwayatStatusOut:
+def _riwayat_out(r: RiwayatStatusPesanan, id_pelanggan: int) -> RiwayatStatusOut:
     return RiwayatStatusOut(
         kode=r.status_baru,
         label=alur_pesanan.info(r.status_baru).label,
         waktu=r.waktu,
         catatan=r.catatan,
         oleh_sistem=r.id_pengguna is None,
+        oleh="sistem" if r.id_pengguna is None else "pelanggan" if r.id_pengguna == id_pelanggan else "admin",
     )
 
 
@@ -147,9 +148,9 @@ def pesanan_out(p: Pesanan, pengaturan: PengaturanTerkini) -> PesananOut:
         detail=[_detail_out(d) for d in p.detail],
         pembayaran=[_pembayaran_out(b, p) for b in p.pembayaran],
         foto=[_foto_out(f) for f in p.foto],
-        riwayat=[_riwayat_out(r) for r in p.riwayat_status],
+        riwayat=[_riwayat_out(r, p.id_pengguna) for r in p.riwayat_status],
         tahap=[TahapOut(**t) for t in alur_pesanan.tahap(p)],
-        rekening_tujuan=pengaturan.rekening_tujuan if p.status == S.menunggu_pembayaran else None,
+        rekening_tujuan=(pengaturan.rekening_tujuan or None) if p.status == S.menunggu_pembayaran else None,
         bisa_dibatalkan=p.status in alur_pesanan.STATUS_BISA_DIBATALKAN,
         ada_pengganti=any(k.is_pengganti for d in p.detail for k in d.komposisi),
     )

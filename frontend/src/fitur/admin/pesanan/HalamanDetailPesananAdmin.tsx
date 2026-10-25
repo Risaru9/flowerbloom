@@ -6,17 +6,19 @@ import { useAdminPesananDetail, usePengembalianDanaSelesai, useSahkanPembayaran,
 import { pesanGalat, type Skema } from '@/api/client'
 import { LABEL_SERAH, Linimasa } from '@/fitur/pesanan/bersama'
 import { AreaTeks, Bidang } from '@/komponen/ui/Bidang'
-import { Dialog } from '@/komponen/ui/Dialog'
+import { Dialog, DialogKonfirmasi } from '@/komponen/ui/Dialog'
 import { Galat, Memuat } from '@/komponen/ui/Keadaan'
 import { FotoBunga, LencanaStatus, useJudul } from '@/komponen/ui/Lain'
 import { tampilkanToast } from '@/komponen/ui/Toast'
 import { kelasTombol, Tombol } from '@/komponen/ui/Tombol'
 import { ChipWarna } from '@/komponen/ui/Warna'
 import { cn } from '@/lib/cn'
-import { formatRupiah, formatTanggalHari, formatTanggalJam } from '@/lib/format'
+import { formatRupiah, formatTanggalHari, formatTanggalJam, tautanWa } from '@/lib/format'
 import { JudulAdmin, Kartu } from '@/tata-letak/TataLetakAdmin'
 
-import { BenderaPesanan, tautanWa } from './bersama-admin'
+import { BenderaPesanan } from './bersama-admin'
+
+const OLEH: Record<Skema['RiwayatStatusOut']['oleh'], string> = { sistem: 'otomatis', pelanggan: 'oleh pelanggan', admin: 'oleh admin' }
 
 /** Kartu verifikasi satu bukti transfer: dipakai di detail pesanan dan halaman Pembayaran. */
 export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdminOut']; bukti: Skema['PembayaranOut'] }) {
@@ -186,6 +188,7 @@ export function HalamanDetailPesananAdmin() {
   const { data: p, isPending, isError, error, refetch } = useAdminPesananDetail(id)
   const selesai = useTandaiSelesai(id)
   const danaKembali = usePengembalianDanaSelesai(id)
+  const [konfirmasiSelesai, setKonfirmasiSelesai] = useState(false)
   useJudul(p ? `Pesanan ${p.kode_pesanan}` : 'Detail pesanan')
 
   if (isPending) return <Memuat />
@@ -212,20 +215,28 @@ export function HalamanDetailPesananAdmin() {
               </Link>
             )}
             {(p.status.kode === 'siap_diambil' || p.status.kode === 'diantar') && (
-              <Tombol
-                varian="admin"
-                className="rounded-xl"
-                memuat={selesai.isPending}
-                onClick={() =>
-                  selesai.mutate(undefined, {
-                    onSuccess: () => tampilkanToast('Pesanan ditandai selesai.'),
-                    onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
-                  })
-                }
-              >
+              <Tombol varian="admin" className="rounded-xl" onClick={() => setKonfirmasiSelesai(true)}>
                 Tandai selesai (sudah diterima)
               </Tombol>
             )}
+            <DialogKonfirmasi
+              gaya="admin"
+              terbuka={konfirmasiSelesai}
+              saatTutup={() => setKonfirmasiSelesai(false)}
+              judul="Tandai pesanan selesai?"
+              deskripsi={`Pastikan pesanan sudah ${p.cara_serah_terima === 'antar' ? 'diterima penerima' : 'diambil pelanggan'}. Status selesai tidak dapat dikembalikan dan masa komplain mulai berjalan.`}
+              label="Ya, sudah diterima"
+              memuat={selesai.isPending}
+              saatYa={() =>
+                selesai.mutate(undefined, {
+                  onSuccess: () => {
+                    setKonfirmasiSelesai(false)
+                    tampilkanToast('Pesanan ditandai selesai.')
+                  },
+                  onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
+                })
+              }
+            />
             {p.perlu_pengembalian_dana && (
               <Tombol
                 varian="admin-garis"
@@ -379,7 +390,7 @@ export function HalamanDetailPesananAdmin() {
                 <li key={i}>
                   <span className="font-semibold">{r.label}</span>
                   <span className="block text-xs text-ad-redup">
-                    {formatTanggalJam(r.waktu)} · {r.oleh_sistem ? 'otomatis' : 'manual'}
+                    {formatTanggalJam(r.waktu)} · {OLEH[r.oleh]}
                   </span>
                   {r.catatan && <span className="block text-xs">{r.catatan}</span>}
                 </li>

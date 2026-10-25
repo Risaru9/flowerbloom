@@ -82,10 +82,11 @@ def pindai_bunga(db: Session, *, id_pesanan: int, admin: Pengguna, data: bytes, 
         sisa = ", ".join(sorted({_nama(k) for k in kandidat}))
         return keluaran(False, f"{hasil.jenis.nama_bunga} tidak ada dalam sisa pesanan. Sisa yang dicari: {sisa}.")
 
-    terbaca = hasil.rgb_terbaca
-    terdekat = min(sejenis, key=lambda k: jarak_warna(terbaca, hex_ke_rgb(k.stok.warna.kode_hex)))
-    jarak = jarak_warna(terbaca, hex_ke_rgb(terdekat.stok.warna.kode_hex))
-    if jarak > ambil_pengaturan().ambang_kecocokan_warna:
+    # Hitung jarak sekali; tangkai dibagikan ke baris terdekat dulu, lalu ke baris sejenis lain yang warnanya masih cocok.
+    ambang = ambil_pengaturan().ambang_kecocokan_warna
+    berjarak = sorted(((jarak_warna(hasil.rgb_terbaca, hex_ke_rgb(k.stok.warna.kode_hex)), k) for k in sejenis), key=lambda x: x[0])
+    jarak, terdekat = berjarak[0]
+    if jarak > ambang:
         return keluaran(
             False,
             f"Warna terbaca '{hasil.warna.nama_warna}' berbeda dengan pesanan '{terdekat.stok.warna.nama_warna}'. "
@@ -93,9 +94,16 @@ def pindai_bunga(db: Session, *, id_pesanan: int, admin: Pengguna, data: bytes, 
             terdekat.id_komposisi_pesanan,
         )
 
-    terdekat.jumlah_terpindai += min(jumlah, terdekat.jumlah_tangkai - terdekat.jumlah_terpindai)
+    sisa = jumlah
+    for j, k in berjarak:
+        if j > ambang or not sisa:
+            break
+        tambah = min(sisa, k.jumlah_tangkai - k.jumlah_terpindai)
+        k.jumlah_terpindai += tambah
+        sisa -= tambah
     db.flush()
-    return keluaran(True, None, terdekat.id_komposisi_pesanan)
+    alasan = f"{sisa} tangkai melebihi kebutuhan pesanan dan tidak dihitung." if sisa else None
+    return keluaran(True, alasan, terdekat.id_komposisi_pesanan)
 
 
 def _ambil_baris(pesanan: Pesanan, id_komposisi: int) -> KomposisiPesanan:

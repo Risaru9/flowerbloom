@@ -1,5 +1,8 @@
+import { Palette } from 'lucide-react'
+
 import type { Skema } from '@/api/client'
 import { cn } from '@/lib/cn'
+import { teksPerpaduan } from '@/lib/perpaduan'
 
 type WarnaRingkas = Pick<Skema['WarnaRingkas'], 'nama_warna' | 'kode_hex'>
 
@@ -36,9 +39,9 @@ export function ChipWarna({
   )
 }
 
-/** Ringkasan warna sebagai teks, mis. "Merah muda • Putih • Hijau". */
+/** Ringkasan warna sebagai teks bernama dan berkode (F-AK-01), mis. "Merah muda #FFC0CB • Putih #FFFFFF". */
 export function teksWarna(daftar: WarnaRingkas[]): string {
-  return [...new Set(daftar.map((w) => w.nama_warna))].join(' • ')
+  return [...new Set(daftar.map((w) => `${w.nama_warna} ${w.kode_hex.toUpperCase()}`))].join(' • ')
 }
 
 export function DeretTitikWarna({ daftar, className }: { daftar: WarnaRingkas[]; className?: string }) {
@@ -53,5 +56,25 @@ export function DeretTitikWarna({ daftar, className }: { daftar: WarnaRingkas[];
         />
       ))}
     </span>
+  )
+}
+
+/** Saran perpaduan warna (F-PL-06); ``tersedia`` diisi bila pelanggan masih bisa menambah bunga. */
+export function SaranPerpaduan({ daftar, tersedia, className }: { daftar: WarnaRingkas[]; tersedia?: WarnaRingkas[]; className?: string }) {
+  const hasil = teksPerpaduan(daftar, tersedia)
+  if (!hasil) return null
+  return (
+    <p
+      className={cn(
+        'flex items-start gap-2 rounded-2xl px-3 py-2 text-sm',
+        hasil.saran ? 'bg-[#fdf0dc] text-[#6b3a00]' : 'bg-[#e6f4ea] text-[#1d4a2a]',
+        className,
+      )}
+    >
+      <Palette aria-hidden className="mt-0.5 size-4 shrink-0" />
+      <span>
+        <strong>Perpaduan warna:</strong> {hasil.teks}
+      </span>
+    </p>
   )
 }

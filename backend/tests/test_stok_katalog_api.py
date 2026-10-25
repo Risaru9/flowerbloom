@@ -166,3 +166,11 @@ def test_pengaturan_toko_validasi(client, db):
     for buruk in ({"ongkos_antar": -1}, {"slot_pengiriman": ["pagi"]}, {"kebijakan_pengganti": "asal"}, {"tidak_ada": 1}, {"ongkos_antar": "20000"}):
         assert client.patch(API + "/admin/pengaturan-toko", headers=h, json={"pengaturan": buruk}).status_code == 422, buruk
     assert client.get(API + "/toko/info").json()["ongkos_antar"] == 20000  # perubahan yang gagal tidak menimpa
+
+    galat = client.patch(API + "/admin/pengaturan-toko", headers=h, json={"pengaturan": {"no_hp_toko": "08abc"}}).json()
+    assert galat["pesan"].startswith("Nomor HP/WhatsApp toko")  # pesan memakai label, bukan kunci mentah
+    kontak = {"no_hp_toko": " 0812-3456-7890 ", "email_toko": "", "rekening_tujuan": ""}
+    assert client.patch(API + "/admin/pengaturan-toko", headers=h, json={"pengaturan": kontak}).status_code == 200
+    info = client.get(API + "/toko/info").json()
+    assert (info["no_hp_toko"], info["email_toko"], info["rekening_tujuan"]) == ("0812-3456-7890", "", "")
+    assert client.patch(API + "/admin/pengaturan-toko", headers=h, json={"pengaturan": {"nama_toko": " "}}).status_code == 422

@@ -67,7 +67,7 @@ export function HalamanCheckout() {
   const checkout = useCheckout()
   const navigasi = useNavigate()
 
-  const [nama, setNama] = useState(sesi?.pengguna.nama ?? '')
+  const [namaKetik, setNama] = useState<string | null>(null)
   const [pilihanAlamat, setIdAlamat] = useState<number | 'baru' | null>(null)
   const [alamatBaru, setAlamatBaru] = useState('')
   const [kartu, setKartu] = useState('')
@@ -88,8 +88,10 @@ export function HalamanCheckout() {
   const minTanggal = tanggalWibPlus(toko.minimal_hari_pemesanan)
   const maksTanggal = tanggalWibPlus(90)
   const alamatDipilih = alamatTersimpan.data?.find((a) => a.id_alamat === idAlamat)
+  // Nama penerima mengikuti alamat tersimpan yang dipilih (bukan nama profil) sampai pengguna mengetik sendiri.
+  const nama = namaKetik ?? (cara === 'antar' && alamatDipilih ? alamatDipilih.nama_penerima : (sesi?.pengguna.nama ?? ''))
   const teksAlamat = alamatDipilih
-    ? `${alamatDipilih.alamat}${alamatDipilih.catatan ? ` (${alamatDipilih.catatan})` : ''} · ${alamatDipilih.nama_penerima} ${alamatDipilih.no_hp}`
+    ? `${alamatDipilih.alamat}${alamatDipilih.catatan ? ` (${alamatDipilih.catatan})` : ''} · HP ${alamatDipilih.no_hp}`
     : alamatBaru.trim()
   const data = pratinjau.data
   const masalah = data?.masalah ?? []
@@ -175,7 +177,10 @@ export function HalamanCheckout() {
                     nama="alamat"
                     nilai={String(a.id_alamat)}
                     dipilih={idAlamat === a.id_alamat}
-                    ubah={() => setIdAlamat(a.id_alamat)}
+                    ubah={() => {
+                      setIdAlamat(a.id_alamat)
+                      setNama(null)
+                    }}
                     judul={`${a.label}${a.utama ? ' · Utama' : ''}`}
                     ket={`${a.nama_penerima} · ${a.no_hp} — ${a.alamat}`}
                     ikon={<MapPin className="size-5" />}

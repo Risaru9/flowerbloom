@@ -119,6 +119,7 @@ def atur_aktif(db: Session, *, id_pengguna: int, aktif: bool, oleh: Pengguna) ->
             )
             if admin_aktif <= 1:
                 raise Konflik("Minimal harus ada satu akun admin aktif.", kode="admin_terakhir")
+        target.versi_sesi = (target.versi_sesi or 0) + 1  # token lama tidak hidup lagi saat akun diaktifkan kembali
     target.aktif = aktif
     db.flush()
     return target

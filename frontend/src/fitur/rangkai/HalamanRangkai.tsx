@@ -9,9 +9,10 @@ import { Galat, Kerangka, Kosong } from '@/komponen/ui/Keadaan'
 import { PengaturJumlah, TombolDengarkan, useJudul } from '@/komponen/ui/Lain'
 import { tampilkanToast } from '@/komponen/ui/Toast'
 import { Tombol } from '@/komponen/ui/Tombol'
-import { ChipWarna } from '@/komponen/ui/Warna'
+import { ChipWarna, SaranPerpaduan } from '@/komponen/ui/Warna'
 import { cn } from '@/lib/cn'
 import { formatRupiah } from '@/lib/format'
+import { teksPerpaduan } from '@/lib/perpaduan'
 
 type Opsi = Skema['OpsiRangkaiOut']
 
@@ -65,10 +66,12 @@ export function HalamanRangkai() {
   const minimal = info.data?.minimal_tangkai_rangkai_sendiri ?? 5
   const jasa = info.data?.jasa_merangkai ?? 0
   const kurang = Math.max(0, minimal - totalTangkai)
+  const warnaTerpilih = terpilih.map((o) => o.warna)
+  const warnaTersedia = daftar.map((o) => o.warna)
   const narasi = terpilih.length
     ? `Rangkaian Anda berisi ${totalTangkai} tangkai: ${terpilih
         .map((o) => `${pilihan.get(o.id_stok)} ${o.jenis.nama_bunga} warna ${o.warna.nama_warna}`)
-        .join(', ')}. Total ${formatRupiah(subtotal + jasa)}.`
+        .join(', ')}. Total ${formatRupiah(subtotal + jasa)}. ${teksPerpaduan(warnaTerpilih, warnaTersedia)?.teks ?? ''}`
     : 'Belum ada bunga yang dipilih.'
 
   const atur = (id: number, n: number) =>
@@ -104,7 +107,7 @@ export function HalamanRangkai() {
                 <span className="font-semibold text-olive-tua">
                   {pilihan.get(o.id_stok)}× {o.jenis.nama_bunga}
                 </span>{' '}
-                <ChipWarna warna={o.warna} ukuran="kecil" tampilkanKode={false} />
+                <ChipWarna warna={o.warna} ukuran="kecil" />
               </span>
               <button
                 type="button"
@@ -120,6 +123,9 @@ export function HalamanRangkai() {
       ) : (
         <p className="text-center text-sm text-redup">Pilih bunga di sebelah kiri untuk mulai merangkai.</p>
       )}
+      <div aria-live="polite">
+        <SaranPerpaduan daftar={warnaTerpilih} tersedia={warnaTersedia} />
+      </div>
       <dl className="flex flex-col gap-1 border-t border-garis/70 pt-3 text-sm">
         <div className="flex justify-between">
           <dt>Bunga ({totalTangkai} tangkai)</dt>
@@ -216,7 +222,7 @@ export function HalamanRangkai() {
                       />
                       <div className="min-w-0">
                         <h3 className="font-display text-lg text-olive-tua">{o.jenis.nama_bunga}</h3>
-                        <ChipWarna warna={o.warna} ukuran="kecil" />
+                        <ChipWarna warna={o.warna} ukuran="kecil" makna={o.warna.makna_warna} />
                       </div>
                     </div>
                     <p className="line-clamp-2 text-xs text-redup">{o.deskripsi}</p>

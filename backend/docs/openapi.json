@@ -4188,7 +4188,21 @@
           },
           "rekening_tujuan": {
             "type": "string",
-            "title": "Rekening Tujuan"
+            "title": "Rekening Tujuan",
+            "description": "Kosong bila belum diatur admin"
+          },
+          "no_hp_toko": {
+            "type": "string",
+            "title": "No Hp Toko",
+            "description": "Nomor HP/WhatsApp toko; kosong berarti disembunyikan"
+          },
+          "alamat_toko": {
+            "type": "string",
+            "title": "Alamat Toko"
+          },
+          "email_toko": {
+            "type": "string",
+            "title": "Email Toko"
           },
           "batas_bayar_menit": {
             "type": "integer",
@@ -4226,6 +4240,9 @@
         "required": [
           "nama_toko",
           "rekening_tujuan",
+          "no_hp_toko",
+          "alamat_toko",
+          "email_toko",
           "batas_bayar_menit",
           "ongkos_antar",
           "jasa_merangkai",
@@ -5016,7 +5033,7 @@
             "$ref": "#/components/schemas/JenisRingkas"
           },
           "warna": {
-            "$ref": "#/components/schemas/WarnaRingkas"
+            "$ref": "#/components/schemas/WarnaOut"
           },
           "deskripsi": {
             "type": "string",
@@ -5159,6 +5176,10 @@
             "type": "string",
             "title": "Kunci"
           },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
           "nilai": {
             "title": "Nilai"
           },
@@ -5174,6 +5195,7 @@
         "type": "object",
         "required": [
           "kunci",
+          "label",
           "nilai",
           "keterangan",
           "tipe"
@@ -5499,7 +5521,7 @@
               }
             ],
             "title": "Rekening Tujuan",
-            "description": "Terisi hanya saat pesanan menunggu pembayaran"
+            "description": "Terisi hanya saat pesanan menunggu pembayaran dan rekening sudah diatur admin"
           },
           "bisa_dibatalkan": {
             "type": "boolean",
@@ -5810,7 +5832,7 @@
               }
             ],
             "title": "Rekening Tujuan",
-            "description": "Terisi hanya saat pesanan menunggu pembayaran"
+            "description": "Terisi hanya saat pesanan menunggu pembayaran dan rekening sudah diatur admin"
           },
           "bisa_dibatalkan": {
             "type": "boolean",
@@ -6524,6 +6546,15 @@
           "oleh_sistem": {
             "type": "boolean",
             "title": "Oleh Sistem"
+          },
+          "oleh": {
+            "type": "string",
+            "enum": [
+              "sistem",
+              "pelanggan",
+              "admin"
+            ],
+            "title": "Oleh"
           }
         },
         "type": "object",
@@ -6532,7 +6563,8 @@
           "label",
           "waktu",
           "catatan",
-          "oleh_sistem"
+          "oleh_sistem",
+          "oleh"
         ],
         "title": "RiwayatStatusOut"
       },

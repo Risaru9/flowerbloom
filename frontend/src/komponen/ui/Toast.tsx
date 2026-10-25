@@ -8,14 +8,19 @@ interface Toast {
   id: number
   jenis: Jenis
   pesan: string
+  aksi?: AksiToast
+}
+interface AksiToast {
+  label: string
+  jalankan: () => void
 }
 
 const tokoToast = buatToko<Toast[]>([])
 let urut = 0
 
-export function tampilkanToast(pesan: string, jenis: Jenis = 'sukses', durasi = 4500): void {
+export function tampilkanToast(pesan: string, jenis: Jenis = 'sukses', durasi = 4500, aksi?: AksiToast): void {
   const id = ++urut
-  tokoToast.atur((t) => [...t.slice(-2), { id, jenis, pesan }])
+  tokoToast.atur((t) => [...t.slice(-2), { id, jenis, pesan, aksi }])
   window.setTimeout(() => tutupToast(id), durasi)
 }
 
@@ -51,6 +56,18 @@ export function PenampungToast() {
           >
             <Ikon aria-hidden className="mt-0.5 size-5 shrink-0" />
             <p className="flex-1 font-medium">{t.pesan}</p>
+            {t.aksi && (
+              <button
+                type="button"
+                onClick={() => {
+                  t.aksi!.jalankan()
+                  tutupToast(t.id)
+                }}
+                className="-my-1 rounded-full px-2 py-1 font-bold underline hover:no-underline"
+              >
+                {t.aksi.label}
+              </button>
+            )}
             <button type="button" onClick={() => tutupToast(t.id)} aria-label="Tutup pemberitahuan" className="-m-1 rounded-full p-1">
               <X aria-hidden className="size-4" />
             </button>

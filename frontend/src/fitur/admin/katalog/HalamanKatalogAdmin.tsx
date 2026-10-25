@@ -54,7 +54,7 @@ export function HalamanKatalogAdmin() {
       ) : daftar.length === 0 ? (
         <Kosong ikon={<Flower className="size-8" />} judul="Belum ada produk" pesan="Tambahkan paket rangkaian pertama Anda." />
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {daftar.map((p) => (
             <li
               key={p.id_produk}
@@ -75,7 +75,7 @@ export function HalamanKatalogAdmin() {
                 </p>
                 <p className="flex items-center gap-1.5 text-xs text-ad-redup">
                   <DeretTitikWarna daftar={p.komposisi.map((k) => k.warna)} />
-                  <span className="truncate">{teksWarna(p.komposisi.map((k) => k.warna))}</span>
+                  <span className="line-clamp-2">{teksWarna(p.komposisi.map((k) => k.warna))}</span>
                 </p>
                 <p className="font-bold tabular-nums">{formatRupiah(p.harga)}</p>
                 <div className="mt-auto flex flex-wrap gap-1.5">

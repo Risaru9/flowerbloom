@@ -3,19 +3,20 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 
 import { pesanGalat, type Skema } from '@/api/client'
-import { useAjukanKomplain, useBatalkanPesanan, usePesanan, useTanggapiFoto } from '@/api/pelanggan'
+import { useAjukanKomplain, useBatalkanPesanan, useInfoToko, useKomplainSaya, usePesanan, useTanggapiFoto } from '@/api/pelanggan'
 import { AreaTeks, Bidang } from '@/komponen/ui/Bidang'
 import { Dialog } from '@/komponen/ui/Dialog'
 import { Galat, Memuat } from '@/komponen/ui/Keadaan'
 import { FotoBunga, LencanaStatus, TombolDengarkan, useJudul } from '@/komponen/ui/Lain'
 import { tampilkanToast } from '@/komponen/ui/Toast'
-import { TautanTombol, Tombol } from '@/komponen/ui/Tombol'
+import { kelasTombol, TautanTombol, Tombol } from '@/komponen/ui/Tombol'
 import { ChipWarna } from '@/komponen/ui/Warna'
-import { formatRupiah, formatTanggal, formatTanggalHari, formatTanggalJam } from '@/lib/format'
+import { formatRupiah, formatTanggal, formatTanggalHari, formatTanggalJam, tautanWa } from '@/lib/format'
 
 import { HitungMundur, LABEL_SERAH, Linimasa, UnggahFoto } from './bersama'
 
 const BOLEH_KOMPLAIN: Skema['StatusPesanan'][] = ['siap_diambil', 'diantar', 'selesai']
+const STATUS_KOMPLAIN: Record<Skema['StatusKomplain'], string> = { baru: 'Terkirim', diproses: 'Sedang ditangani', selesai: 'Selesai' }
 
 function Kotak({ judul, ikon, children }: { judul: string; ikon: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -155,6 +156,13 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
           </>
         }
       >
+        {pesanan.revisi_gratis_tersisa === 0 && (
+          <p className="mb-4 flex items-start gap-2 rounded-2xl bg-[#fdf0dc] p-3 text-sm text-[#6b3a00]">
+            <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
+            Revisi gratis Anda sudah habis. Revisi berikutnya dapat dikenai biaya tambahan sesuai kebijakan toko; tanyakan biayanya ke
+            florist bila perlu.
+          </p>
+        )}
         <Bidang label="Catatan revisi" wajib bantuan={`${catatan.length}/500`}>
           <AreaTeks value={catatan} onChange={(e) => setCatatan(e.target.value)} maxLength={500} />
         </Bidang>
@@ -168,6 +176,8 @@ export function HalamanDetailPesanan() {
   const { data: p, isPending, isError, error, refetch } = usePesanan(id, { pantau: true })
   const batal = useBatalkanPesanan(id)
   const komplain = useAjukanKomplain(id)
+  const { data: info } = useInfoToko()
+  const komplainIni = useKomplainSaya().data?.find((k) => k.id_pesanan === id)
   const [dialog, setDialog] = useState<'batal' | 'komplain' | null>(null)
   const [alasan, setAlasan] = useState('')
   const [isiKomplain, setIsiKomplain] = useState('')
@@ -178,6 +188,7 @@ export function HalamanDetailPesanan() {
   if (isError) return <Galat galat={error} ulangi={() => void refetch()} />
 
   const pembayaranTerakhir = p.pembayaran.at(-1)
+  const wa = tautanWa(info?.no_hp_toko, `Halo ${info?.nama_toko ?? 'FlowerBloom'}, saya ingin bertanya tentang pesanan ${p.kode_pesanan}.`)
 
   return (
     <div className="flex flex-col gap-5">
@@ -300,16 +311,40 @@ export function HalamanDetailPesanan() {
               )}
             </dl>
           </Kotak>
+          {komplainIni && (
+            <Kotak judul="Komplain Anda" ikon={<MessageSquareWarning className="size-4" />}>
+              <p className="font-semibold">
+                {STATUS_KOMPLAIN[komplainIni.status]}{' '}
+                <span className="font-normal text-redup">· {formatTanggalJam(komplainIni.dibuat_pada)}</span>
+              </p>
+              <p className="mt-1">“{komplainIni.isi}”</p>
+              <p className="mt-2">
+                {komplainIni.tanggapan_admin ? (
+                  <>
+                    <strong>Tanggapan toko:</strong> {komplainIni.tanggapan_admin}
+                  </>
+                ) : (
+                  <span className="text-redup">Belum ada tanggapan dari toko.</span>
+                )}
+              </p>
+            </Kotak>
+          )}
           <div className="flex flex-wrap gap-2">
-            <TautanTombol to="/tentang#kontak" varian="lembut" ukuran="kecil">
-              Hubungi florist
-            </TautanTombol>
+            {wa ? (
+              <a href={wa} target="_blank" rel="noopener noreferrer" className={kelasTombol('lembut', 'kecil')}>
+                Hubungi florist
+              </a>
+            ) : (
+              <TautanTombol to="/tentang#kontak" varian="lembut" ukuran="kecil">
+                Hubungi florist
+              </TautanTombol>
+            )}
             {p.bisa_dibatalkan && (
               <Tombol varian="garis" ukuran="kecil" onClick={() => setDialog('batal')}>
                 Batalkan pesanan
               </Tombol>
             )}
-            {BOLEH_KOMPLAIN.includes(p.status.kode) && (
+            {BOLEH_KOMPLAIN.includes(p.status.kode) && !komplainIni && (
               <Tombol
                 varian="garis"
                 ukuran="kecil"

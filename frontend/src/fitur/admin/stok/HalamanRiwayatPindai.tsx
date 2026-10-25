@@ -1,7 +1,8 @@
 import { ScanSearch } from 'lucide-react'
 import { useState } from 'react'
 
-import { useRingkasanAkurasi, useRiwayatPindai } from '@/api/admin'
+import { useJenisBunga, useRingkasanAkurasi, useRiwayatPindai } from '@/api/admin'
+import { useWarna } from '@/api/pelanggan'
 import { Galat, Kerangka, Kosong } from '@/komponen/ui/Keadaan'
 import { FotoBunga, Paginasi, useJudul } from '@/komponen/ui/Lain'
 import { cn } from '@/lib/cn'
@@ -15,6 +16,8 @@ export function HalamanRiwayatPindai() {
   const [halaman, setHalaman] = useState(1)
   const [koreksi, setKoreksi] = useState(false)
   const ringkas = useRingkasanAkurasi()
+  const namaJenis = new Map(useJenisBunga().data?.map((j) => [j.id_jenis_bunga, j.nama_bunga]))
+  const petaWarna = new Map(useWarna().data?.map((w) => [w.id_warna, `${w.nama_warna} ${w.kode_hex.toUpperCase()}`]))
   const { data, isPending, isError, error, refetch } = useRiwayatPindai({ halaman, per_halaman: 20, hanya_dikoreksi: koreksi || undefined })
 
   return (
@@ -67,6 +70,11 @@ export function HalamanRiwayatPindai() {
                 <div className="min-w-0 text-sm">
                   <p className="font-semibold">{r.jenis_prediksi ?? 'Tidak dikenali'}</p>
                   <p className="text-ad-redup">Warna: {r.warna_prediksi ?? '—'}</p>
+                  {r.dikoreksi && (
+                    <p className="font-semibold text-ad-peringatan">
+                      Disimpan: {namaJenis.get(r.id_jenis_bunga_final ?? 0) ?? '—'} · {petaWarna.get(r.id_warna_final ?? 0) ?? '—'}
+                    </p>
+                  )}
                   <p className="text-xs text-ad-redup">
                     {r.konteks === 'mode_rangkai' ? 'Mode merangkai' : 'Stok masuk'} · {formatTanggalJam(r.waktu_pindai)}
                   </p>

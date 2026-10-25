@@ -2,7 +2,7 @@ import { CircleAlert, ScanLine, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 
-import { usePindaiStok, useSimpanPindai } from '@/api/admin'
+import { usePindaiStok, useSimpanPindai, useStok } from '@/api/admin'
 import { pesanGalat, type Skema } from '@/api/client'
 import { UnggahFoto } from '@/fitur/pesanan/bersama'
 import { Bidang, Masukan } from '@/komponen/ui/Bidang'
@@ -25,7 +25,8 @@ export function HalamanPindaiStok() {
   const [jenis, setJenis] = useState<number | ''>('')
   const [warna, setWarna] = useState<number | ''>('')
   const [jumlah, setJumlah] = useState('')
-  const [harga, setHarga] = useState('')
+  const [hargaKetik, setHarga] = useState<string | null>(null)
+  const stok = useStok()
 
   function mulaiPindai() {
     if (!foto) return
@@ -34,6 +35,7 @@ export function HalamanPindaiStok() {
         setHasil(h)
         setJenis(h.jenis?.id_jenis_bunga ?? '')
         setWarna(h.warna.id_warna)
+        setHarga(null)
       },
       onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
     })
@@ -46,6 +48,9 @@ export function HalamanPindaiStok() {
   }
 
   const persen = hasil ? Math.round(hasil.tingkat_keyakinan * 100) : 0
+  // Jenis + warna yang sudah ada di stok: harga bawaan diambil dari stok itu sampai admin mengetik sendiri.
+  const stokSama = stok.data?.find((s) => s.jenis.id_jenis_bunga === jenis && s.warna.id_warna === warna)
+  const harga = hargaKetik ?? (stokSama ? String(stokSama.harga_per_tangkai) : '')
 
   return (
     <>
@@ -144,7 +149,12 @@ export function HalamanPindaiStok() {
                     onChange={(e) => setJumlah(e.target.value)}
                   />
                 </Bidang>
-                <Bidang label="Harga per tangkai (Rp)" gaya="admin" wajib>
+                <Bidang
+                  label="Harga per tangkai (Rp)"
+                  gaya="admin"
+                  wajib
+                  bantuan={stokSama && hargaKetik === null ? 'Diisi dari harga stok yang sudah ada.' : undefined}
+                >
                   <Masukan
                     gaya="admin"
                     type="number"

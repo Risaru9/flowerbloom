@@ -60,7 +60,7 @@ const ikonAcara = (acara: string) => IKON_ACARA.find(([pola]) => pola.test(acara
 
 function JudulBagian({ judul, ke, teksTautan }: { judul: string; ke?: string; teksTautan?: string }) {
   return (
-    <div className="mb-5 flex items-end justify-between gap-4">
+    <div className="mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
       <h2 className="font-display text-3xl text-olive-tua md:text-4xl">{judul}</h2>
       {ke && (
         <Link
@@ -162,7 +162,7 @@ export function HalamanBeranda() {
 
         {/* Produk unggulan */}
         <section aria-labelledby="judul-unggulan">
-          <div className="mb-5 flex items-end justify-between gap-4">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
             <h2 id="judul-unggulan" className="font-display text-3xl text-olive-tua md:text-4xl">
               Paling Dicari
             </h2>

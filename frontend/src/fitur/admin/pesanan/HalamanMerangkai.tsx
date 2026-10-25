@@ -1,4 +1,4 @@
-import { Camera, CheckCircle2, Hand, Replace, XCircle } from 'lucide-react'
+import { Camera, CheckCheck, CheckCircle2, Hand, MessageSquareText, Replace, XCircle } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 
@@ -125,6 +125,9 @@ export function HalamanMerangkai() {
   const p = data.pesanan
   const komposisi = p.detail.flatMap((d) => d.komposisi.map((k) => ({ ...k, nama: d.nama })))
   const persen = data.target ? Math.round((data.terpindai / data.target) * 100) : 0
+  const fotoTerakhir = p.foto.at(-1)
+  const tandaiCocok = (k: Komposisi, n: number) =>
+    tandai.mutate({ id_komposisi_pesanan: k.id_komposisi_pesanan, jumlah: n }, { onError: (e) => tampilkanToast(pesanGalat(e), 'galat') })
 
   if (p.status.kode !== 'sedang_dirangkai') {
     return (
@@ -167,6 +170,15 @@ export function HalamanMerangkai() {
         </div>
       </Kartu>
 
+      {fotoTerakhir?.status_persetujuan === 'revisi' && (
+        <Kartu className="mb-4 border-ad-peringatan/40 bg-ad-peringatan-lembut">
+          <p className="flex items-center gap-2 font-semibold text-ad-peringatan">
+            <MessageSquareText aria-hidden className="size-5" /> Pelanggan meminta revisi
+          </p>
+          <p className="mt-1 text-sm">{fotoTerakhir.catatan_revisi || 'Tanpa catatan.'}</p>
+        </Kartu>
+      )}
+
       <div className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
         <Kartu>
           <h2 className="mb-1 flex items-center gap-2 text-lg font-bold">
@@ -186,6 +198,7 @@ export function HalamanMerangkai() {
                   onSuccess: (h) => {
                     setHasil(h as Skema['HasilMerangkaiOut'])
                     setFoto(null)
+                    setJumlah(1)
                   },
                   onError: (er) => tampilkanToast(pesanGalat(er), 'galat'),
                 },
@@ -237,7 +250,8 @@ export function HalamanMerangkai() {
           <h2 className="mb-3 text-lg font-bold">Komposisi pesanan</h2>
           <ul className="flex flex-col gap-2">
             {komposisi.map((k) => {
-              const selesai = k.jumlah_terpindai >= k.jumlah_tangkai
+              const sisa = k.jumlah_tangkai - k.jumlah_terpindai
+              const selesai = sisa <= 0
               return (
                 <li
                   key={k.id_komposisi_pesanan}
@@ -275,16 +289,31 @@ export function HalamanMerangkai() {
                         ukuran="kecil"
                         className="rounded-lg"
                         ikon={<Hand aria-hidden className="size-4" />}
-                        memuat={tandai.isPending && tandai.variables?.id_komposisi_pesanan === k.id_komposisi_pesanan}
-                        onClick={() =>
-                          tandai.mutate(
-                            { id_komposisi_pesanan: k.id_komposisi_pesanan, jumlah: 1 },
-                            { onError: (e) => tampilkanToast(pesanGalat(e), 'galat') },
-                          )
+                        memuat={
+                          tandai.isPending &&
+                          tandai.variables?.id_komposisi_pesanan === k.id_komposisi_pesanan &&
+                          tandai.variables.jumlah === 1
                         }
+                        onClick={() => tandaiCocok(k, 1)}
                       >
                         Tandai 1 cocok manual
                       </Tombol>
+                      {sisa > 1 && (
+                        <Tombol
+                          varian="admin-garis"
+                          ukuran="kecil"
+                          className="rounded-lg"
+                          ikon={<CheckCheck aria-hidden className="size-4" />}
+                          memuat={
+                            tandai.isPending &&
+                            tandai.variables?.id_komposisi_pesanan === k.id_komposisi_pesanan &&
+                            tandai.variables.jumlah > 1
+                          }
+                          onClick={() => tandaiCocok(k, sisa)}
+                        >
+                          Tandai semua cocok ({sisa})
+                        </Tombol>
+                      )}
                       <Tombol
                         varian="admin-garis"
                         ukuran="kecil"
