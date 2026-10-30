@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 from app.config import RAHASIA_BAWAAN, Pengaturan
 
-RAHASIA_KUAT = "r" * 40
+RAHASIA_KUAT = "TesKonfigurasi_1234567890_AbCdEfGhIjKlMnOp"
 
 
 def test_env_example_dapat_dibaca_apa_adanya(monkeypatch):
@@ -44,7 +44,7 @@ def test_batas_unggah_dalam_byte():
 def test_dokumentasi_api_mati_di_produksi_kecuali_diaktifkan(monkeypatch):
     from app.config import Pengaturan
 
-    rahasia = "x" * 40
+    rahasia = RAHASIA_KUAT
     assert Pengaturan(lingkungan="pengembangan").tampilkan_dokumentasi is True
     assert Pengaturan(lingkungan="produksi", jwt_rahasia=rahasia).tampilkan_dokumentasi is False
     assert Pengaturan(lingkungan="produksi", jwt_rahasia=rahasia, dokumentasi_api=True).tampilkan_dokumentasi is True

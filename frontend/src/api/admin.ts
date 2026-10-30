@@ -76,11 +76,11 @@ export const useSahkanPembayaran = (id: number) =>
   )
 
 export const useTolakPembayaran = (id: number) =>
-  useMutasiPesananAdmin(id, (v: { idPembayaran: number; catatan: string }) =>
+  useMutasiPesananAdmin(id, (v: { idPembayaran: number; catatan: string; danaDiterima?: boolean }) =>
     ambil(
       api.POST('/api/v1/admin/pesanan/{id_pesanan}/pembayaran/{id_pembayaran}/tolak', {
         params: { path: { id_pesanan: id, id_pembayaran: v.idPembayaran } },
-        body: { catatan: v.catatan },
+        body: { catatan: v.catatan, dana_diterima: v.danaDiterima ?? false },
       }),
     ),
   )

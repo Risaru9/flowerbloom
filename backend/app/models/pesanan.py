@@ -3,7 +3,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, Index, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.tipe import JSONTeks, UTCDateTime
@@ -24,10 +24,13 @@ from app.models.stok import Stok
 
 class Pesanan(Base):
     __tablename__ = "pesanan"
+    __table_args__ = (Index("uq_pesanan_kunci_checkout", "id_pengguna", "kunci_checkout", unique=True),)
 
     id_pesanan: Mapped[int] = mapped_column(primary_key=True)
     id_pengguna: Mapped[int] = mapped_column(ForeignKey("pengguna.id_pengguna"))
     kode_pesanan: Mapped[str] = mapped_column(String(20), unique=True)
+    kunci_checkout: Mapped[str | None] = mapped_column(String(128))
+    sidik_checkout: Mapped[str | None] = mapped_column(String(64))
     nama_penerima: Mapped[str] = mapped_column(String(100))
     alamat: Mapped[str | None] = mapped_column(Text)  # kosong bila diambil di toko
     tanggal_kirim: Mapped[date] = mapped_column(Date)
@@ -111,6 +114,7 @@ class KomposisiPesanan(Base):
 
 class Pembayaran(Base):
     __tablename__ = "pembayaran"
+    dana_diterima: Mapped[bool] = mapped_column(Boolean, default=False, server_default="0")
 
     id_pembayaran: Mapped[int] = mapped_column(primary_key=True)
     id_pesanan: Mapped[int] = mapped_column(ForeignKey("pesanan.id_pesanan", ondelete="CASCADE"))

@@ -17,7 +17,11 @@ export function SinkronAksesibilitas() {
   }, [])
 
   useEffect(() => {
-    if (!data || !sesi) return
+    if (!sesi) {
+      sudah.current = null
+      return
+    }
+    if (!data) return
     if (sudah.current === sesi.pengguna.id_pengguna) return
     sudah.current = sesi.pengguna.id_pengguna
     aturAksesibilitas(data)

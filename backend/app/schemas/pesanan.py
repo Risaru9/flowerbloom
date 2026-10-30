@@ -70,6 +70,7 @@ class BatalIn(BaseModel):
 
 
 class TolakBuktiIn(BaseModel):
+    dana_diterima: bool = Field(default=False, description="Admin memastikan dana benar-benar masuk meski bukti ditolak")
     catatan: str = Field(min_length=3, max_length=255, description="Alasan penolakan, ditampilkan ke pelanggan")
 
 
@@ -145,6 +146,7 @@ class DetailPesananOut(BaseModel):
 
 
 class PembayaranOut(BaseModel):
+    dana_diterima: bool
     id_pembayaran: int
     nama_pengirim: str
     nominal: Uang
@@ -177,6 +179,7 @@ class FotoKonfirmasiOut(BaseModel):
     label_warna: list[LabelWarnaOut]
     label_teks: str = Field(description="Label warna sebagai kalimat, mis. 'Merah tua 55%, Merah muda 30%'")
     pengganti: list[PenggantiOut]
+    perlu_persetujuan_pengganti: bool
     status_persetujuan: StatusPersetujuan
     catatan_revisi: str | None
     diunggah_pada: datetime

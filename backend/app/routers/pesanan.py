@@ -2,7 +2,7 @@
 from decimal import Decimal
 from typing import Annotated
 
-from fastapi import APIRouter, File, Form, Query, UploadFile, status
+from fastapi import APIRouter, File, Form, Header, Query, UploadFile, status
 
 from app.core.errors import BatasBayarLewat
 from app.core.penyimpanan import baca_unggahan
@@ -53,8 +53,10 @@ def pratinjau(data: PratinjauIn, db: DB):
     status_code=status.HTTP_201_CREATED,
     summary="Checkout: buat pesanan dan tahan stok (AB-01, AB-02, AB-04)",
 )
-def checkout(data: CheckoutIn, db: DB, pelanggan: Pelanggan):
-    pesanan = layanan.checkout(db, pelanggan, data)
+def checkout(data: CheckoutIn, db: DB, pelanggan: Pelanggan,
+             kunci: Annotated[str | None, Header(alias="Idempotency-Key", min_length=8, max_length=128,
+                                               pattern=r"^[A-Za-z0-9_-]+$")] = None):
+    pesanan = layanan.checkout(db, pelanggan, data, kunci=kunci)
     db.commit()
     return _keluaran(db, pesanan.id_pesanan, pelanggan)
 

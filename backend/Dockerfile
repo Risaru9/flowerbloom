@@ -26,7 +26,7 @@ COPY --from=pembangun /opt/venv /opt/venv
 ENV PATH=/opt/venv/bin:$PATH \
     LINGKUNGAN=produksi \
     DIREKTORI_BERKAS=/data/penyimpanan \
-    # Uvicorn hanya menerima X-Forwarded-For dari proxy ini (Nginx di jaringan internal compose).
+    # Uvicorn mempercayai jaringan internal Compose; Nginx menimpa X-Forwarded-For asal klien.
     # API tidak boleh dipublikasikan langsung ke internet; bila ya, ganti dengan IP proxy yang sebenarnya.
     FORWARDED_ALLOW_IPS=*
 WORKDIR /app

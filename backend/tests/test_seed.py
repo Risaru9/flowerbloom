@@ -105,7 +105,7 @@ def test_demo_ditolak_di_produksi(db, monkeypatch):
     from app.config import ambil_pengaturan
 
     monkeypatch.setenv("LINGKUNGAN", "produksi")
-    monkeypatch.setenv("JWT_RAHASIA", "x" * 40)
+    monkeypatch.setenv("JWT_RAHASIA", "TesSeed_1234567890_AbCdEfGhIjKlMnOpQrSt")
     ambil_pengaturan.cache_clear()
     try:
         with pytest.raises(SystemExit):

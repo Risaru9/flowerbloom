@@ -118,7 +118,11 @@ def simpan_pindai_ke_stok(
     admin: Pengguna,
 ) -> Stok:
     """Menyimpan hasil pindai (yang sudah diperiksa/dikoreksi admin) sebagai stok. AB-11."""
-    riwayat = ambil_pindai(db, id_pindai)
+    # Locking read juga menyegarkan objek yang mungkin sudah ada di identity map.
+    riwayat = db.scalar(select(RiwayatPindai).where(RiwayatPindai.id_pindai == id_pindai)
+                        .with_for_update().execution_options(populate_existing=True))
+    if riwayat is None:
+        raise TidakDitemukan("Riwayat pindai tidak ditemukan.")
     if riwayat.konteks != KonteksPindai.stok_masuk:
         raise Konflik("Pindai ini bukan pindai stok masuk.", kode="pindai_bukan_stok_masuk")
     if riwayat.id_stok is not None:

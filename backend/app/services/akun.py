@@ -1,5 +1,5 @@
 """Akun pengguna, autentikasi, dan pengaturan aksesibilitas (F-PL-01, F-PL-18, F-PL-19, F-AD-01, F-AD-17)."""
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.errors import DataTidakValid, Dilarang, Konflik, TidakDitemukan, TidakSah
@@ -107,6 +107,12 @@ def daftar_pengguna(db: Session, peran: Peran | None = None) -> list[Pengguna]:
 
 
 def atur_aktif(db: Session, *, id_pengguna: int, aktif: bool, oleh: Pengguna) -> Pengguna:
+    # Serialisasi perubahan akun admin dengan urutan kunci yang sama di semua transaksi.
+    admins = list(db.scalars(select(Pengguna).where(Pengguna.peran == Peran.admin)
+                            .order_by(Pengguna.id_pengguna).with_for_update()
+                            .execution_options(populate_existing=True)))
+    if not any(a.id_pengguna == oleh.id_pengguna and a.aktif for a in admins):
+        raise Dilarang("Sesi admin sudah tidak aktif.", kode="admin_nonaktif")
     target = db.get(Pengguna, id_pengguna)
     if not target:
         raise TidakDitemukan("Pengguna tidak ditemukan.")
@@ -114,9 +120,7 @@ def atur_aktif(db: Session, *, id_pengguna: int, aktif: bool, oleh: Pengguna) ->
         if target.id_pengguna == oleh.id_pengguna:
             raise Konflik("Anda tidak dapat menonaktifkan akun sendiri.", kode="tidak_bisa_nonaktifkan_diri")
         if target.peran == Peran.admin:
-            admin_aktif = db.scalar(
-                select(func.count()).select_from(Pengguna).where(Pengguna.peran == Peran.admin, Pengguna.aktif.is_(True))
-            )
+            admin_aktif = sum(a.aktif for a in admins)
             if admin_aktif <= 1:
                 raise Konflik("Minimal harus ada satu akun admin aktif.", kode="admin_terakhir")
         target.versi_sesi = (target.versi_sesi or 0) + 1  # token lama tidak hidup lagi saat akun diaktifkan kembali

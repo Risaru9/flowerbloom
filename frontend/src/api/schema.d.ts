@@ -1266,6 +1266,8 @@ export interface components {
             label_teks: string;
             /** Pengganti */
             pengganti: components["schemas"]["PenggantiOut"][];
+            /** Perlu Persetujuan Pengganti */
+            perlu_persetujuan_pengganti: boolean;
             status_persetujuan: components["schemas"]["StatusPersetujuan"];
             /** Catatan Revisi */
             catatan_revisi: string | null;
@@ -1690,6 +1692,8 @@ export interface components {
         };
         /** PembayaranOut */
         PembayaranOut: {
+            /** Dana Diterima */
+            dana_diterima: boolean;
             /** Id Pembayaran */
             id_pembayaran: number;
             /** Nama Pengirim */
@@ -2369,6 +2373,12 @@ export interface components {
         };
         /** TolakBuktiIn */
         TolakBuktiIn: {
+            /**
+             * Dana Diterima
+             * @description Admin memastikan dana benar-benar masuk meski bukti ditolak
+             * @default false
+             */
+            dana_diterima: boolean;
             /**
              * Catatan
              * @description Alasan penolakan, ditampilkan ke pelanggan
@@ -3596,7 +3606,9 @@ export interface operations {
     checkout_api_v1_pesanan_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };

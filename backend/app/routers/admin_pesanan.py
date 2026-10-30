@@ -88,7 +88,8 @@ def sahkan(id_pesanan: int, id_pembayaran: int, db: DB, admin: Admin):
     summary="Tolak bukti transfer: pelanggan diminta mengunggah ulang",
 )
 def tolak(id_pesanan: int, id_pembayaran: int, data: TolakBuktiIn, db: DB, admin: Admin):
-    layanan.tolak_pembayaran(db, id_pesanan=id_pesanan, id_pembayaran=id_pembayaran, admin=admin, catatan=data.catatan)
+    layanan.tolak_pembayaran(db, id_pesanan=id_pesanan, id_pembayaran=id_pembayaran, admin=admin,
+                           catatan=data.catatan, dana_diterima=data.dana_diterima)
     db.commit()
     return _detail(db, id_pesanan)
 

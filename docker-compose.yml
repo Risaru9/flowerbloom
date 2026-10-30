@@ -32,7 +32,10 @@ services:
         condition: service_healthy
     environment:
       LINGKUNGAN: produksi
-      DATABASE_URL: mysql+pymysql://flowerbloom:${MYSQL_PASSWORD}@db:3306/flowerbloom?charset=utf8mb4
+      MYSQL_HOST: db
+      MYSQL_USER: flowerbloom
+      MYSQL_DATABASE: flowerbloom
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?isi MYSQL_PASSWORD di .env}
       JWT_RAHASIA: ${JWT_RAHASIA:?isi JWT_RAHASIA (minimal 32 karakter acak) di .env}
       CORS_ORIGINS: '["${URL_PUBLIK:-http://localhost:8080}"]'
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}

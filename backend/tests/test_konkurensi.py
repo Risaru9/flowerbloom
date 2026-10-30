@@ -163,3 +163,82 @@ def test_batal_dan_sahkan_serentak_berakhir_konsisten(mesin_konkurensi):
         else:
             assert status == StatusPesanan.sedang_dirangkai
             assert [(s.jumlah_tersedia, s.jumlah_ditahan) for s in (mawar, anyelir)] == [(14, 0), (14, 0)]
+
+
+@butuh_kunci_baris
+def test_satu_pindai_disimpan_serentak_hanya_satu_mutasi(mesin_konkurensi):
+    from app.core.errors import Konflik
+    from app.models.enums import KonteksPindai
+    from app.models.pengguna import Pengguna
+    from app.models.stok import RiwayatPindai
+    from app.services.pindai import simpan_pindai_ke_stok
+
+    Sesi, _, admin, _, id_mawar, _ = _siapkan(mesin_konkurensi, 1)
+    with Sesi() as db:
+        stok = db.get(Stok, id_mawar)
+        jenis, warna = stok.id_jenis_bunga, stok.id_warna
+        pindai = RiwayatPindai(id_pengguna=admin, konteks=KonteksPindai.stok_masuk, foto_pindai="uji.jpg")
+        db.add(pindai)
+        db.commit()
+        id_pindai = pindai.id_pindai
+
+    def simpan(_):
+        with Sesi() as db:
+            # Simulasikan objek yang sudah dibaca sebelum request lain melakukan commit.
+            db.get(RiwayatPindai, id_pindai)
+            simpan_pindai_ke_stok(db, id_pindai=id_pindai, id_jenis_bunga=jenis, id_warna=warna,
+                                 jumlah_tangkai=7, harga_per_tangkai=8000, admin=db.get(Pengguna, admin))
+            db.commit()
+            return "ok"
+
+    hasil = _serentak(6, simpan)
+    assert hasil.count("ok") == 1, hasil
+    assert all(isinstance(h, Konflik) for h in hasil if h != "ok"), hasil
+    with Sesi() as db:
+        assert db.get(Stok, id_mawar).jumlah_tersedia == 27
+        mutasi = list(db.scalars(select(MutasiStok).where(MutasiStok.jenis == JenisMutasi.masuk_pindai)))
+        assert len(mutasi) == 1 and mutasi[0].jumlah == 7
+
+
+@butuh_kunci_baris
+def test_dua_admin_saling_nonaktifkan_menyisakan_satu_aktif(mesin_konkurensi):
+    from app.core.errors import Dilarang
+    from app.models.pengguna import Pengguna
+    from app.services.akun import atur_aktif
+
+    Sesi, _, admin, _, _, _ = _siapkan(mesin_konkurensi, 1)
+    with Sesi() as db:
+        kedua = buat_pengguna(db, "admin-kedua@contoh.id", Peran.admin)
+        db.commit()
+        admins = [admin, kedua.id_pengguna]
+
+    def nonaktifkan(i):
+        with Sesi() as db:
+            atur_aktif(db, id_pengguna=admins[1 - i], aktif=False, oleh=db.get(Pengguna, admins[i]))
+            db.commit()
+            return "ok"
+
+    hasil = _serentak(2, nonaktifkan)
+    assert hasil.count("ok") == 1 and sum(isinstance(h, Dilarang) for h in hasil) == 1, hasil
+    with Sesi() as db:
+        assert sum(a.aktif for a in db.scalars(select(Pengguna).where(Pengguna.peran == Peran.admin))) == 1
+
+
+@butuh_kunci_baris
+def test_retry_checkout_serentak_satu_pesanan_satu_tahanan(mesin_konkurensi):
+    from app.models.pengguna import Pengguna
+
+    Sesi, pelanggan, _, produk, id_mawar, id_anyelir = _siapkan(mesin_konkurensi, 1)
+
+    def pesan(_):
+        with Sesi() as db:
+            p = layanan.checkout(db, db.get(Pengguna, pelanggan[0]), _checkout_in(produk), kunci="retry-serentak-123")
+            db.commit()
+            return p.id_pesanan
+
+    hasil = _serentak(6, pesan)
+    assert all(isinstance(h, int) for h in hasil) and len(set(hasil)) == 1, hasil
+    with Sesi() as db:
+        assert len(list(db.scalars(select(Pesanan)))) == 1
+        assert [(db.get(Stok, i).jumlah_tersedia, db.get(Stok, i).jumlah_ditahan)
+                for i in (id_mawar, id_anyelir)] == [(14, 6), (14, 6)]

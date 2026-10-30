@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { gantiToken, perbaruiPengguna, simpanSesi } from '@/auth/sesi'
+import { gantiToken, perbaruiPengguna, simpanSesi, useSesi } from '@/auth/sesi'
+import { kunciCheckout, selesaiCheckout } from '@/lib/kunci-checkout'
 
 import { ambil, api, buatFormData, sebagaiFormData, type Skema } from './client'
 
@@ -112,8 +113,20 @@ export const usePratinjau = () =>
 
 export function useCheckout() {
   const qc = useQueryClient()
+  const sesi = useSesi()
   return useMutation({
-    mutationFn: (isian: Skema['CheckoutIn']) => ambil(api.POST('/api/v1/pesanan', { body: isian })),
+    mutationFn: async (isian: Skema['CheckoutIn']) => {
+      if (!sesi) throw new Error('Silakan masuk terlebih dahulu.')
+      const idempotensi = await kunciCheckout(sesi.pengguna.id_pengguna, isian)
+      const pesanan = await ambil(
+        api.POST('/api/v1/pesanan', {
+          body: isian,
+          params: { header: { 'Idempotency-Key': idempotensi } },
+        }),
+      )
+      selesaiCheckout(sesi.pengguna.id_pengguna)
+      return pesanan
+    },
     onSuccess: (pesanan) => {
       qc.setQueryData(kunci.pesanan(pesanan.id_pesanan), pesanan)
       void qc.invalidateQueries({ queryKey: ['pesanan', 'saya'] })

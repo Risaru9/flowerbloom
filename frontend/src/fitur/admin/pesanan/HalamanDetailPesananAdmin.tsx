@@ -26,6 +26,7 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
   const tolak = useTolakPembayaran(pesanan.id_pesanan)
   const [dialog, setDialog] = useState<'sahkan' | 'tolak' | null>(null)
   const [catatan, setCatatan] = useState('')
+  const [danaDiterima, setDanaDiterima] = useState(false)
   const menunggu = bukti.status_verifikasi === 'menunggu' && pesanan.status.kode === 'menunggu_verifikasi'
   return (
     <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
@@ -71,6 +72,8 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
                 ? `Ditolak — ${bukti.catatan_penolakan ?? ''}`
                 : 'Menunggu verifikasi'}
           </dd>
+          <dt className="text-ad-redup">Dana diterima</dt>
+          <dd>{bukti.dana_diterima ? 'Sudah dikonfirmasi masuk rekening' : 'Belum dikonfirmasi'}</dd>
         </dl>
         {menunggu && (
           <div className="mt-auto flex flex-wrap gap-2 pt-2">
@@ -144,11 +147,12 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
               memuat={tolak.isPending}
               onClick={() =>
                 tolak.mutate(
-                  { idPembayaran: bukti.id_pembayaran, catatan: catatan.trim() },
+                  { idPembayaran: bukti.id_pembayaran, catatan: catatan.trim(), danaDiterima },
                   {
                     onSuccess: () => {
                       setDialog(null)
                       setCatatan('')
+                      setDanaDiterima(false)
                       tampilkanToast('Bukti ditolak. Pelanggan diminta mengunggah ulang.')
                     },
                     onError: (e) => tampilkanToast(pesanGalat(e), 'galat'),
@@ -177,6 +181,11 @@ export function VerifikasiBukti({ pesanan, bukti }: { pesanan: Skema['PesananAdm
           <Bidang label="Alasan penolakan" gaya="admin" wajib>
             <AreaTeks gaya="admin" value={catatan} onChange={(e) => setCatatan(e.target.value)} maxLength={255} />
           </Bidang>
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" checked={danaDiterima} onChange={(e) => setDanaDiterima(e.target.checked)} />
+            Dana sudah masuk ke rekening toko, termasuk pembayaran sebagian. Tandai hanya setelah memeriksa rekening; bila pesanan
+            dibatalkan, dana ini perlu dikembalikan.
+          </label>
         </div>
       </Dialog>
     </div>
@@ -283,7 +292,7 @@ export function HalamanDetailPesananAdmin() {
                 Bukti pembayaran{' '}
                 {p.pembayaran.length > 1 && <span className="text-sm font-normal text-ad-redup">(unggahan ke-{p.pembayaran.length})</span>}
               </h2>
-              <VerifikasiBukti pesanan={p} bukti={buktiTerbaru} />
+              <VerifikasiBukti key={buktiTerbaru.id_pembayaran} pesanan={p} bukti={buktiTerbaru} />
             </Kartu>
           )}
           <Kartu>

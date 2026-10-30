@@ -40,7 +40,7 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
   const [setujuPengganti, setSetujuPengganti] = useState(false)
   if (!foto) return null
   const menunggu = foto.status_persetujuan === 'menunggu' && pesanan.status.kode === 'menunggu_persetujuan_foto'
-  const penggantiBeda = foto.pengganti.some((g) => g.warna_berbeda)
+  const wajibSetujuPengganti = foto.perlu_persetujuan_pengganti
 
   async function kirim(keputusan: 'setuju' | 'revisi') {
     try {
@@ -98,7 +98,7 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
           )}
           {menunggu ? (
             <>
-              {penggantiBeda && (
+              {wajibSetujuPengganti && (
                 <label className="flex items-start gap-3 rounded-2xl bg-latar/80 p-3 text-sm">
                   <input
                     type="checkbox"
@@ -106,14 +106,14 @@ function PersetujuanFoto({ pesanan }: { pesanan: Skema['PesananOut'] }) {
                     onChange={(e) => setSetujuPengganti(e.target.checked)}
                     className="mt-0.5 size-5 accent-rose-teks"
                   />
-                  Saya sudah membaca dan menyetujui bunga pengganti dengan warna berbeda.
+                  Saya sudah membaca dan menyetujui bunga pengganti yang tercantum.
                 </label>
               )}
               <div className="grid gap-2 sm:grid-cols-2">
                 <Tombol
                   onClick={() => void kirim('setuju')}
                   memuat={tanggapi.isPending && !revisi}
-                  disabled={penggantiBeda && !setujuPengganti}
+                  disabled={wajibSetujuPengganti && !setujuPengganti}
                 >
                   Setujui rangkaian
                 </Tombol>
@@ -243,7 +243,7 @@ export function HalamanDetailPesanan() {
         </p>
       )}
 
-      {p.foto.length > 0 && <PersetujuanFoto pesanan={p} />}
+      {p.foto.length > 0 && <PersetujuanFoto key={p.foto.at(-1)?.id_foto} pesanan={p} />}
 
       <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
         <section aria-labelledby="judul-produk" className="rounded-3xl bg-permukaan p-4 ring-1 ring-garis/60">

@@ -1641,6 +1641,27 @@
             "HTTPBearer": []
           }
         ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -3903,6 +3924,10 @@
             "type": "array",
             "title": "Pengganti"
           },
+          "perlu_persetujuan_pengganti": {
+            "type": "boolean",
+            "title": "Perlu Persetujuan Pengganti"
+          },
           "status_persetujuan": {
             "$ref": "#/components/schemas/StatusPersetujuan"
           },
@@ -3942,6 +3967,7 @@
           "label_warna",
           "label_teks",
           "pengganti",
+          "perlu_persetujuan_pengganti",
           "status_persetujuan",
           "catatan_revisi",
           "diunggah_pada",
@@ -5100,6 +5126,10 @@
       },
       "PembayaranOut": {
         "properties": {
+          "dana_diterima": {
+            "type": "boolean",
+            "title": "Dana Diterima"
+          },
           "id_pembayaran": {
             "type": "integer",
             "title": "Id Pembayaran"
@@ -5161,6 +5191,7 @@
         },
         "type": "object",
         "required": [
+          "dana_diterima",
           "id_pembayaran",
           "nama_pengirim",
           "nominal",
@@ -7004,6 +7035,12 @@
       },
       "TolakBuktiIn": {
         "properties": {
+          "dana_diterima": {
+            "type": "boolean",
+            "title": "Dana Diterima",
+            "description": "Admin memastikan dana benar-benar masuk meski bukti ditolak",
+            "default": false
+          },
           "catatan": {
             "type": "string",
             "maxLength": 255,
