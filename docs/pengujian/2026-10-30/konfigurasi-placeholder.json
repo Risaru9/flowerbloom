@@ -1,0 +1,25 @@
+{
+  "production_secret_validation": [
+    {
+      "case": "example_placeholder",
+      "result": "accepted",
+      "length": 44
+    },
+    {
+      "case": "builtin_default",
+      "result": "rejected",
+      "length": 34
+    },
+    {
+      "case": "32_repeated_characters",
+      "result": "accepted",
+      "length": 32
+    }
+  ],
+  "dummy_mysql_at_password": {
+    "expected_password": "abc@123",
+    "parsed_password": "abc",
+    "expected_host": "db",
+    "parsed_host": "123@db"
+  }
+}

@@ -1,0 +1,8 @@
+
+ RUN  v5.0.5 D:/capstone/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:17:23
+   Duration  5.34s (environment 53%, setup 17%, import 11%, transform 10%, tests 9%, worker 1%)

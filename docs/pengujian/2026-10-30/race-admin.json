@@ -1,0 +1,40 @@
+{
+  "case": "two_admins_disable_each_other",
+  "db": "isolated flowerbloom_race_uji MySQL",
+  "expected": "At least one active admin remains; one request is rejected",
+  "synchronization": "Test-only barrier after each request reads active-admin count; no application decision changed",
+  "initial_active_admins": 2,
+  "requests": [
+    {
+      "target": 2,
+      "http": 200,
+      "body": {
+        "id_pengguna": 2,
+        "nama": "Admin Dua",
+        "email": "second-admin@contoh.id",
+        "no_hp": null,
+        "peran": "admin",
+        "aktif": false,
+        "dibuat_pada": "2026-10-26T14:17:32Z"
+      }
+    },
+    {
+      "target": 1,
+      "http": 200,
+      "body": {
+        "id_pengguna": 1,
+        "nama": "Admin Satu",
+        "email": "first-admin@contoh.id",
+        "no_hp": null,
+        "peran": "admin",
+        "aktif": false,
+        "dibuat_pada": "2026-10-26T14:17:32Z"
+      }
+    }
+  ],
+  "final_active_admins": 0,
+  "old_admin_access_http": [
+    401,
+    401
+  ]
+}

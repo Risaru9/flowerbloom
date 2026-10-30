@@ -1,0 +1,199 @@
+[
+  {
+    "base_url": "http://127.0.0.1:18080",
+    "purpose": "local smoke and bounded workload; not hosting capacity guarantee"
+  },
+  {
+    "case": "nginx homepage",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.2246
+  },
+  {
+    "case": "homepage security headers",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "camera=(self), microphone=(), geolocation=(), payment=(), usb=()"
+    }
+  },
+  {
+    "case": "SPA deep route direct navigation",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.03
+  },
+  {
+    "case": "unknown API is JSON 404",
+    "expected": 404,
+    "status": 404,
+    "passed": true,
+    "seconds": 0.0714
+  },
+  {
+    "case": "account without token",
+    "expected": 401,
+    "status": 401,
+    "passed": true,
+    "seconds": 0.0355,
+    "kode": "tidak_terautentikasi"
+  },
+  {
+    "case": "admin without token",
+    "expected": 401,
+    "status": 401,
+    "passed": true,
+    "seconds": 0.0145,
+    "kode": "tidak_terautentikasi"
+  },
+  {
+    "case": "tampered bearer token rejected",
+    "expected": 401,
+    "status": 401,
+    "passed": true,
+    "seconds": 0.0119,
+    "kode": "tidak_terautentikasi"
+  },
+  {
+    "case": "hashed static asset served",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.0304
+  },
+  {
+    "case": "hashed asset cache",
+    "cache_control": "public, max-age=31536000, immutable"
+  },
+  {
+    "case": "PWA resource /manifest.webmanifest",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.0066
+  },
+  {
+    "case": "PWA resource cache /manifest.webmanifest",
+    "cache_control": "no-cache",
+    "content_type": "application/octet-stream"
+  },
+  {
+    "case": "PWA resource /sw.js",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.0303
+  },
+  {
+    "case": "PWA resource cache /sw.js",
+    "cache_control": "no-cache",
+    "content_type": "application/javascript; charset=utf-8"
+  },
+  {
+    "case": "customer forbidden admin stock",
+    "expected": 403,
+    "status": 403,
+    "passed": true,
+    "seconds": 0.0271,
+    "kode": "dilarang"
+  },
+  {
+    "case": "admin cannot customer checkout",
+    "expected": 403,
+    "status": 403,
+    "passed": true,
+    "seconds": 0.0221,
+    "kode": "dilarang"
+  },
+  {
+    "case": "admin stock list",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.0875
+  },
+  {
+    "case": "bounded mixed public reads",
+    "requests": 50,
+    "concurrency": 5,
+    "statuses": {
+      "200": 50
+    },
+    "total_seconds": 1.076,
+    "median_seconds": 0.0474,
+    "p95_seconds": 0.5517,
+    "max_seconds": 0.5788
+  },
+  {
+    "case": "scan 1000x1000 sample 1",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.301
+  },
+  {
+    "case": "scan 1000x1000 sample 2",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.0922
+  },
+  {
+    "case": "scan 1000x1000 sample 3",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.0788
+  },
+  {
+    "case": "scan timing summary",
+    "dimensions": [
+      1000,
+      1000
+    ],
+    "bytes": 170326,
+    "samples": 3,
+    "median_seconds": 0.0922,
+    "max_seconds": 0.301,
+    "under_3_seconds_all": true,
+    "accuracy_measured": false
+  },
+  {
+    "case": "scan 4000x3000 sample 1",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 1.323
+  },
+  {
+    "case": "scan 4000x3000 sample 2",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 2.1352
+  },
+  {
+    "case": "scan 4000x3000 sample 3",
+    "expected": 200,
+    "status": 200,
+    "passed": true,
+    "seconds": 0.8493
+  },
+  {
+    "case": "scan timing summary",
+    "dimensions": [
+      4000,
+      3000
+    ],
+    "bytes": 933626,
+    "samples": 3,
+    "median_seconds": 1.323,
+    "max_seconds": 2.1352,
+    "under_3_seconds_all": true,
+    "accuracy_measured": false
+  }
+]

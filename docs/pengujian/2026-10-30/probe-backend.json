@@ -1,0 +1,288 @@
+[
+  {
+    "case": "checkout_same_request_retry",
+    "status": "finding",
+    "severity": "P2",
+    "expected": "Repeated request represents one order/one stock reservation",
+    "actual": {
+      "http": [
+        201,
+        201
+      ],
+      "order_ids": [
+        1,
+        2
+      ],
+      "count": 2,
+      "stock": {
+        "Mawar/Merah tua": [
+          8,
+          12
+        ],
+        "Anyelir/Putih": [
+          8,
+          12
+        ],
+        "Mawar/Merah muda": [
+          10,
+          0
+        ]
+      }
+    },
+    "source": [
+      "backend/app/routers/pesanan.py:56",
+      "backend/app/services/pesanan.py:128"
+    ]
+  },
+  {
+    "case": "catalog_price_and_composition_after_checkout",
+    "status": "pass_with_observation",
+    "expected": "Committed price and component stock remain unchanged after catalog/settings edit; cancel restores original stocks",
+    "actual": {
+      "price": [
+        150000.0,
+        150000.0
+      ],
+      "composition": [
+        [
+          [
+            1,
+            6
+          ],
+          [
+            2,
+            6
+          ]
+        ],
+        [
+          [
+            1,
+            6
+          ],
+          [
+            2,
+            6
+          ]
+        ]
+      ],
+      "name": [
+        "Buket Cinta",
+        "Buket Nama Baru"
+      ],
+      "cancel_http": 200,
+      "stock_after_cancel": {
+        "Mawar/Merah tua": [
+          20,
+          0
+        ],
+        "Anyelir/Putih": [
+          20,
+          0
+        ],
+        "Mawar/Merah muda": [
+          10,
+          0
+        ]
+      }
+    },
+    "observation": "Product name remains live; price and quantities are snapshotted",
+    "source": [
+      "backend/app/services/penyaji_pesanan.py:37",
+      "backend/app/services/pesanan.py:128"
+    ]
+  },
+  {
+    "case": "reference_color_edit_changes_existing_order",
+    "status": "finding",
+    "severity": "P2",
+    "expected": "Purchased color remains available as an order snapshot or reference edit is constrained",
+    "actual": {
+      "edit_http": 200,
+      "order_color_before": [
+        {
+          "id_warna": 3,
+          "nama_warna": "Merah tua",
+          "kode_hex": "#8B0000"
+        },
+        {
+          "id_warna": 1,
+          "nama_warna": "Putih",
+          "kode_hex": "#FFFFFF"
+        }
+      ],
+      "order_color_after": [
+        {
+          "id_warna": 3,
+          "nama_warna": "Biru laut",
+          "kode_hex": "#0000FF"
+        },
+        {
+          "id_warna": 1,
+          "nama_warna": "Putih",
+          "kode_hex": "#FFFFFF"
+        }
+      ]
+    },
+    "source": [
+      "backend/app/services/referensi.py:70",
+      "backend/app/services/penyaji_pesanan.py:53",
+      "backend/app/models/pesanan.py:96"
+    ]
+  },
+  {
+    "case": "color_replacement_revision_return_to_original",
+    "status": "pass_with_observation",
+    "expected": "Different-color replacement needs consent; revision can restore original color and approve",
+    "actual": {
+      "without_consent_http": 409,
+      "revisi": 200,
+      "latest_replacement_summary": [
+        {
+          "dari": "Mawar merah tua",
+          "menjadi": "Mawar merah muda",
+          "jumlah": 0,
+          "alasan": "Bunga asal rusak",
+          "warna_berbeda": true
+        },
+        {
+          "dari": "Mawar merah muda",
+          "menjadi": "Mawar merah tua",
+          "jumlah": 6,
+          "alasan": "Sesuai revisi pelanggan",
+          "warna_berbeda": true
+        }
+      ],
+      "final_consent_http": 200,
+      "final_status": "siap_diambil",
+      "total": 150000.0
+    },
+    "observation": "Latest replacement summary includes a superseded zero-quantity intermediate replacement",
+    "source": [
+      "backend/app/services/foto_konfirmasi.py:27",
+      "backend/app/services/merangkai.py:159"
+    ]
+  },
+  {
+    "case": "rejected_partial_payment_then_cancel",
+    "status": "finding",
+    "severity": "P2",
+    "expected": "Cancellation after admin records partial funds received remains visible for manual refund review",
+    "actual": {
+      "cancel_http": 200,
+      "status": "dibatalkan",
+      "perlu_pengembalian_dana_admin": false,
+      "perlu_pengembalian_dana_db": false,
+      "payment_history": [
+        {
+          "nominal": 100000.0,
+          "nominal_sesuai": false,
+          "status_verifikasi": "ditolak",
+          "catatan_penolakan": "Dana masuk kurang Rp50.000"
+        }
+      ]
+    },
+    "source": [
+      "backend/app/services/pesanan.py:296",
+      "backend/app/services/pesanan.py:346"
+    ]
+  },
+  {
+    "case": "foreign_order_upload_does_not_create_media",
+    "status": "pass",
+    "expected": "Other customer cannot upload to order or create an orphan file",
+    "actual": {
+      "foreign_http": 404,
+      "new_media_count": 0,
+      "owner_http": 200
+    }
+  },
+  {
+    "case": "private_file_url_session_revocation_behavior",
+    "status": "documented_behavior",
+    "expected": "Access token revoked immediately; signed media URL remains a bearer capability until expiry",
+    "actual": {
+      "revoked_access_http": 401,
+      "signed_media_http_after_logout": 200,
+      "cache_control": "private, max-age=300"
+    },
+    "note": "No URL/token is included in this output",
+    "source": [
+      "backend/app/core/security.py:85",
+      "backend/app/routers/berkas.py:12"
+    ]
+  },
+  {
+    "case": "invalid_shipping_slot_range",
+    "status": "finding",
+    "severity": "P2",
+    "expected": "Slot ending before start is rejected before publishing/checkout",
+    "actual": {
+      "configuration_http": 200,
+      "checkout_http": 201,
+      "slot_in_created_order": "17:00-09:00"
+    },
+    "source": [
+      "backend/app/services/pengaturan_toko.py:183"
+    ]
+  },
+  {
+    "case": "scheduler_real_async_loop",
+    "status": "pass",
+    "expected": "Async loop calls threaded expiration and releases held stock",
+    "actual": {
+      "order_status": "dibatalkan",
+      "stock": {
+        "Mawar/Merah tua": [
+          20,
+          0
+        ],
+        "Anyelir/Putih": [
+          20,
+          0
+        ],
+        "Mawar/Merah muda": [
+          10,
+          0
+        ]
+      }
+    },
+    "note": "Loop ran against isolated temporary DB, short test interval; production lifespan/config/network not exercised"
+  },
+  {
+    "case": "all_replacements_policy_same_color_different_species",
+    "status": "backend_pass_ui_contract_risk",
+    "expected": "Policy semua_pengganti requires explicit consent also for same-color replacements",
+    "actual": {
+      "replacement_summary": [
+        {
+          "dari": "Anyelir putih",
+          "menjadi": "Mawar putih",
+          "jumlah": 6,
+          "alasan": "Stok anyelir layu, pengganti tetap putih",
+          "warna_berbeda": false
+        }
+      ],
+      "false_consent_http": 409,
+      "false_consent_body": {
+        "kode": "perlu_konfirmasi_pengganti",
+        "pesan": "Ada bunga pengganti. Baca keterangannya lalu konfirmasi persetujuan Anda.",
+        "rincian": [
+          {
+            "dari": "Anyelir putih",
+            "menjadi": "Mawar putih",
+            "jumlah": 6,
+            "alasan": "Stok anyelir layu, pengganti tetap putih",
+            "warna_berbeda": false
+          }
+        ]
+      },
+      "status_after_false": "menunggu_persetujuan_foto",
+      "true_consent_http": 200,
+      "final_status": "siap_diambil"
+    },
+    "source": [
+      "backend/app/services/foto_konfirmasi.py:95",
+      "frontend/src/fitur/pesanan/HalamanDetailPesanan.tsx"
+    ]
+  }
+]

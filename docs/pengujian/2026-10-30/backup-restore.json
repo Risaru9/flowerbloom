@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "source_database": "flowerbloom_browser_uji",
+  "restored_database": "flowerbloom_restore_20261030_072850_uji",
+  "source_volume": "flowerbloom-audit-20261026_penyimpanan",
+  "restored_volume": "flowerbloom-audit-20261026-restore-media-20261030-072850",
+  "helper_container": "flowerbloom-audit-20261026-restore-helper-20261030-072850",
+  "table_count": 20,
+  "row_count": 297,
+  "file_count": 35,
+  "dump_bytes": 57091,
+  "dump_sha256": "af4b3ca7744071a3319e7cf44ce0f5f60199437c75e8ef88b01696883c568bb7",
+  "scope": "mysqldump logical backup and local media copy restored into new audit DB/volume; all table contents and file bytes compared via SHA256; source app not restarted"
+}

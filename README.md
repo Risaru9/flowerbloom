@@ -11,6 +11,12 @@ foto bunga dapat **ditajamkan sesuai jenis buta warna** (protan, deutan, tritan)
 [![Keamanan](https://github.com/Risaru9/flowerbloom/actions/workflows/keamanan.yml/badge.svg)](https://github.com/Risaru9/flowerbloom/actions/workflows/keamanan.yml)
 [![CD](https://github.com/Risaru9/flowerbloom/actions/workflows/cd.yml/badge.svg)](https://github.com/Risaru9/flowerbloom/actions/workflows/cd.yml)
 
+Peta konteks keseluruhan proyek: [docs/konteks-proyek.md](docs/konteks-proyek.md) — arsitektur, alur bisnis, status implementasi, dan hasil peninjauan kode.
+
+Hasil pengujian mendalam: [docs/laporan-pengujian.md](docs/laporan-pengujian.md) — pengujian MySQL/Docker/browser, temuan yang direproduksi, dan batas kesiapan hosting (26–30 Oktober 2026).
+
+Tindak lanjut: [docs/perbaikan-temuan.md](docs/perbaikan-temuan.md) — perbaikan F-01–F-10, bukti regresi, dan migrasi wajib `0003` sebelum menjalankan versi baru.
+
 ## Isi repositori
 
 | Folder | Isi |

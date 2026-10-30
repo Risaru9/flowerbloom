@@ -1,0 +1,9 @@
+{
+  "web": "PASS",
+  "katalog": "PASS",
+  "login_admin": "PASS",
+  "pesanan_lama": "selesai",
+  "foto_lama": 2,
+  "kontrak_foto_baru": "PASS",
+  "backfill_pembayaran_sah": "PASS"
+}
