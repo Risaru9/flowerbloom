@@ -82,9 +82,14 @@ def foto_terbaru(pesanan: Pesanan) -> FotoKonfirmasi | None:
 
 def pengganti_wajib_disetujui(db: Session, ringkasan: list[dict]) -> bool:
     """AB-07 menurut kebijakan toko (F-AD-16)."""
+    return wajib_persetujuan(ringkasan, pengaturan_toko.ambil(db).kebijakan_pengganti)
+
+
+def wajib_persetujuan(ringkasan: list[dict], kebijakan: str) -> bool:
+    ringkasan = [p for p in ringkasan if p["jumlah"] > 0]
     if not ringkasan:
         return False
-    if pengaturan_toko.ambil(db).kebijakan_pengganti == "semua_pengganti":
+    if kebijakan == "semua_pengganti":
         return True
     return any(p["warna_berbeda"] for p in ringkasan)
 

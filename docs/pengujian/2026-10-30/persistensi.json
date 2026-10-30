@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "project": "flowerbloom-audit-20261026",
+  "before_container_ids": [
+    {
+      "nama_kontainer": "flowerbloom-audit-20261026-db-1",
+      "id_kontainer": "a426a4f40b626a6c417b894842ebfb94c066420845a3b8531f373ee1de52536a"
+    },
+    {
+      "nama_kontainer": "flowerbloom-audit-20261026-api-1",
+      "id_kontainer": "9233c69c80b48413460591001ab5517184559107bdb9e7d611aa5ef6c8a46998"
+    },
+    {
+      "nama_kontainer": "flowerbloom-audit-20261026-web-1",
+      "id_kontainer": "8c176efb383d9ee74196a6a6562ae315801671516012c3597a4abe8bb6856aba"
+    }
+  ],
+  "after_container_ids": [
+    {
+      "nama_kontainer": "flowerbloom-audit-20261026-db-1",
+      "id_kontainer": "eb4e0e5621db31b72c49c68367c8d67fb1417c0c4e0e59deda52015f4ad9197a"
+    },
+    {
+      "nama_kontainer": "flowerbloom-audit-20261026-api-1",
+      "id_kontainer": "7a83fdb0545c82f6c14c6110ef843ecfdd000347d3f4a61c089cdf7216674c38"
+    },
+    {
+      "nama_kontainer": "flowerbloom-audit-20261026-web-1",
+      "id_kontainer": "60f3c15ebf848b56bf2ac07b73cc6d1de17f9cbb669bea0390ea70d2bb760a26"
+    }
+  ],
+  "table_count": 20,
+  "row_count": 297,
+  "file_count": 35,
+  "database_sha256_manifests_identical": true,
+  "media_sha256_manifests_identical": true,
+  "http": {
+    "/sehat": {
+      "status": 200,
+      "bytes": 2
+    },
+    "/api/v1/produk": {
+      "status": 200,
+      "bytes": 25985
+    },
+    "/api/v1/warna": {
+      "status": 200,
+      "bytes": 2619
+    }
+  },
+  "scope": "all three audit containers recreated; named volume DB and media contents preserved byte-for-byte at table/file hash level"
+}

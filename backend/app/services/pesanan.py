@@ -3,6 +3,7 @@
 Aturan bisnis yang ditegakkan di sini: AB-01 (bayar penuh di muka), AB-02 (stok ditahan, batal bila lewat batas),
 AB-03 (transfer + bukti), AB-04 (paling lambat H-1), AB-08 (batal hanya sebelum dirangkai).
 """
+import hashlib
 import secrets
 from dataclasses import dataclass, field
 from datetime import timedelta
@@ -125,7 +126,17 @@ def _kode_baru(db: Session) -> str:
     raise RuntimeError("Gagal membuat kode pesanan unik.")  # pragma: no cover
 
 
-def checkout(db: Session, pelanggan: Pengguna, data: CheckoutIn) -> Pesanan:
+def checkout(db: Session, pelanggan: Pengguna, data: CheckoutIn, *, kunci: str | None = None) -> Pesanan:
+    sidik = hashlib.sha256(data.model_dump_json().encode()).hexdigest()
+    if kunci is not None:
+        # Serialisasi retry pelanggan sebelum membuat pesanan/menahan stok.
+        db.execute(select(Pengguna).where(Pengguna.id_pengguna == pelanggan.id_pengguna).with_for_update())
+        lama = db.scalar(select(Pesanan).where(Pesanan.id_pengguna == pelanggan.id_pengguna,
+                                             Pesanan.kunci_checkout == kunci).with_for_update())
+        if lama:
+            if lama.sidik_checkout != sidik:
+                raise Konflik("Kunci checkout sudah digunakan untuk pesanan berbeda.", kode="kunci_checkout_berbeda")
+            return lama
     pengaturan = pengaturan_toko.ambil(db)
 
     if data.slot_jam not in pengaturan.slot_pengiriman:
@@ -147,6 +158,8 @@ def checkout(db: Session, pelanggan: Pengguna, data: CheckoutIn) -> Pesanan:
     pesanan = Pesanan(
         id_pengguna=pelanggan.id_pengguna,
         kode_pesanan=_kode_baru(db),
+        kunci_checkout=kunci,
+        sidik_checkout=sidik if kunci else None,
         nama_penerima=data.nama_penerima,
         alamat=data.alamat.strip() if data.alamat else None,
         tanggal_kirim=data.tanggal_kirim,
@@ -296,6 +309,8 @@ def _kebutuhan_pesanan(pesanan: Pesanan) -> dict[int, int]:
 def _batalkan_di_dalam(db: Session, pesanan: Pesanan, *, oleh: Pengguna | None, alasan: str) -> None:
     """Membatalkan pesanan yang sudah terkunci: stok tahanan dilepas, status dan alasan dicatat."""
     layanan_stok.lepas(db, _kebutuhan_pesanan(pesanan), id_pesanan=pesanan.id_pesanan, oleh=oleh, catatan=alasan)
+    if any(b.dana_diterima for b in pesanan.pembayaran):
+        pesanan.perlu_pengembalian_dana = True
     if pesanan.status == S.menunggu_verifikasi:
         # pelanggan sudah sempat mengunggah bukti: tandai agar admin mengembalikan dananya secara manual
         pesanan.perlu_pengembalian_dana = True
@@ -335,6 +350,7 @@ def sahkan_pembayaran(db: Session, *, id_pesanan: int, id_pembayaran: int, admin
     pesanan = alur_pesanan.kunci_pesanan(db, id_pesanan)
     bayar = _pembayaran_menunggu(pesanan, id_pembayaran)
     bayar.status_verifikasi = StatusVerifikasi.sah
+    bayar.dana_diterima = True
     bayar.id_admin = admin.id_pengguna
     bayar.waktu_verifikasi = sekarang_utc()
     # Tahanan menjadi terpakai; setelah ini pesanan tidak lagi bisa dibatalkan (AB-08).
@@ -343,13 +359,15 @@ def sahkan_pembayaran(db: Session, *, id_pesanan: int, id_pembayaran: int, admin
     return pesanan
 
 
-def tolak_pembayaran(db: Session, *, id_pesanan: int, id_pembayaran: int, admin: Pengguna, catatan: str) -> Pesanan:
+def tolak_pembayaran(db: Session, *, id_pesanan: int, id_pembayaran: int, admin: Pengguna, catatan: str,
+                    dana_diterima: bool = False) -> Pesanan:
     pesanan = alur_pesanan.kunci_pesanan(db, id_pesanan)
     bayar = _pembayaran_menunggu(pesanan, id_pembayaran)
     bayar.status_verifikasi = StatusVerifikasi.ditolak
     bayar.id_admin = admin.id_pengguna
     bayar.waktu_verifikasi = sekarang_utc()
     bayar.catatan_penolakan = catatan.strip()
+    bayar.dana_diterima = dana_diterima
     # Pelanggan diberi waktu bayar baru; stok tetap ditahan selama jendela itu.
     pesanan.batas_bayar = sekarang_utc() + timedelta(minutes=pengaturan_toko.ambil(db).batas_bayar_menit)
     alur_pesanan.pindah_status(db, pesanan, S.menunggu_pembayaran, oleh=admin, catatan=f"Bukti ditolak: {catatan.strip()}")

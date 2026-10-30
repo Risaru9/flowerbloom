@@ -82,6 +82,7 @@ def _detail_out(d: DetailPesanan) -> DetailPesananOut:
 def _pembayaran_out(p: Pembayaran, pesanan: Pesanan) -> PembayaranOut:
     return PembayaranOut(
         id_pembayaran=p.id_pembayaran,
+        dana_diterima=p.dana_diterima,
         nama_pengirim=p.nama_pengirim,
         nominal=p.nominal,
         nominal_sesuai=p.nominal == pesanan.total_harga,
@@ -93,7 +94,7 @@ def _pembayaran_out(p: Pembayaran, pesanan: Pesanan) -> PembayaranOut:
     )
 
 
-def _foto_out(f: FotoKonfirmasi) -> FotoKonfirmasiOut:
+def _foto_out(f: FotoKonfirmasi, pengaturan: PengaturanTerkini) -> FotoKonfirmasiOut:
     label = [LabelWarnaOut(**x) for x in (f.label_warna or [])]
     return FotoKonfirmasiOut(
         id_foto=f.id_foto,
@@ -101,6 +102,8 @@ def _foto_out(f: FotoKonfirmasi) -> FotoKonfirmasiOut:
         label_warna=label,
         label_teks=", ".join(f"{x.nama_warna} {x.persen}%" for x in label),
         pengganti=[PenggantiOut(**x) for x in (f.ringkasan_pengganti or [])],
+        perlu_persetujuan_pengganti=foto_konfirmasi.wajib_persetujuan(
+            f.ringkasan_pengganti or [], pengaturan.kebijakan_pengganti),
         status_persetujuan=f.status_persetujuan,
         catatan_revisi=f.catatan_revisi,
         diunggah_pada=f.diunggah_pada,
@@ -147,7 +150,7 @@ def pesanan_out(p: Pesanan, pengaturan: PengaturanTerkini) -> PesananOut:
         alasan_batal=p.alasan_batal,
         detail=[_detail_out(d) for d in p.detail],
         pembayaran=[_pembayaran_out(b, p) for b in p.pembayaran],
-        foto=[_foto_out(f) for f in p.foto],
+        foto=[_foto_out(f, pengaturan) for f in p.foto],
         riwayat=[_riwayat_out(r, p.id_pengguna) for r in p.riwayat_status],
         tahap=[TahapOut(**t) for t in alur_pesanan.tahap(p)],
         rekening_tujuan=(pengaturan.rekening_tujuan or None) if p.status == S.menunggu_pembayaran else None,

@@ -1,0 +1,60 @@
+{
+  "case": "same_scan_concurrent_save",
+  "db": "isolated flowerbloom_race_uji MySQL",
+  "expected": "One scan can increment inventory only once; one request rejects duplicate",
+  "synchronization": "Test-only barrier after both read same scan, before writing inventory; no application logic changed",
+  "requests": [
+    {
+      "http": 201,
+      "body": {
+        "id_stok": 1,
+        "jenis": {
+          "id_jenis_bunga": 1,
+          "nama_bunga": "Mawar",
+          "bentuk_bunga": "kelopak berlapis"
+        },
+        "warna": {
+          "id_warna": 3,
+          "nama_warna": "Merah tua",
+          "kode_hex": "#8B0000"
+        },
+        "deskripsi": "Mawar merah tua dengan kelopak berlapis",
+        "jumlah_masuk": 27,
+        "jumlah_ditahan": 0,
+        "jumlah_tersedia": 27,
+        "harga_per_tangkai": 8000.0,
+        "tanggal_masuk": "2026-10-26T14:16:42Z",
+        "menipis": false
+      }
+    },
+    {
+      "http": 201,
+      "body": {
+        "id_stok": 1,
+        "jenis": {
+          "id_jenis_bunga": 1,
+          "nama_bunga": "Mawar",
+          "bentuk_bunga": "kelopak berlapis"
+        },
+        "warna": {
+          "id_warna": 3,
+          "nama_warna": "Merah tua",
+          "kode_hex": "#8B0000"
+        },
+        "deskripsi": "Mawar merah tua dengan kelopak berlapis",
+        "jumlah_masuk": 34,
+        "jumlah_ditahan": 0,
+        "jumlah_tersedia": 34,
+        "harga_per_tangkai": 8000.0,
+        "tanggal_masuk": "2026-10-26T14:16:43Z",
+        "menipis": false
+      }
+    }
+  ],
+  "before_available": 20,
+  "after_available": 34,
+  "increment": 14,
+  "quantity_per_save": 7,
+  "scan_row_count": 1,
+  "matching_mutation_count": 2
+}

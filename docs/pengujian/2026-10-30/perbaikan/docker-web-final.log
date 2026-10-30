@@ -1,0 +1,211 @@
+ Image flowerbloom-audit-frontend:20261026 Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 947B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.14kB 0.0s done
+#2 DONE 0.0s
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#4 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#4 DONE 1.7s
+
+#5 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#5 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.0s done
+#5 CACHED
+
+#6 [internal] load metadata for docker.io/nginxinc/nginx-unprivileged:1.31-alpine
+#6 ...
+
+#7 [auth] nginxinc/nginx-unprivileged:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [auth] library/node:pull token for registry-1.docker.io
+#8 DONE 0.0s
+
+#9 [internal] load metadata for docker.io/library/node:24-alpine
+#9 ...
+
+#6 [internal] load metadata for docker.io/nginxinc/nginx-unprivileged:1.31-alpine
+#6 DONE 1.6s
+
+#9 [internal] load metadata for docker.io/library/node:24-alpine
+#9 DONE 1.6s
+
+#10 [internal] load .dockerignore
+#10 transferring context: 133B done
+#10 DONE 0.0s
+
+#11 [bangun 1/7] FROM docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
+#11 resolve docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85 0.0s done
+#11 DONE 0.0s
+
+#12 [jalan 1/4] FROM docker.io/nginxinc/nginx-unprivileged:1.31-alpine@sha256:b5047b9b76845eac124358373c6852377c52e4b05834a47647e955dd91cb8f1e
+#12 resolve docker.io/nginxinc/nginx-unprivileged:1.31-alpine@sha256:b5047b9b76845eac124358373c6852377c52e4b05834a47647e955dd91cb8f1e 0.0s done
+#12 DONE 0.0s
+
+#13 [internal] load build context
+#13 transferring context: 51.36kB 0.0s done
+#13 DONE 0.0s
+
+#14 [bangun 4/7] COPY package.json pnpm-lock.yaml ./
+#14 CACHED
+
+#15 [bangun 2/7] RUN corepack enable
+#15 CACHED
+
+#16 [bangun 3/7] WORKDIR /app
+#16 CACHED
+
+#17 [bangun 5/7] RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+#17 CACHED
+
+#18 [bangun 6/7] COPY . .
+#18 DONE 0.1s
+
+#19 [bangun 7/7] RUN pnpm build
+#19 1.412 $ tsc -b && vite build
+#19 11.74 [36mvite v8.3.5 [32mbuilding client environment for production...[36m[39m
+#19 11.75 transforming...
+#19 12.98 ✓ 2159 modules transformed.
+#19 13.30 rendering chunks...
+#19 13.84 computing gzip size...
+#19 13.87 dist/manifest.webmanifest                                       1.17 kB
+#19 13.87 dist/index.html                                                 1.66 kB │ gzip:  0.72 kB
+#19 13.87 dist/assets/logo-putih-BqYJLySr.svg                             9.28 kB │ gzip:  3.98 kB
+#19 13.87 dist/assets/logo-BjQDwWrV.svg                                  10.57 kB │ gzip:  3.69 kB
+#19 13.87 dist/assets/roboto-mono-latin-400-normal-GekRknry.woff2        12.68 kB
+#19 13.87 dist/assets/roboto-mono-latin-400-normal-DBZPkcnn.woff         15.72 kB
+#19 13.87 dist/assets/rethink-sans-latin-400-normal-C2CrhZJ2.woff2       15.86 kB
+#19 13.87 dist/assets/rethink-sans-latin-700-normal-DqfDD8gS.woff2       16.02 kB
+#19 13.87 dist/assets/rethink-sans-latin-500-normal-CZnVlKuG.woff2       16.32 kB
+#19 13.87 dist/assets/rethink-sans-latin-600-normal-BBmnB1wa.woff2       16.40 kB
+#19 13.87 dist/assets/bunga-warna-warni-CaIr7UfC.webp                    18.93 kB
+#19 13.87 dist/assets/rethink-sans-latin-400-normal-GBpUDrx9.woff        19.91 kB
+#19 13.87 dist/assets/rethink-sans-latin-700-normal-fkb_AID4.woff        20.05 kB
+#19 13.87 dist/assets/rethink-sans-latin-500-normal-gm3zvsp9.woff        20.31 kB
+#19 13.87 dist/assets/rethink-sans-latin-600-normal-DGDvRYts.woff        20.40 kB
+#19 13.87 dist/assets/playfair-display-latin-400-normal-CFtfchNt.woff2   21.85 kB
+#19 13.87 dist/assets/playfair-display-latin-400-italic-LeeEXsx5.woff2   21.88 kB
+#19 13.87 dist/assets/playfair-display-latin-500-normal-DIxvyhka.woff2   23.04 kB
+#19 13.87 dist/assets/playfair-display-latin-700-normal-CuDiGg7c.woff2   23.22 kB
+#19 13.87 dist/assets/playfair-display-latin-600-normal-CZLGqjJe.woff2   23.22 kB
+#19 13.87 dist/assets/inter-latin-400-normal-C38fXH4l.woff2              23.66 kB
+#19 13.87 dist/assets/inter-latin-500-normal-Cerq10X2.woff2              24.27 kB
+#19 13.87 dist/assets/inter-latin-700-normal-Yt3aPRUw.woff2              24.35 kB
+#19 13.87 dist/assets/inter-latin-600-normal-LgqL8muc.woff2              24.45 kB
+#19 13.87 dist/assets/playfair-display-latin-400-normal-DHYHbkg3.woff    26.90 kB
+#19 13.87 dist/assets/playfair-display-latin-400-italic-hIeePEuE.woff    27.26 kB
+#19 13.87 dist/assets/playfair-display-latin-500-normal-BScSeVwi.woff    28.10 kB
+#19 13.87 dist/assets/playfair-display-latin-700-normal-Bc_1Q1cG.woff    28.29 kB
+#19 13.87 dist/assets/playfair-display-latin-600-normal-CxxueQ0Z.woff    28.35 kB
+#19 13.87 dist/assets/inter-latin-400-normal-CyCys3Eg.woff               30.69 kB
+#19 13.87 dist/assets/inter-latin-600-normal-CiBQ2DWP.woff               31.26 kB
+#19 13.87 dist/assets/inter-latin-500-normal-BL9OpVg8.woff               31.28 kB
+#19 13.87 dist/assets/inter-latin-700-normal-BLAVimhd.woff               31.32 kB
+#19 13.87 dist/assets/toko-lorong-83-Z1tzF.webp                          34.20 kB
+#19 13.87 dist/assets/florist-tersenyum-Buc5Rd5m.webp                    40.55 kB
+#19 13.87 dist/assets/garis-bunga-DTHr5QQ4.webp                          47.34 kB
+#19 13.87 dist/assets/kategori-rangkai-D1vixqbI.webp                     65.27 kB
+#19 13.87 dist/assets/logo-footer-Bp_BzSYR.svg                           66.99 kB │ gzip: 24.15 kB
+#19 13.87 dist/assets/hero-kotak-bunga-CerWyz1p.webp                     85.96 kB
+#19 13.87 dist/assets/kategori-buket-DXrXM3oH.webp                       97.06 kB
+#19 13.87 dist/assets/kategori-kotak-CoBufR4z.webp                      110.60 kB
+#19 13.87 dist/assets/kategori-meja-CRC1i4RG.webp                       124.82 kB
+#19 13.87 dist/assets/florist-merangkai-CNW0T7Dl.webp                   154.60 kB
+#19 13.87 dist/assets/ladang-bunga-BP7jbe0s.webp                        179.80 kB
+#19 13.87 dist/assets/foto-masuk-C2Rt31Hg.webp                          184.18 kB
+#19 13.87 dist/assets/florist-berdua-BJps3iTy.webp                      212.31 kB
+#19 13.87 dist/assets/rak-bunga-9-3jNzF1.webp                           248.73 kB
+#19 13.87 dist/assets/index-D7K2qYks.css                                 74.23 kB │ gzip: 13.19 kB
+#19 13.87 dist/assets/rak-bunga-BcmLwQ-Y.js                               0.10 kB │ gzip:  0.11 kB │ map:     0.24 kB
+#19 13.87 dist/assets/hero-kotak-bunga-Cc3BDB8Q.js                        0.11 kB │ gzip:  0.12 kB │ map:     0.26 kB
+#19 13.87 dist/assets/arrow-right-CG4MMKwL.js                             0.24 kB │ gzip:  0.21 kB │ map:     1.09 kB
+#19 13.87 dist/assets/rotate-ccw-DmnuRPsW.js                              0.27 kB │ gzip:  0.23 kB │ map:     1.12 kB
+#19 13.87 dist/assets/eye-Ddsrjc9H.js                                     0.32 kB │ gzip:  0.25 kB │ map:     1.20 kB
+#19 13.87 dist/assets/pencil-BKYYgAuc.js                                  0.34 kB │ gzip:  0.27 kB │ map:     1.21 kB
+#19 13.87 dist/assets/shield-check-B4ZPt3YE.js                            0.39 kB │ gzip:  0.30 kB │ map:     1.29 kB
+#19 13.87 dist/assets/image-up-aShiVCo1.js                                0.41 kB │ gzip:  0.30 kB │ map:     1.44 kB
+#19 13.87 dist/assets/trash-Cbae8Gtl.js                                   0.41 kB │ gzip:  0.27 kB │ map:     1.46 kB
+#19 13.87 dist/assets/badge-check-DMuvKJ8u.js                             0.41 kB │ gzip:  0.29 kB │ map:     1.34 kB
+#19 13.87 dist/assets/calendar-clock-STTpYJPr.js                          0.46 kB │ gzip:  0.31 kB │ map:     1.61 kB
+#19 13.87 dist/assets/eye-off-BGAijYxq.js                                 0.50 kB │ gzip:  0.33 kB │ map:     1.55 kB
+#19 13.87 dist/assets/calendar-days-DxOAIXFT.js                           0.57 kB │ gzip:  0.32 kB │ map:     1.99 kB
+#19 13.87 dist/assets/palette-DknTbuwX.js                                 0.58 kB │ gzip:  0.33 kB │ map:     1.82 kB
+#19 13.87 dist/assets/TombolKembali-BrIZhgLC.js                           0.64 kB │ gzip:  0.47 kB │ map:     2.85 kB
+#19 13.87 dist/assets/bersama-admin-B9eCNYG6.js                           0.98 kB │ gzip:  0.48 kB │ map:     1.99 kB
+#19 13.87 dist/assets/PilihBunga-BDwopbcT.js                              1.66 kB │ gzip:  0.75 kB │ map:     4.39 kB
+#19 13.87 dist/assets/Bidang-D8RreXl3.js                                  2.02 kB │ gzip:  0.92 kB │ map:     6.19 kB
+#19 13.87 dist/assets/KartuProduk-D_u3AWVx.js                             3.12 kB │ gzip:  1.46 kB │ map:     7.47 kB
+#19 13.87 dist/assets/HalamanPesananSaya-olpDFU2V.js                      3.37 kB │ gzip:  1.54 kB │ map:     8.51 kB
+#19 13.87 dist/assets/GrafikBatang-Dh_MXby6.js                            3.50 kB │ gzip:  1.55 kB │ map:    11.58 kB
+#19 13.87 dist/assets/HalamanPembayaranAdmin-vGqGAbAX.js                  3.75 kB │ gzip:  1.54 kB │ map:     9.24 kB
+#19 13.87 dist/assets/HalamanKatalogAdmin-B9AmSLNP.js                     3.78 kB │ gzip:  1.64 kB │ map:     9.30 kB
+#19 13.87 dist/assets/bersama-xfiEf-48.js                                 3.82 kB │ gzip:  1.73 kB │ map:    10.42 kB
+#19 13.87 dist/assets/HalamanRiwayatPindai-BkpfHg0D.js                    3.82 kB │ gzip:  1.67 kB │ map:     9.51 kB
+#19 13.87 dist/assets/HalamanKomplain-CI7M-J9-.js                         3.95 kB │ gzip:  1.66 kB │ map:    10.68 kB
+#19 13.87 dist/assets/Warna-Cwwv8C83.js                                   4.01 kB │ gzip:  1.85 kB │ map:    13.04 kB
+#19 13.87 dist/assets/HalamanLaporan-Do8U5HLf.js                          4.68 kB │ gzip:  1.97 kB │ map:    12.40 kB
+#19 13.87 dist/assets/HalamanPengaturan-Dmg4MwW2.js                       5.04 kB │ gzip:  2.09 kB │ map:    13.98 kB
+#19 13.87 dist/assets/HalamanPindaiStok-Bs7DnPFS.js                       5.22 kB │ gzip:  2.10 kB │ map:    14.75 kB
+#19 13.87 dist/assets/workbox-window.prod.es5-Bd17z0YL.js                 5.71 kB │ gzip:  2.25 kB │ map:    13.48 kB
+#19 13.87 dist/assets/HalamanDasbor-CUw1_2X-.js                           6.13 kB │ gzip:  2.32 kB │ map:    14.41 kB
+#19 13.87 dist/assets/HalamanDaftarPesanan-ClceZeis.js                    6.16 kB │ gzip:  2.18 kB │ map:    15.17 kB
+#19 13.87 dist/assets/HalamanMasukAdmin-DAZwtTww.js                       6.22 kB │ gzip:  2.43 kB │ map:    14.12 kB
+#19 13.87 dist/assets/HalamanKeranjang-CefNIbeP.js                        6.24 kB │ gzip:  2.34 kB │ map:    16.07 kB
+#19 13.87 dist/assets/HalamanFormProduk-GNiO6Fst.js                       6.64 kB │ gzip:  2.54 kB │ map:    19.49 kB
+#19 13.87 dist/assets/HalamanPembayaran-C9GYlRyU.js                       6.77 kB │ gzip:  2.79 kB │ map:    17.50 kB
+#19 13.87 dist/assets/HalamanAkunAdmin-BzekSLSh.js                        8.15 kB │ gzip:  2.63 kB │ map:    23.32 kB
+#19 13.87 dist/assets/HalamanAuth-D6aVrGL3.js                             8.22 kB │ gzip:  3.17 kB │ map:    21.60 kB
+#19 13.87 dist/assets/HalamanRangkai-CiXvO8f1.js                          8.25 kB │ gzip:  3.09 kB │ map:    20.71 kB
+#19 13.87 dist/assets/HalamanProduk-dpwTEuie.js                           8.75 kB │ gzip:  3.30 kB │ map:    21.93 kB
+#19 13.87 dist/assets/HalamanKatalog-CWqnknFI.js                          8.96 kB │ gzip:  3.52 kB │ map:    23.77 kB
+#19 13.87 dist/assets/HalamanCheckout-HdAE0RVU.js                         9.33 kB │ gzip:  3.38 kB │ map:    24.56 kB
+#19 13.87 dist/assets/HalamanStok-CWfyeJZR.js                             9.65 kB │ gzip:  3.18 kB │ map:    26.24 kB
+#19 13.87 dist/assets/HalamanTentang-DyZ0fHO5.js                          9.76 kB │ gzip:  3.37 kB │ map:    19.44 kB
+#19 13.87 dist/assets/HalamanMerangkai-BdHL8KLf.js                       11.36 kB │ gzip:  4.00 kB │ map:    33.48 kB
+#19 13.87 dist/assets/HalamanBeranda-BkFaE8lE.js                         12.32 kB │ gzip:  4.26 kB │ map:    29.89 kB
+#19 13.87 dist/assets/HalamanDetailPesananAdmin-Dkj5HEvW.js              12.91 kB │ gzip:  3.98 kB │ map:    32.34 kB
+#19 13.87 dist/assets/HalamanDetailPesanan-h9pkHlFM.js                   14.55 kB │ gzip:  4.67 kB │ map:    36.80 kB
+#19 13.87 dist/assets/HalamanAkun-cWAQBFUw.js                            15.47 kB │ gzip:  4.77 kB │ map:    41.39 kB
+#19 13.87 dist/assets/Lain-qnpahmJ2.js                                  160.51 kB │ gzip: 52.60 kB │ map:   868.10 kB
+#19 13.87 dist/assets/index-D2cTfHqd.js                                 291.23 kB │ gzip: 90.13 kB │ map: 1,275.66 kB
+#19 13.87
+#19 13.88 [32m✓ built in 2.14s[39m
+#19 18.88
+#19 18.88 PWA v2.0.0
+#19 18.88 mode      generateSW
+#19 18.88 precache  86 entries (1124.67 KiB)
+#19 18.88 files generated
+#19 18.88   dist/sw.js.map
+#19 18.88   dist/sw.js
+#19 18.88   dist/workbox-cbfe6c49.js.map
+#19 18.88   dist/workbox-cbfe6c49.js
+#19 DONE 19.3s
+
+#20 [jalan 2/4] RUN apk upgrade --no-cache
+#20 CACHED
+
+#21 [jalan 3/4] COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
+#21 CACHED
+
+#22 [jalan 4/4] COPY --from=bangun /app/dist /usr/share/nginx/html
+#22 DONE 0.1s
+
+#23 exporting to image
+#23 exporting layers
+#23 exporting layers 0.4s done
+#23 exporting manifest sha256:5927b78ac70ed4fa31e935acf1de5cd0c0f391caca2269677ee3356f870987a4 0.0s done
+#23 exporting config sha256:90908a5f60ad88e4cb23b7be1641c4edf7f48ee7dd9ac65526bbc0e94f7ded4b 0.0s done
+#23 exporting attestation manifest sha256:202595efab4f3f73ba6901bad39a840740bbb30fd2dd221843069707571029f1 0.0s done
+#23 exporting manifest list sha256:96e89157f30000b0c974d1ad396f04763903a6694cfd308e815594dfa2487830 0.0s done
+#23 naming to docker.io/library/flowerbloom-audit-frontend:20261026 done
+#23 unpacking to docker.io/library/flowerbloom-audit-frontend:20261026 0.1s done
+#23 DONE 0.6s
+
+#24 resolving provenance for metadata file
+#24 DONE 0.0s
+ Image flowerbloom-audit-frontend:20261026 Built

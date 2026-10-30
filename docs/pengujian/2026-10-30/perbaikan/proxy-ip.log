@@ -1,0 +1,79 @@
+{
+  "baseline": [
+    {
+      "claimed_forwarded_for": null,
+      "status": 401,
+      "kode": "kredensial_salah"
+    },
+    {
+      "claimed_forwarded_for": null,
+      "status": 401,
+      "kode": "kredensial_salah"
+    },
+    {
+      "claimed_forwarded_for": null,
+      "status": 401,
+      "kode": "kredensial_salah"
+    },
+    {
+      "claimed_forwarded_for": null,
+      "status": 401,
+      "kode": "kredensial_salah"
+    },
+    {
+      "claimed_forwarded_for": null,
+      "status": 401,
+      "kode": "kredensial_salah"
+    },
+    {
+      "claimed_forwarded_for": null,
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": null,
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    }
+  ],
+  "spoofed": [
+    {
+      "claimed_forwarded_for": "198.51.100.1",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": "198.51.100.2",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": "198.51.100.3",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": "198.51.100.4",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": "198.51.100.5",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": "198.51.100.6",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    },
+    {
+      "claimed_forwarded_for": "198.51.100.7",
+      "status": 429,
+      "kode": "terlalu_banyak_percobaan"
+    }
+  ],
+  "baseline_lock_seen": true,
+  "caller_controlled_header_resets_limit": false
+}
+PASS: header X-Forwarded-For buatan tidak mereset pembatas login

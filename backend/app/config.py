@@ -8,6 +8,7 @@ from typing import Literal
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy import URL
 
 RAHASIA_BAWAAN = "ganti-rahasia-ini-sebelum-produksi"
 
@@ -17,6 +18,21 @@ class Pengaturan(BaseSettings):
 
     lingkungan: str = "pengembangan"  # pengembangan | produksi
     database_url: str = "sqlite:///./flowerbloom.db"
+    mysql_host: str | None = None
+    mysql_port: int = 3306
+    mysql_database: str = "flowerbloom"
+    mysql_user: str = "flowerbloom"
+    mysql_password: str | None = None
+
+    @model_validator(mode="after")
+    def _url_mysql(self) -> "Pengaturan":
+        if self.mysql_host is not None:
+            if not self.mysql_password:
+                raise ValueError("MYSQL_PASSWORD wajib diisi bila MYSQL_HOST digunakan.")
+            self.database_url = URL.create("mysql+pymysql", username=self.mysql_user, password=self.mysql_password,
+                                           host=self.mysql_host, port=self.mysql_port, database=self.mysql_database,
+                                           query={"charset": "utf8mb4"}).render_as_string(hide_password=False)
+        return self
 
     # Autentikasi
     jwt_rahasia: str = RAHASIA_BAWAAN
@@ -55,7 +71,10 @@ class Pengaturan(BaseSettings):
 
     @model_validator(mode="after")
     def _tolak_rahasia_lemah_di_produksi(self) -> "Pengaturan":
-        if self.lingkungan == "produksi" and (self.jwt_rahasia == RAHASIA_BAWAAN or len(self.jwt_rahasia) < 32):
+        if self.lingkungan == "produksi" and (
+            self.jwt_rahasia == RAHASIA_BAWAAN or len(self.jwt_rahasia) < 32
+            or self.jwt_rahasia.lower().startswith("ganti-") or len(set(self.jwt_rahasia)) == 1
+        ):
             raise ValueError("JWT_RAHASIA harus diganti dan minimal 32 karakter pada lingkungan produksi.")
         return self
 

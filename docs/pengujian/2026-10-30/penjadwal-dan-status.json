@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-30",
+  "order1_status": "selesai",
+  "order1_revision_count": 1,
+  "order1_photo_count": 2,
+  "order2_status": "dibatalkan",
+  "stock_after_browser_cancel": [
+    50,
+    0
+  ],
+  "scheduler_order_id": 3,
+  "scheduler_final_status": "dibatalkan",
+  "scheduler_wait_seconds": 9.19,
+  "stock_restored": true,
+  "scope": "Only dummy audit database; timestamp moved into past for this newly created order only. Actual production API scheduler handled expiry."
+}

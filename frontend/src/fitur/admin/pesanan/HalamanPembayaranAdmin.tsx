@@ -27,7 +27,11 @@ function PanelVerifikasi({ id }: { id: number }) {
         </Link>
       </div>
       <p className="mb-3 text-sm text-ad-redup">{data.ringkasan_item}</p>
-      {bukti ? <VerifikasiBukti pesanan={data} bukti={bukti} /> : <p className="text-sm">Belum ada bukti diunggah.</p>}
+      {bukti ? (
+        <VerifikasiBukti key={bukti.id_pembayaran} pesanan={data} bukti={bukti} />
+      ) : (
+        <p className="text-sm">Belum ada bukti diunggah.</p>
+      )}
     </Kartu>
   )
 }
