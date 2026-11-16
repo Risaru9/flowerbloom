@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 # Image produksi backend FlowerBloom: multi-stage, dependensi terkunci ber-hash, berjalan sebagai pengguna non-root.
 
-FROM python:3.13-slim AS dasar
+FROM python:3.15-slim AS dasar
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
